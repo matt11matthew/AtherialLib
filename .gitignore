@@ -40,4 +40,4 @@ build/
 .DS_Store
 .idea/vcs.xml
 .idea/misc.xml
-src/main/resources/token.txt
+
