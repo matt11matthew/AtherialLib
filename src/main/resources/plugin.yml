@@ -1,0 +1,4 @@
+name: AtherialLib
+version: '${project.version}'
+main: me.matthewedevelopment.atheriallib.AtherialLib
+api-version: '1.20'

@@ -1,0 +1,8 @@
+correctCommandArgumentUsage: "&c&lCorrect Usage: &7%command% &7%arguments%"
+correctCommandUsage: "&c&lCorrect Usage: &7%command%"
+playerOnlyCommand: "&cThis command is player-only."
+helpHeader: "&7&m----------&f[&a&l%command% Help&f]&7&m----------"
+helpFooter:  "&7&m----------&f[&a&l%command% Help&f]&7&m----------"
+helpLine: "&a/%command% &8- &7%description%"
+String helpArgumentsColor:  "&f"
+noPermission:  "&cYou don't have the permission %permission%."
