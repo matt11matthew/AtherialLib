@@ -107,13 +107,15 @@ public class AtherialProfileManager  implements Listener {
         return returnProfile;
 
     }
-
     public <T extends AtherialProfile<T>>  T getProfile(Class<T> clazz, Player player) {
+        return getProfile(clazz, player.getUniqueId());
+    }
+    public <T extends AtherialProfile<T>>  T getProfile(Class<T> clazz, UUID uuid) {
         if (!profiles.containsKey(clazz.getSimpleName())){
             return null;
         }
         Map<UUID, AtherialProfile<?>> uuidAtherialProfileMap = playerDataMap.get(clazz.getSimpleName());
-        return (T) uuidAtherialProfileMap.get(player.getUniqueId());
+        return (T) uuidAtherialProfileMap.get(uuid);
     }
     @EventHandler(ignoreCancelled = true)
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
