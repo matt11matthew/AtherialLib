@@ -21,19 +21,39 @@ public class ConfigUtils {
         if (section.isList("lore")){
 
             for (String s : section.getStringList("lore")) {
-                lore.add(stringReplace.replace(colorize(s)));
+                if (stringReplace!=null){
+                    lore.add(stringReplace.replace(new String(s)));
+
+                } else {
+
+                    lore.add(new String(s));
+                }
             }
         } else if (section.isString("lore")){
-            lore.add(stringReplace.replace(colorize(section.getString("lore"))));
+            if (stringReplace!=null){
+                lore.add(stringReplace.replace(section.getString("lore")));
+
+            } else {
+
+                lore.add(new String(section.getString("lore")));
+            }
         }
         ItemBuilder builder = new ItemBuilder(type);
-        if (name!=null)builder=builder.setName(stringReplace.replace(colorize(name)));
+
+        if (name!=null) {
+            if (stringReplace!=null){
+                builder=builder.setName(stringReplace.replace(colorize(name)));
+            } else {
+                builder=builder.setName(colorize(name));
+
+            }
+        }
         if (!lore.isEmpty())builder=builder.addLore(lore);
         return builder;
     }
 
     public  static ItemBuilder getItemBuilder(ConfigurationSection section) {
-        return getItemBuilder(section, s -> s);
+        return getItemBuilder(section, null);
     }
 
 

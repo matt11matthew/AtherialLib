@@ -100,6 +100,9 @@ public class AtherialProfileManager  implements Listener {
             AtherialProfile atherialProfile = value.getConstructor(UUID.class, String.class).newInstance(player.getUniqueId(), player.getName());
             returnProfile = atherialProfile.load(player, this);
             playerDataMap.get(simpleName).put(player.getUniqueId(), returnProfile);
+
+            AtherialProfileLoadEvent customEvent = new AtherialProfileLoadEvent(player,returnProfile);
+            Bukkit.getServer().getPluginManager().callEvent(customEvent);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -130,6 +133,7 @@ public class AtherialProfileManager  implements Listener {
             }
             saveData(event.getPlayer(), profile,true);
             playerDataMap.get(value.getSimpleName()).remove(event.getPlayer().getUniqueId());
+            System.out.println("Removed player data for " + event.getPlayer().getName() );
         }
 
     }

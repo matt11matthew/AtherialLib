@@ -13,6 +13,37 @@ public class ChatUtils {
         }
         sender.sendMessage(message);
     }
+
+    public static String splitSentence(String sentence, int maxLineLength) {
+        if (maxLineLength < 2) {
+            return sentence;
+        }
+
+        StringBuilder result = new StringBuilder();
+        int count = 0;
+
+        for (int i = 0; i < sentence.length(); i++) {
+            char c = sentence.charAt(i);
+
+            // Check if a color code is about to be split
+            if (count >= maxLineLength - 1 && c == '§' && i + 2 <= sentence.length()) {
+                result.append("\n");
+                count = 0;
+            }
+
+            // Split at space after maxLineLength characters
+            if (count >= maxLineLength && c == ' ') {
+                result.append("\n");
+                count = 0;
+            } else {
+                result.append(c);
+                count++;
+            }
+        }
+
+        return result.toString();
+    }
+
     public static String formatEnum(String input) {
         if (input.contains("_")) {
             StringBuilder stringBuilder = new StringBuilder();
@@ -27,6 +58,7 @@ public class ChatUtils {
         }
     }
     public static String colorize(String message){
+        if (message==null)return null;
         return new String(message).replaceAll("&", "\u00A7");
     }
 }
