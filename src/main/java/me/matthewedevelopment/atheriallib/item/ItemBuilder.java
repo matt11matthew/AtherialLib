@@ -2,6 +2,7 @@ package me.matthewedevelopment.atheriallib.item;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -549,6 +550,29 @@ public class ItemBuilder {
         return this;
     }
 
+    public ItemBuilder skullOwner(String data) {
+
+        if (itemStack.getType() == Material.PLAYER_HEAD) {
+            Validate.notNull(data, "Data was null!");
+
+            GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+            profile.getProperties().put("textures", new Property("textures", data));
+            Field field;
+
+            SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
+            try {
+                field = skullMeta.getClass().getDeclaredField("profile");
+                field.setAccessible(true);
+                field.set(skullMeta, profile);
+            } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            itemStack.setItemMeta(skullMeta);
+            return this;
+        }
+        return this;
+    }
+
     /**
      * Inject item in inventory
      * @param inventory
@@ -799,6 +823,8 @@ public class ItemBuilder {
     public Set<ItemFlag> getItemFlag(){
         return itemStack.hasItemMeta() && itemMeta.getItemFlags().size() > 0 ? itemMeta.getItemFlags() : null;
     }
+
+
 
     /**
      * get potion effects
