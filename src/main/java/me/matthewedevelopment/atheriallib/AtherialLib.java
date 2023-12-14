@@ -5,7 +5,9 @@ import me.matthewedevelopment.atheriallib.command.AnnotationlessAtherialCommand;
 import me.matthewedevelopment.atheriallib.command.AtherialCommand;
 import me.matthewedevelopment.atheriallib.command.CommandMessages;
 import me.matthewedevelopment.atheriallib.config.BukkitConfig;
+import me.matthewedevelopment.atheriallib.database.mysql.MySqlHandler;
 import me.matthewedevelopment.atheriallib.dependency.Dependency;
+import me.matthewedevelopment.atheriallib.item.AtherialItemAPI;
 import me.matthewedevelopment.atheriallib.nms.Version;
 import me.matthewedevelopment.atheriallib.nms.VersionProvider;
 import me.matthewedevelopment.atheriallib.playerdata.AtherialProfileManager;
@@ -39,14 +41,28 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     public static CommandMessages COMMAND_MESSAGES;
     public abstract void initDependencies();
 
+    private MySqlHandler sqlHandler;
+
     protected AtherialProfileManager profileManager;
 
 
     public AtherialLib() {
         instance = this;
         this.dependencyMap = new HashMap<>();
+        this.sqlHandler = new MySqlHandler(this);
         initDependencies();
+
     }
+
+    protected void registerListener(Listener listener){
+        Bukkit.getPluginManager().registerEvents(listener, this);
+    }
+
+    public void enableMySql() {
+        this.sqlHandler.setEnabled(true);
+    }
+
+
 
     public VersionProvider getVersionProvider() {
         return versionProvider;
@@ -62,17 +78,27 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         if (!getDataFolder().exists()) {
             getDataFolder().mkdirs();
         }
+        AtherialItemAPI.setAtherialLib(this);
         loadCommandMessages();
         getServer().getPluginManager().registerEvents(this, this);
         this.menu=  new SpiGUI(this);
         this.profileManager = new AtherialProfileManager(this);
         getServer().getPluginManager().registerEvents(  this.profileManager, this);
+
+
+        if (sqlHandler.isEnabled()) {
+            sqlHandler.start();
+        }
         this.onStart();
 
         this.profileManager.load();
 
 
 
+    }
+
+    public MySqlHandler getSqlHandler() {
+        return sqlHandler;
     }
 
     public AtherialProfileManager getProfileManager() {
@@ -176,6 +202,9 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     public void onDisable() {
         profileManager.stop();
         this.onStop();
+        if (sqlHandler.isEnabled()) {
+            sqlHandler.stop();
+        }
     }
 
     public void registerCommand(AtherialCommand command) {

@@ -17,5 +17,11 @@ public class AtherialTasks {
         plugin.getServer().getScheduler().runTaskLater(plugin, task, time);
     }
 
+    public static void runAsync(Runnable task) {
+        if (plugin == null) return;
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, task);
+    }
+
+
 
 }

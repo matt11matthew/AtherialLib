@@ -3,6 +3,9 @@ package me.matthewedevelopment.atheriallib.utilities;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by Matthew E on 11/16/2023 at 1:11 PM for the project AtherialLib
  */
@@ -59,6 +62,25 @@ public class ChatUtils {
     }
     public static String colorize(String message){
         if (message==null)return null;
-        return new String(message).replaceAll("&", "\u00A7");
+
+//        return new String(message).replaceAll("&", "\u00A7");
+        return translateHexColorCodes(message);
+    }
+    public static String translateHexColorCodes(String message) {
+        final char COLOR_CHAR = '§';
+        // This pattern matches hex color codes in the format "#FFFFFF"
+        final Pattern hexPattern = Pattern.compile("#[a-fA-F0-9]{6}");
+        Matcher matcher = hexPattern.matcher(message);
+
+        StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
+        while (matcher.find()) {
+            String group = matcher.group();
+            // Replace the hex color code with the Spigot format
+            matcher.appendReplacement(buffer, COLOR_CHAR + "x"
+                    + COLOR_CHAR + group.charAt(1) + COLOR_CHAR + group.charAt(2)
+                    + COLOR_CHAR + group.charAt(3) + COLOR_CHAR + group.charAt(4)
+                    + COLOR_CHAR + group.charAt(5) + COLOR_CHAR + group.charAt(6));
+        }
+        return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
     }
 }
