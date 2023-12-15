@@ -17,36 +17,111 @@ public class ChatUtils {
         sender.sendMessage(message);
     }
 
+    public static String translateHexColorCodes(String message) {
+        final char COLOR_CHAR = '§';
+        // This pattern matches hex color codes in the format "#FFFFFF"
+        final Pattern hexPattern = Pattern.compile("#[a-fA-F0-9]{6}");
+        Matcher matcher = hexPattern.matcher(message);
+
+        StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
+        while (matcher.find()) {
+            String group = matcher.group();
+            // Replace the hex color code with the Spigot format
+            matcher.appendReplacement(buffer, COLOR_CHAR + "x"
+                    + COLOR_CHAR + group.charAt(1) + COLOR_CHAR + group.charAt(2)
+                    + COLOR_CHAR + group.charAt(3) + COLOR_CHAR + group.charAt(4)
+                    + COLOR_CHAR + group.charAt(5) + COLOR_CHAR + group.charAt(6));
+        }
+        return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
+    }
     public static String splitSentence(String sentence, int maxLineLength) {
         if (maxLineLength < 2) {
             return sentence;
         }
 
+        final Pattern colorPattern = Pattern.compile("§[a-fA-F0-9k-orx]|#(?:[a-fA-F0-9]{6})");
+        Matcher matcher = colorPattern.matcher(sentence);
+
         StringBuilder result = new StringBuilder();
-        int count = 0;
+        int lastSplit = 0; // Last index where the sentence was split
+        int visibleCount = 0; // Count of visible characters since last split
 
-        for (int i = 0; i < sentence.length(); i++) {
-            char c = sentence.charAt(i);
+        while (matcher.find()) {
+            int start = matcher.start();
+            int end = matcher.end();
 
-            // Check if a color code is about to be split
-            if (count >= maxLineLength - 1 && c == '§' && i + 2 <= sentence.length()) {
-                result.append("\n");
-                count = 0;
+            // Process substring between last split and start of the color code or hex code
+            String substring = sentence.substring(lastSplit, start);
+            for (int i = 0; i < substring.length(); i++) {
+                char c = substring.charAt(i);
+
+                // Increment count and append character
+                visibleCount++;
+                result.append(c);
+
+                // Check for split condition
+                if (visibleCount >= maxLineLength && c == ' ') {
+                    result.append("\n");
+                    visibleCount = 0;
+                }
             }
 
-            // Split at space after maxLineLength characters
-            if (count >= maxLineLength && c == ' ') {
+            // Append the color or hex code
+            result.append(sentence.substring(start, end));
+
+            // Update the last split and reset visible character count if needed
+            lastSplit = end;
+            if (visibleCount >= maxLineLength) {
                 result.append("\n");
-                count = 0;
-            } else {
-                result.append(c);
-                count++;
+                visibleCount = 0;
+            }
+        }
+
+        // Process any remaining characters after the last color or hex code
+        String remaining = sentence.substring(lastSplit);
+        for (int i = 0; i < remaining.length(); i++) {
+            char c = remaining.charAt(i);
+            visibleCount++;
+            result.append(c);
+
+            if (visibleCount >= maxLineLength && c == ' ') {
+                result.append("\n");
+                visibleCount = 0;
             }
         }
 
         return result.toString();
     }
 
+//    public static String splitSentence(String sentence, int maxLineLength) {
+//        if (maxLineLength < 2) {
+//            return sentence;
+//        }
+//
+//        StringBuilder result = new StringBuilder();
+//        int count = 0;
+//
+//        for (int i = 0; i < sentence.length(); i++) {
+//            char c = sentence.charAt(i);
+//
+//            // Check if a color code is about to be split
+//            if (count >= maxLineLength - 1 && c == '§' && i + 2 <= sentence.length()) {
+//                result.append("\n");
+//                count = 0;
+//            }
+//
+//            // Split at space after maxLineLength characters
+//            if (count >= maxLineLength && c == ' ') {
+//                result.append("\n");
+//                count = 0;
+//            } else {
+//                result.append(c);
+//                count++;
+//            }
+//        }
+//
+//        return result.toString();
+//    }
     public static String formatEnum(String input) {
         if (input.contains("_")) {
             StringBuilder stringBuilder = new StringBuilder();
@@ -65,22 +140,5 @@ public class ChatUtils {
 
 //        return new String(message).replaceAll("&", "\u00A7");
         return translateHexColorCodes(message);
-    }
-    public static String translateHexColorCodes(String message) {
-        final char COLOR_CHAR = '§';
-        // This pattern matches hex color codes in the format "#FFFFFF"
-        final Pattern hexPattern = Pattern.compile("#[a-fA-F0-9]{6}");
-        Matcher matcher = hexPattern.matcher(message);
-
-        StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
-        while (matcher.find()) {
-            String group = matcher.group();
-            // Replace the hex color code with the Spigot format
-            matcher.appendReplacement(buffer, COLOR_CHAR + "x"
-                    + COLOR_CHAR + group.charAt(1) + COLOR_CHAR + group.charAt(2)
-                    + COLOR_CHAR + group.charAt(3) + COLOR_CHAR + group.charAt(4)
-                    + COLOR_CHAR + group.charAt(5) + COLOR_CHAR + group.charAt(6));
-        }
-        return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
     }
 }
