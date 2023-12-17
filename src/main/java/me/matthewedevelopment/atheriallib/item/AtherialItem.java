@@ -10,7 +10,7 @@ public class AtherialItem {
         this.itemStack = itemStack;
     }
 
-    public static AtherialItem of(ItemStack itemStack) {
+    public static me.matthewedevelopment.atheriallib.item.AtherialItem of(ItemStack itemStack) {
         return new AtherialItem(itemStack);
     }
 
@@ -27,7 +27,7 @@ public class AtherialItem {
         return itemStack;
     }
 
-    public <T> AtherialItem setData(String key, T t) {
+    public <T> me.matthewedevelopment.atheriallib.item.AtherialItem setData(String key, T t) {
         NbtAPI nbtAPI = AtherialItemAPI.getAtherialLib().getVersionProvider().getNbtAPI();
         this.itemStack = nbtAPI.setTagString(this.itemStack, key, AtherialItemAPI.GSON.toJson(t, t.getClass()));
         return this;

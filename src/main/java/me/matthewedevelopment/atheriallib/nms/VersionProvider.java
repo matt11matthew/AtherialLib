@@ -46,7 +46,7 @@ public abstract class VersionProvider {
 
 
     public void sendActionBarMessage(Player player, String message, int duration) {
-        if (!atherialPlugin.isNmsEnabled()){
+        if (!atherialPlugin.isNmsEnabled()) {
             return;
         }
         cancelPendingMessages(player);
@@ -68,7 +68,7 @@ public abstract class VersionProvider {
     public abstract void sendRawActionBarMessage(Player player, String message);
 
     public void sendActionBarMessage(Player player, String message) {
-        if (!atherialPlugin.isNmsEnabled()){
+        if (!atherialPlugin.isNmsEnabled()) {
             return;
         }
         sendRawActionBarMessage(player, "{\"text\": \"" + colorize(message) + "\"}");
@@ -139,5 +139,22 @@ public abstract class VersionProvider {
 
     public void setDebug(boolean debug) {
         this.debug = debug;
+    }
+
+    public boolean isGreaterThan1_13() {
+        switch (version) {
+
+            case V1_7_R4:
+            case V1_8_R3:
+            case V1_9_R1:
+            case V1_9_R2:
+            case V1_10:
+            case V1_11:
+            case V1_12_R1:
+                return false;
+            default:
+                return true;
+        }
+
     }
 }
