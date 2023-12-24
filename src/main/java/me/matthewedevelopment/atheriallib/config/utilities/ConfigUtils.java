@@ -1,12 +1,20 @@
 package me.matthewedevelopment.atheriallib.config.utilities;
 
+import me.matthewedevelopment.atheriallib.config.Config;
+import me.matthewedevelopment.atheriallib.config.IgnoreValue;
+import me.matthewedevelopment.atheriallib.config.SerializedName;
 import me.matthewedevelopment.atheriallib.io.StringReplacer;
+import me.matthewedevelopment.atheriallib.item.AtherialItemBuilder;
 import me.matthewedevelopment.atheriallib.item.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 import static me.matthewedevelopment.atheriallib.utilities.ChatUtils.colorize;
 
@@ -55,6 +63,37 @@ public class ConfigUtils {
     public  static ItemBuilder getItemBuilder(ConfigurationSection section) {
         return getItemBuilder(section, null);
     }
+
+
+
+
+//        public AtherialItemBuilder.Builder getAtherialItemBuilder(String path) {
+//            FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(getFile());
+//            ConfigurationSection configurationSection = fileConfiguration.getConfigurationSection(path);
+//            String type = configurationSection.getString("type");
+//            Material material;
+//            try {
+//                material = Material.getMaterial(type);
+//            } catch (Exception e) {
+//                return null;
+//            }
+//            int amount = configurationSection.getInt("amount", 1);
+//            int durability = configurationSection.getInt("durability", 0);
+//            String displayName = configurationSection.getString("displayName", "");
+//            List<String> loreStringList = new ArrayList<>();
+//            if (configurationSection.isSet("lore") && configurationSection.isList("lore")) {
+//                loreStringList = configurationSection.getStringList("lore");
+//            }
+//
+//            return AtherialItemBuilder.builder()
+//                    .type(material)
+//                    .displayName(displayName)
+//                    .lore(loreStringList)
+//                    .durability((short) durability)
+//                    .amount(amount);
+//
+//        }
+
 
 
 }

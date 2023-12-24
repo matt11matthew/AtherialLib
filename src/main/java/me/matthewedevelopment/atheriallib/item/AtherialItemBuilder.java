@@ -21,12 +21,34 @@ import java.util.stream.Collectors;
 
 public class AtherialItemBuilder {
     private ItemStack itemStack;
-
+    private int slot;
     public AtherialItemBuilder(Builder builder) {
         this.itemStack = builder.itemStack;
     }
+
+
+    public AtherialItemBuilder(Builder builder, int slot) {
+        this.itemStack = builder.itemStack;
+        this.slot = slot;
+    }
+
+    public int getSlot() {
+        return slot;
+    }
+
+    public void setSlot(int slot) {
+        this.slot = slot;
+    }
+    public AtherialItemBuilder slot(int slot) {
+        this.slot = slot;
+        return this;
+    }
     public AtherialItemBuilder(ItemStack itemStack) {
         this.itemStack = itemStack;
+    }
+    public AtherialItemBuilder(ItemStack itemStack, int slot) {
+        this.itemStack = itemStack;
+        this.slot = slot;
     }
 
     public static Builder builder() {
@@ -46,6 +68,10 @@ public class AtherialItemBuilder {
 
         public Builder(AtherialItemBuilder atherialItem) {
             this.itemStack = atherialItem.itemStack;
+        }
+
+        public Builder(Material material, int amount) {
+            this.itemStack =new ItemStack(material, amount);
         }
 
         public Builder itemStack(ItemStack itemStack) {

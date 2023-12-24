@@ -5,18 +5,33 @@ import me.matthewedevelopment.atheriallib.command.AnnotationlessAtherialCommand;
 import me.matthewedevelopment.atheriallib.command.AtherialCommand;
 import me.matthewedevelopment.atheriallib.command.CommandMessages;
 import me.matthewedevelopment.atheriallib.config.BukkitConfig;
+import me.matthewedevelopment.atheriallib.config.yaml.CustomTypeRegistry;
+import me.matthewedevelopment.atheriallib.config.yaml.serializables.AtherialItemBuilderSerializable;
 import me.matthewedevelopment.atheriallib.database.mysql.MySqlHandler;
 import me.matthewedevelopment.atheriallib.dependency.Dependency;
 import me.matthewedevelopment.atheriallib.item.AtherialItemAPI;
+import me.matthewedevelopment.atheriallib.item.AtherialItemBuilder;
+import me.matthewedevelopment.atheriallib.message.message.ActionBarMessage;
+import me.matthewedevelopment.atheriallib.message.message.ChatMessage;
+import me.matthewedevelopment.atheriallib.message.message.MessageTitle;
+import me.matthewedevelopment.atheriallib.message.message.json.ActionBarMessageSerializer;
+import me.matthewedevelopment.atheriallib.message.message.json.ChatMessageSerializer;
+import me.matthewedevelopment.atheriallib.message.message.json.TitleJsonSerializer;
+import me.matthewedevelopment.atheriallib.message.title.AtherialTitle;
 import me.matthewedevelopment.atheriallib.nms.Version;
 import me.matthewedevelopment.atheriallib.nms.VersionProvider;
 import me.matthewedevelopment.atheriallib.playerdata.AtherialProfileManager;
 import me.matthewedevelopment.atheriallib.utilities.AtherialTasks;
 import org.bukkit.Bukkit;
+import org.bukkit.Difficulty;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.weather.WeatherChangeEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.annotation.Annotation;
@@ -43,15 +58,19 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
 
     private MySqlHandler sqlHandler;
 
+    private  boolean debug;
+
     protected AtherialProfileManager profileManager;
 
 
     public AtherialLib() {
         instance = this;
+        this.debug = false;
         this.dependencyMap = new HashMap<>();
         this.sqlHandler = new MySqlHandler(this);
         initDependencies();
 
+        AtherialTitle.setAtherialPlugin(this);
     }
 
     protected void registerListener(Listener listener){
@@ -89,12 +108,47 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         if (sqlHandler.isEnabled()) {
             sqlHandler.start();
         }
+        registerTypes();
+        defaultRegisterTypes();
         this.onStart();
+
 
         this.profileManager.load();
 
 
+        if (debug) {
+            Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+                @Override
+                public void run() {
+                    for (World world : Bukkit.getServer().getWorlds()) {
+                        world.setStorm(false);
+                        world.setThundering(false);
+                        world.setTime(500);
+                        world.setDifficulty(Difficulty.EASY);
+                    }
+                }
+            }, 20L, 20); // Schedule this to run every 5 minutes, for example
+        }
 
+    }
+
+    public abstract void registerTypes();
+
+    private void defaultRegisterTypes() {
+        CustomTypeRegistry.registerType(AtherialItemBuilder.class, new AtherialItemBuilderSerializable());
+        CustomTypeRegistry.registerType(ActionBarMessage.class, new ActionBarMessageSerializer());
+        CustomTypeRegistry.registerType(MessageTitle.class, new TitleJsonSerializer());
+        CustomTypeRegistry.registerType(ChatMessage.class, new ChatMessageSerializer());
+
+    }
+
+
+    public boolean isDebug() {
+        return debug;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
     }
 
     public MySqlHandler getSqlHandler() {
