@@ -7,6 +7,12 @@ import me.matthewedevelopment.atheriallib.command.CommandMessages;
 import me.matthewedevelopment.atheriallib.config.BukkitConfig;
 import me.matthewedevelopment.atheriallib.config.yaml.CustomTypeRegistry;
 import me.matthewedevelopment.atheriallib.config.yaml.serializables.AtherialItemBuilderSerializable;
+import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.DoubleSimpleList;
+import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.IntSimpleList;
+import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.StringSimpleList;
+import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.serializer.DoubleSimpleListSerializer;
+import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.serializer.IntSimpleListSerializer;
+import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.serializer.StringSimpleListSerializer;
 import me.matthewedevelopment.atheriallib.database.mysql.MySqlHandler;
 import me.matthewedevelopment.atheriallib.dependency.Dependency;
 import me.matthewedevelopment.atheriallib.item.AtherialItemAPI;
@@ -139,6 +145,11 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         CustomTypeRegistry.registerType(ActionBarMessage.class, new ActionBarMessageSerializer());
         CustomTypeRegistry.registerType(MessageTitle.class, new TitleJsonSerializer());
         CustomTypeRegistry.registerType(ChatMessage.class, new ChatMessageSerializer());
+
+
+        CustomTypeRegistry.registerType(IntSimpleList.class, new IntSimpleListSerializer());
+        CustomTypeRegistry.registerType(DoubleSimpleList.class, new DoubleSimpleListSerializer());
+        CustomTypeRegistry.registerType(StringSimpleList.class, new StringSimpleListSerializer());
 
     }
 
