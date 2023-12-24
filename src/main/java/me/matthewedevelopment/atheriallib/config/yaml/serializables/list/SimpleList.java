@@ -18,7 +18,12 @@ public abstract class SimpleList<T, S extends SimpleList<T, S>> implements Itera
     public SimpleList(List<T> list) {
         this.list = list;
     }
-
+    public SimpleList(T... list) {
+        this.list = new ArrayList<>();
+        for (T t : list) {
+            this.list.add(t);
+        }
+    }
     public boolean isEmpty() {
         return getSize()<=0;
 
