@@ -76,6 +76,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         this.debug = false;
         this.dependencyMap = new HashMap<>();
         this.sqlHandler = new MySqlHandler(this);
+        this.nmsRequired = false;
         initDependencies();
 
         AtherialTitle.setAtherialPlugin(this);
@@ -90,6 +91,10 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     }
 
 
+    public AtherialLib setNmsRequired(boolean nmsRequired) {
+        this.nmsRequired = nmsRequired;
+        return this;
+    }
 
     public VersionProvider getVersionProvider() {
         return versionProvider;
@@ -99,7 +104,11 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         if(!loadNMS()){
-//            return;
+            if (nmsRequired){
+                getLogger().severe("NMS is required for this plugin!");
+                Bukkit.getPluginManager().disablePlugin(this);
+                return;
+            }
         }
         AtherialTasks.setPlugin(this);
         if (!getDataFolder().exists()) {
@@ -242,6 +251,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         }
     }
     private boolean nmsEnabled;
+    protected boolean nmsRequired ;
 
     public boolean isNmsEnabled() {
         return nmsEnabled;
