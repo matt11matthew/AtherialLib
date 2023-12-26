@@ -19,6 +19,7 @@ public enum Version {
     V1_14_R1(VersionProviderV1_14_R1.class),
     V1_15_R1(VersionProviderV1_15_R1.class),
     V1_16_R1(VersionProviderV1_16_R1.class),
+    V1_20_R1(VersionProviderV1_20_R1.class),
     V1_20_R2(VersionProviderV1_20_R2.class);
 
     private Class<? extends VersionProvider> versionProviderClass;
