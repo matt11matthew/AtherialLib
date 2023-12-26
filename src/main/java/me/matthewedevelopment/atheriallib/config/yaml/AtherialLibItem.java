@@ -32,7 +32,13 @@ public class AtherialLibItem {
         this.skullOwner = skullOwner;
         this.slot = slot;
     }
-
+    public AtherialLibItem setLore(String... lore) {
+        this.lore = new ArrayList<>();
+        for (String s : lore) {
+            this.lore.add(s);
+        }
+        return this;
+    }
 
     public AtherialLibItem setLore(String lore) {
         this.lore = new ArrayList<>();

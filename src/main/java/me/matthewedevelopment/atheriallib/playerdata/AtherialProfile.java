@@ -2,7 +2,6 @@ package me.matthewedevelopment.atheriallib.playerdata;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import sun.security.krb5.Config;
 
 import java.util.UUID;
 

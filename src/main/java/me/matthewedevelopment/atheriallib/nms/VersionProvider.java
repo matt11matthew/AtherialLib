@@ -71,7 +71,13 @@ public abstract class VersionProvider {
         if (!atherialPlugin.isNmsEnabled()) {
             return;
         }
-        sendRawActionBarMessage(player, "{\"text\": \"" + colorize(message) + "\"}");
+        if (!atherialPlugin.getVersionProvider().isGreaterThan1_13()){
+            sendRawActionBarMessage(player, "{\"text\": \"" + colorize(message) + "\"}");
+
+        } else {
+            sendRawActionBarMessage(player,  colorize(message));
+
+        }
     }
 
     private void cancelPendingMessages(Player player) {

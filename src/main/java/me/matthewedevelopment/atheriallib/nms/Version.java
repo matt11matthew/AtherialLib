@@ -18,7 +18,8 @@ public enum Version {
     V1_13_R2(VersionProviderV1_13_R2.class),
     V1_14_R1(VersionProviderV1_14_R1.class),
     V1_15_R1(VersionProviderV1_15_R1.class),
-    V1_16_R1(VersionProviderV1_16_R1.class);
+    V1_16_R1(VersionProviderV1_16_R1.class),
+    V1_20_R2(VersionProviderV1_20_R2.class);
 
     private Class<? extends VersionProvider> versionProviderClass;
 
@@ -32,6 +33,7 @@ public enum Version {
 
     public static Version getVersion() {
         String packageName = Bukkit.getServer().getClass().getPackage().getName();
+        System.out.println(packageName);
         for (Version minecraftVersion : Version.values()) {
             if (packageName.contains(minecraftVersion.toString().replaceAll("V", "").trim())) {
                 return minecraftVersion;

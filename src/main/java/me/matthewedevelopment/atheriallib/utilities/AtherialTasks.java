@@ -21,7 +21,10 @@ public class AtherialTasks {
         if (plugin == null) return;
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, task);
     }
-
+    public static void runSync(Runnable task) {
+        if (plugin == null) return;
+        plugin.getServer().getScheduler().runTask(plugin, task);
+    }
 
 
 }

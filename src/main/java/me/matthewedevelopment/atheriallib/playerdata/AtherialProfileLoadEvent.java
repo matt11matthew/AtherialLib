@@ -11,6 +11,7 @@ public class AtherialProfileLoadEvent  extends Event {
     private static final HandlerList handlers = new HandlerList();
     private final Player player;
 
+
     private  final AtherialProfile<?> profile;
 
     public AtherialProfileLoadEvent(Player player, AtherialProfile<?> profile) {

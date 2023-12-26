@@ -6,13 +6,13 @@
 
     <groupId>me.matthewedevelopment</groupId>
     <artifactId>atheriallib</artifactId>
-    <version>0.05</version>
+    <version>0.10</version>
     <packaging>jar</packaging>
 
     <name>AtherialLib</name>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>1.17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -23,8 +23,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <source>9</source>
+                    <target>9</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -104,6 +104,13 @@
             <scope>system</scope>
             <systemPath>${basedir}/lib/Spigot-1.8.8.jar</systemPath>
             <version>1.8</version>
+        </dependency>
+        <dependency>
+            <groupId>spigot120</groupId>
+            <artifactId>spigot120</artifactId>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/spigot-1.20.2-R0.1-SNAPSHOT.jar</systemPath>
+            <version>spigot120</version>
         </dependency>
 
         <dependency>

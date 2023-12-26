@@ -4,14 +4,15 @@ import me.matthewedevelopment.atheriallib.config.Config;
 import me.matthewedevelopment.atheriallib.config.IgnoreValue;
 import me.matthewedevelopment.atheriallib.config.SerializedName;
 import me.matthewedevelopment.atheriallib.message.message.ChatMessage;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Map;
+import java.util.*;
 
 public  class YamlConfig implements Config {
     private String path;
@@ -40,25 +41,25 @@ public  class YamlConfig implements Config {
                 .forEach(field -> {
                     try {
                         field.setAccessible(true); // Access private fields
+
                         SerializedName annotation = field.getAnnotation(SerializedName.class);
                         String key = annotation.value();
 
                         // Check if the field type is registered in the CustomTypeRegistry
+
+
                         ConfigSerializable serializer = CustomTypeRegistry.getSerializer(field.getType());
                         if (serializer != null) {
                             if (!yamlConfiguration.isSet(key)) {
                                 // Serialize and set default if not set in config
                                 Object serialize = serializer.serialize(field.get(this));
-                                if (serialize!=null) {
+                                if (serialize != null) {
                                     yamlConfiguration.set(key, serialize);
                                 }
                             } else {
-                                // Deserialize and set field value
-//                                System.out.println(key);
-//                                Object deserializedObject = serializer.deserialize((Map<String, Object>) yamlConfiguration.get(key));
-//                                field.set(this, deserializedObject);
 
                                 Object configSection = yamlConfiguration.get(annotation.value());
+//                                System.err.println(serializer.getComplexity().toString() + ":" + configSection);
                                 if (serializer.getComplexity() == SerializeType.COMPLEX) {
                                     Map<String, Object> map;
                                     if (configSection instanceof MemorySection) {
@@ -77,27 +78,84 @@ public  class YamlConfig implements Config {
                                 }
                             }
                         } else {
-                            // Handle standard types
-                            if (!yamlConfiguration.isSet(key)) {
+                            if (Map.class.isAssignableFrom(field.getType())) {
+                                Map<String, ?> maps = (Map) field.get(this);
+                                Map<String, Object> newMap = new HashMap<>();
+                                List<String> toIterate = new ArrayList<>();
 
-                                Object o = field.get(this);
-                                yamlConfiguration.set(key, field.get(this));
+                                if (!yamlConfiguration.isSet(key)){
+
+                                    for (String s : maps.keySet()) {
+//                                        Bukkit.getServer().broadcastMessage(ChatColor.YELLOW+s);
+                                        toIterate.add(s);
+                                    }
+                                } else {
+                                    for (String s : yamlConfiguration.getConfigurationSection(key).getKeys(false)) {
+                                        toIterate.add(s);
+//                                        Bukkit.getServer().broadcastMessage(ChatColor.GREEN+s);
+                                    }
+                                }
+                                ConfigSerializable serializer2 = null;
+                                for (String s : toIterate) {
+                                    Object o = maps.get(s);
+                                    if (serializer2==null){
+                                        serializer2 =  CustomTypeRegistry.getSerializer(o.getClass());
+                                    }
+//                                    ConfigSerializable serializer2 = CustomTypeRegistry.getSerializer(o.getClass());
+                                    if (serializer2 != null) {
+                                        if (!yamlConfiguration.isSet(key + "." + s)) {
+                                            // Serialize and set default if not set in config
+                                            Object serialize = serializer2.serialize(o);
+                                            if (serialize != null) {
+                                                yamlConfiguration.set(key + "." + s, serialize);
+                                            }
+                                        } else {
+
+                                            Object configSection = yamlConfiguration.get(annotation.value() + "." + s);
+//                                            System.out.println(serializer2.getComplexity().toString() + ":" + configSection);
+                                            if (serializer2.getComplexity() == SerializeType.COMPLEX) {
+                                                Map<String, Object> map;
+                                                if (configSection instanceof MemorySection) {
+                                                    MemorySection memorySection = (MemorySection) configSection;
+                                                    map = memorySection.getValues(false);
+                                                } else if (configSection instanceof Map) {
+                                                    map = (Map<String, Object>) configSection;
+                                                } else {
+                                                    throw new IllegalArgumentException("Unsupported configuration object type");
+                                                }
+                                                Object deserializedObject = serializer2.deserializeComplex(map);
+                                                newMap.put(s, deserializedObject);
+                                            } else {
+                                                Object deserializedObject = serializer2.deserializeSimple(configSection);
+                                                newMap.put(s, deserializedObject);
+//                                                field.set(this, deserializedObject);
+                                            }
+                                        }
+                                    }
+
+                                    field.set(this, newMap);
+                                }
                             } else {
+                                if (!yamlConfiguration.isSet(key)) {
 
-                                Object value = yamlConfiguration.get(key);
-                                field.set(this, field.getType().cast(value));
+                                    yamlConfiguration.set(key, field.get(this));
+                                } else {
+                                    Object value = yamlConfiguration.get(key);
+                                    field.set(this, field.getType().cast(value));
+                                }
                             }
                         }
                     } catch (IllegalAccessException e) {
-                        e.printStackTrace(); // Consider better error handling
+                        throw new RuntimeException(e);
                     }
                 });
-
+        //TODO SAVE
         try {
             yamlConfiguration.save(configFile);
         } catch (IOException e) {
             e.printStackTrace(); // Consider better error handling
         }
+
     }
 
 //    @Override

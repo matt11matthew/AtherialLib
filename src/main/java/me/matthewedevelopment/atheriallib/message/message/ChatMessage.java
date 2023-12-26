@@ -17,6 +17,7 @@ public class ChatMessage extends Message {
 
     @Override
     public String send(CommandSender sender, StringReplacer stringReplacer) {
+        if (message==null||message.equalsIgnoreCase("none"))return null;
         if (sender == null) {
             return "";
         }
@@ -28,6 +29,7 @@ public class ChatMessage extends Message {
 
     @Override
     public void send(CommandSender sender) {
+        if (message==null||message.equalsIgnoreCase("none"))return;
         if (sender == null) {
             return;
         }
