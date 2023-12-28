@@ -1,6 +1,6 @@
 package me.matthewedevelopment.atheriallib.config.yaml;
 
-import com.samjakob.spigui.item.ItemBuilder;
+import spigui.item.ItemBuilder;
 import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.io.StringReplacer;
 import me.matthewedevelopment.atheriallib.utilities.ChatUtils;

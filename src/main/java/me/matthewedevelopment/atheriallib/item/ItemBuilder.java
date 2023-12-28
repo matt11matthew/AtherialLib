@@ -51,8 +51,8 @@ public class ItemBuilder {
     }
 
 
-    public com.samjakob.spigui.item.ItemBuilder toMenuItem() {
-        return new com.samjakob.spigui.item.ItemBuilder(this.itemStack);
+    public spigui.item.ItemBuilder toMenuItem() {
+        return new spigui.item.ItemBuilder(this.itemStack);
     }
     /**
      * init ItemBuilder

@@ -117,7 +117,11 @@ public class AtherialProfileManager  implements Listener {
         if (!profiles.containsKey(clazz.getSimpleName())){
             return null;
         }
+        if( !playerDataMap.containsKey(clazz.getSimpleName())){
+            return null;
+        }
         Map<UUID, AtherialProfile<?>> uuidAtherialProfileMap = playerDataMap.get(clazz.getSimpleName());
+        if (uuidAtherialProfileMap==null)return null;
         return (T) uuidAtherialProfileMap.get(uuid);
     }
     @EventHandler(ignoreCancelled = true)

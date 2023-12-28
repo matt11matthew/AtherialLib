@@ -79,20 +79,23 @@ public  class YamlConfig implements Config {
                             }
                         } else {
                             if (Map.class.isAssignableFrom(field.getType())) {
+
                                 Map<String, ?> maps = (Map) field.get(this);
                                 Map<String, Object> newMap = new HashMap<>();
                                 List<String> toIterate = new ArrayList<>();
 
+//                                Bukkit.getServer().broadcastMessage(maps.toString());
                                 if (!yamlConfiguration.isSet(key)){
 
                                     for (String s : maps.keySet()) {
-//                                        Bukkit.getServer().broadcastMessage(ChatColor.YELLOW+s);
+//                                        Bukkit.getServer().broadcastMessage(s);
+
                                         toIterate.add(s);
                                     }
                                 } else {
                                     for (String s : yamlConfiguration.getConfigurationSection(key).getKeys(false)) {
-                                        toIterate.add(s);
-//                                        Bukkit.getServer().broadcastMessage(ChatColor.GREEN+s);
+//                                        toIterate.add(s);
+                                        Bukkit.getServer().broadcastMessage(ChatColor.GREEN+s);
                                     }
                                 }
                                 ConfigSerializable serializer2 = null;

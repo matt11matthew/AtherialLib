@@ -1,6 +1,6 @@
 package me.matthewedevelopment.atheriallib;
 
-import com.samjakob.spigui.SpiGUI;
+import spigui.SpiGUI;
 import me.matthewedevelopment.atheriallib.command.AnnotationlessAtherialCommand;
 import me.matthewedevelopment.atheriallib.command.AtherialCommand;
 import me.matthewedevelopment.atheriallib.command.CommandMessages;
@@ -95,7 +95,11 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         this.nmsRequired = nmsRequired;
         return this;
     }
-
+    private boolean guiEnabled = true;
+    public AtherialLib setGUIDisabled() {
+        this.guiEnabled = false;
+        return this;
+    }
     public VersionProvider getVersionProvider() {
         return versionProvider;
     }

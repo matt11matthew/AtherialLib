@@ -6,13 +6,13 @@
 
     <groupId>me.matthewedevelopment</groupId>
     <artifactId>atheriallib</artifactId>
-    <version>0.11</version>
+    <version>0.12</version>
     <packaging>jar</packaging>
 
     <name>AtherialLib</name>
 
     <properties>
-        <java.version>1.17</java.version>
+        <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -23,8 +23,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>9</source>
-                    <target>9</target>
+                    <source>8</source>
+                    <target>8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -81,11 +81,11 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.matthewedevelopment.api</groupId>
-            <artifactId>SpiGuiForked</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.matthewedevelopment.api</groupId>-->
+<!--            <artifactId>SpiGuiForked</artifactId>-->
+<!--            <version>1.0-SNAPSHOT</version>-->
+<!--        </dependency>-->
 <!--        <dependency>-->
 <!--            <groupId>com.samjakob</groupId>-->
 <!--            <artifactId>SpiGUI</artifactId>-->

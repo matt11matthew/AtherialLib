@@ -1,6 +1,5 @@
 package me.matthewedevelopment.atheriallib.nms.providers;
 
-import com.saicone.rtag.RtagItem;
 import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.nms.NbtAPI;
 import me.matthewedevelopment.atheriallib.nms.Version;
@@ -35,44 +34,50 @@ public class VersionProviderV1_20_R1 extends VersionProvider {
 
             @Override
             public ItemStack setTagInt(ItemStack itemStack, String key, int value) {
-                RtagItem tag = new RtagItem(itemStack);
-                tag.set(key, value);
-
-                return tag.getItem();
+//                RtagItem tag = new RtagItem(itemStack);
+//                tag.set(key, value);
+//
+//                return tag.getItem();
+                return itemStack;
             }
 
             @Override
             public int getTagInt(ItemStack itemStack, String key) {
-                RtagItem tag = new RtagItem(itemStack);
-                 return tag.get(key);
+//                RtagItem tag = new RtagItem(itemStack);
+//                 return tag.get(key);
+                return -1;
             }
 
             @Override
             public String getTagString(ItemStack itemStack, String key) {
-                RtagItem tag = new RtagItem(itemStack);
-                return tag.get(key);
+//                RtagItem tag = new RtagItem(itemStack);
+//                return tag.get(key);
+                return null;
             }
 
             @Override
             public boolean hasTagKey(ItemStack itemStack, String key) {
-                return new RtagItem(itemStack).hasTag(key);
+                return false;
+//                return new RtagItem(itemStack).hasTag(key);
             }
 
             @Override
             public ItemStack removeTag(ItemStack itemStack, String key) {
-
-                RtagItem rtagItem = new RtagItem(itemStack);
-                rtagItem.remove(key);
-
-                return rtagItem.getItem();
+                return itemStack;
+//
+//                RtagItem rtagItem = new RtagItem(itemStack);
+//                rtagItem.remove(key);
+//
+//                return rtagItem.getItem();
             }
 
             @Override
             public ItemStack setTagString(ItemStack itemStack, String key, String value) {
-                RtagItem rtagItem = new RtagItem(itemStack);
-                rtagItem.set(key,value);
-
-                return rtagItem.getItem();
+//                RtagItem rtagItem = new RtagItem(itemStack);
+//                rtagItem.set(key,value);
+//
+//                return rtagItem.getItem();
+                return itemStack;
             }
         };
 
