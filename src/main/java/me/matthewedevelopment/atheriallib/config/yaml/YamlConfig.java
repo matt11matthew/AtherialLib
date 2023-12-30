@@ -94,8 +94,8 @@ public  class YamlConfig implements Config {
                                     }
                                 } else {
                                     for (String s : yamlConfiguration.getConfigurationSection(key).getKeys(false)) {
-//                                        toIterate.add(s);
-                                        Bukkit.getServer().broadcastMessage(ChatColor.GREEN+s);
+                                        toIterate.add(s);
+//                                        Bukkit.getServer().broadcastMessage(ChatColor.GREEN+s);
                                     }
                                 }
                                 ConfigSerializable serializer2 = null;
