@@ -5,6 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -21,40 +24,79 @@ public class FileUtils {
             return null;
         }
     }
-    public  static void unzip(String zipFilePath, String destDir) {
+    public static void deleteDirectoryRecursively(Path path) throws IOException {
+        if (Files.isDirectory(path)) {
+            try (DirectoryStream<Path> entries = Files.newDirectoryStream(path)) {
+                for (Path entry : entries) {
+                    deleteDirectoryRecursively(entry);
+                }
+            }
+        }
+        Files.delete(path);
+    }
+    public static void unzip(String zipFilePath, String destDir) {
         File dir = new File(destDir);
         // create output directory if it doesn't exist
-        if(!dir.exists()) dir.mkdirs();
-        FileInputStream fis;
-        //buffer for read and write data to file
+        if (!dir.exists()) dir.mkdirs();
+
+        // buffer for read and write data to file
         byte[] buffer = new byte[1024];
-        try {
-            fis = new FileInputStream(zipFilePath);
-            ZipInputStream zis = new ZipInputStream(fis);
+        try (FileInputStream fis = new FileInputStream(zipFilePath);
+             ZipInputStream zis = new ZipInputStream(fis)) {
             ZipEntry ze = zis.getNextEntry();
-            while(ze != null){
+            while (ze != null) {
                 String fileName = ze.getName();
-                File newFile = new File(destDir + File.separator + fileName);
-                //create directories for sub directories in zip
+                File newFile = new File(destDir, fileName);
+                // create directories for sub directories in zip
                 new File(newFile.getParent()).mkdirs();
-                FileOutputStream fos = new FileOutputStream(newFile);
-                int len;
-                while ((len = zis.read(buffer)) > 0) {
-                    fos.write(buffer, 0, len);
+                try (FileOutputStream fos = new FileOutputStream(newFile)) {
+                    int len;
+                    while ((len = zis.read(buffer)) > 0) {
+                        fos.write(buffer, 0, len);
+                    }
                 }
-                fos.close();
-                //close this ZipEntry
                 zis.closeEntry();
                 ze = zis.getNextEntry();
             }
-            //close last ZipEntry
-            zis.closeEntry();
-            zis.close();
-            fis.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    //    public  static void unzip(String zipFilePath, String destDir) {
+//        File dir = new File(destDir);
+//        // create output directory if it doesn't exist
+//        if(!dir.exists()) dir.mkdirs();
+//        FileInputStream fis;
+//        //buffer for read and write data to file
+//        byte[] buffer = new byte[1024];
+//        try {
+//            fis = new FileInputStream(zipFilePath);
+//            ZipInputStream zis = new ZipInputStream(fis);
+//            ZipEntry ze = zis.getNextEntry();
+//            while(ze != null){
+//                String fileName = ze.getName();
+//                File newFile = new File(destDir + File.separator + fileName);
+//                //create directories for sub directories in zip
+//                new File(newFile.getParent()).mkdirs();
+//                FileOutputStream fos = new FileOutputStream(newFile);
+//                int len;
+//                while ((len = zis.read(buffer)) > 0) {
+//                    fos.write(buffer, 0, len);
+//                }
+//                fos.close();
+//                //close this ZipEntry
+//                zis.closeEntry();
+//                ze = zis.getNextEntry();
+//            }
+//            //close last ZipEntry
+//            zis.closeEntry();
+//            zis.close();
+//            fis.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
     public  static void zipFiles(String[] srcFiles, String zipFilePath) {
         try {
             // create byte buffer
