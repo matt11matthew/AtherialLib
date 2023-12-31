@@ -2,9 +2,7 @@ package me.matthewedevelopment.atheriallib.config.yaml.serializables.list.serial
 
 import me.matthewedevelopment.atheriallib.config.yaml.ConfigSerializable;
 import me.matthewedevelopment.atheriallib.config.yaml.SerializeType;
-import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.DoubleSimpleList;
 import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.StringSimpleList;
-import me.matthewedevelopment.atheriallib.utilities.NumberUtils;
 
 /**
  * Created by Matthew E on 12/23/2023 at 10:13 PM for the project AtherialLib

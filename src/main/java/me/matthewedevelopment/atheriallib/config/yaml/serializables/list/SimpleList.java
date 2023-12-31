@@ -15,6 +15,10 @@ public abstract class SimpleList<T, S extends SimpleList<T, S>> implements Itera
         return list;
     }
 
+
+    public T[] toArray() {
+        return (T[]) list.toArray();
+    }
     public SimpleList(List<T> list) {
         this.list = list;
     }

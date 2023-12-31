@@ -2,6 +2,7 @@ package me.matthewedevelopment.atheriallib.utilities;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
+import me.matthewedevelopment.atheriallib.utilities.file.FileUtils;
 
 import java.io.File;
 

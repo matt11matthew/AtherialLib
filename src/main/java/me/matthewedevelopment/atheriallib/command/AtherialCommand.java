@@ -15,10 +15,10 @@ public abstract class AtherialCommand extends DefaultCommand<CommandSender> impl
     public abstract void execute(CommandSender sender, String[] args);
 
 
-    @Override
-    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
-        return null;
-    }
+//    @Override
+//    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
+//        return null;
+//    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

@@ -1,4 +1,4 @@
-package me.matthewedevelopment.atheriallib.utilities;
+package me.matthewedevelopment.atheriallib.utilities.number;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

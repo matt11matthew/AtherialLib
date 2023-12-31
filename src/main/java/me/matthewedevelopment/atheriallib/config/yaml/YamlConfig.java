@@ -1,5 +1,6 @@
 package me.matthewedevelopment.atheriallib.config.yaml;
 
+import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.config.Config;
 import me.matthewedevelopment.atheriallib.config.IgnoreValue;
 import me.matthewedevelopment.atheriallib.config.SerializedName;
@@ -14,12 +15,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public  class YamlConfig implements Config {
+public  class YamlConfig<A extends AtherialLib> implements Config {
     private String path;
-    private Plugin plugin;
+    private A plugin;
     private File file;
 
-    public YamlConfig(String path, Plugin plugin) {
+    public YamlConfig(String path, A plugin) {
         this.path = path;
         this.plugin = plugin;
 

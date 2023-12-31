@@ -1,5 +1,12 @@
 package me.matthewedevelopment.atheriallib;
 
+import me.matthewedevelopment.atheriallib.command.spigot.AtherialLibSpigotCommand;
+import me.matthewedevelopment.atheriallib.command.spigot.config.SelfCommandConfig;
+import me.matthewedevelopment.atheriallib.command.spigot.serializers.SelfCommandConfigSerializer;
+import me.matthewedevelopment.atheriallib.command.spigot.serializers.UsageSerializer;
+import me.matthewedevelopment.atheriallib.newcommand.AtherialLibDefaultCommandConfig;
+import org.bukkit.Location;
+import org.bukkit.command.*;
 import spigui.SpiGUI;
 import me.matthewedevelopment.atheriallib.command.AnnotationlessAtherialCommand;
 import me.matthewedevelopment.atheriallib.command.AtherialCommand;
@@ -33,9 +40,6 @@ import me.matthewedevelopment.atheriallib.utilities.AtherialTasks;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.World;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandMap;
-import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.weather.WeatherChangeEvent;
@@ -47,6 +51,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class AtherialLib extends JavaPlugin implements Listener {
@@ -61,12 +66,13 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
 
     private static AtherialLib instance;
     private SpiGUI menu;
-    public static CommandMessages COMMAND_MESSAGES;
     public abstract void initDependencies();
 
     private MySqlHandler sqlHandler;
 
     private  boolean debug;
+
+    private AtherialLibDefaultCommandConfig commandConfig;
 
     protected AtherialProfileManager profileManager;
 
@@ -114,12 +120,16 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
                 return;
             }
         }
+        defaultRegisterTypes();
+        registerTypes();
+        this.commandConfig = new AtherialLibDefaultCommandConfig(this);
+        this.commandConfig.loadConfig();
+
         AtherialTasks.setPlugin(this);
         if (!getDataFolder().exists()) {
             getDataFolder().mkdirs();
         }
         AtherialItemAPI.setAtherialLib(this);
-        loadCommandMessages();
         getServer().getPluginManager().registerEvents(this, this);
         this.menu=  new SpiGUI(this);
         this.profileManager = new AtherialProfileManager(this);
@@ -129,8 +139,6 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         if (sqlHandler.isEnabled()) {
             sqlHandler.start();
         }
-        registerTypes();
-        defaultRegisterTypes();
         this.onStart();
 
 
@@ -169,6 +177,10 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         CustomTypeRegistry.registerType(DoubleSimpleList.class, new DoubleSimpleListSerializer());
         CustomTypeRegistry.registerType(StringSimpleList.class, new StringSimpleListSerializer());
 
+
+        CustomTypeRegistry.registerType(SelfCommandConfig.Usage.class, new UsageSerializer());
+        CustomTypeRegistry.registerType(SelfCommandConfig.class, new SelfCommandConfigSerializer());
+
     }
 
 
@@ -192,68 +204,8 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         return menu;
     }
 
-    private void loadCommandMessages() {
-        COMMAND_MESSAGES = new AtherialCommandMessages(this);
-        COMMAND_MESSAGES.load();
-    }
-
-    public class AtherialCommandMessages  implements CommandMessages {
-
-        private AtherialLib atherialLib;
-        private BukkitConfig config;
-
-        public AtherialCommandMessages(AtherialLib atherialLib){
-            this.atherialLib = atherialLib;
-
-        }
 
 
-
-        @Override
-        public String getNoPermissionMessage() {
-            return null;
-        }
-
-        @Override
-        public String getHelpArgumentsColor() {
-            return null;
-        }
-
-        @Override
-        public void load() {
-
-        }
-
-        @Override
-        public String getHelpLine() {
-            return null;
-        }
-
-        @Override
-        public String getHelpHeader() {
-            return null;
-        }
-
-        @Override
-        public String getHelpFooter() {
-            return null;
-        }
-
-        @Override
-        public String getPlayerOnlyCommandMessage() {
-            return null;
-        }
-
-        @Override
-        public String getCorrectCommandArgumentUsage() {
-            return null;
-        }
-
-        @Override
-        public String getCorrectCommandUsage() {
-            return null;
-        }
-    }
     private boolean nmsEnabled;
     protected boolean nmsRequired ;
 
@@ -291,7 +243,20 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         }
     }
 
-    public void registerCommand(AtherialCommand command) {
+
+    public void reloadConfigs() {
+
+        this.commandConfig.reload();
+
+        this.handleConfigReloads();
+    }
+
+    protected abstract void handleConfigReloads();
+
+    public void registerCommand(AtherialLibSpigotCommand atherialLibSpigotCommand) {
+        registerAtherialCommand(atherialLibSpigotCommand);
+    }
+    public void registerAtherialCommand(AtherialCommand command) {
 
         if (command instanceof AnnotationlessAtherialCommand) {
             AnnotationlessAtherialCommand atherialCommand = (AnnotationlessAtherialCommand) command;
@@ -340,11 +305,20 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
             reflectCommand.setDescription(command.getCommand().description());
             reflectCommand.setUsage(command.getCommand().usage());
             reflectCommand.setExecutor(command);
-            spigotCommandMap.register(reflectCommand.spigotCommand.getCommand().name(), reflectCommand);
-            System.out.println("[" + getDescription().getName() + "] Registered command /" + command.getCommand().name());
+
+
+            boolean register = spigotCommandMap.register(reflectCommand.spigotCommand.getCommand().name(), reflectCommand);
+            if (register) {
+                System.out.println("[" + getDescription().getName() + "] Registered command /" + command.getCommand().name());
+//                getCommand(command.getCommand().name()).setTabCompleter(command);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public AtherialLibDefaultCommandConfig getCommandConfig() {
+        return commandConfig;
     }
 
     public static final class ReflectCommand extends Command {
@@ -356,6 +330,13 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
 
         public void setExecutor(AtherialCommand exe) {
             this.spigotCommand = exe;
+        }
+
+
+
+        @Override
+        public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+            return spigotCommand.onTabComplete(sender,this,alias,args);
         }
 
         @Override

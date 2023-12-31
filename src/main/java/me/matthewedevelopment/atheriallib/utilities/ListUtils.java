@@ -33,4 +33,27 @@ public class ListUtils {
         }
         return maxPage;
     }
+    public static List<String> filterStartsWith(List<String> completions, String partialInput) {
+        List<String> filteredList = new ArrayList<>();
+        for (String completion : completions) {
+            if (completion.toLowerCase().startsWith(partialInput.toLowerCase())) {
+                filteredList.add(completion);
+            }
+        }
+        return filteredList;
+    }
+    public static String[] getArgs(String[] input, int start) {
+        List<String> newArgs = new ArrayList<>();
+        if (input.length - 1 == start) {
+            newArgs.add(input[1]);
+        } else {
+            for(int i = start; i < input.length; ++i) {
+                if (input[i] != null) {
+                    newArgs.add(input[i]);
+                }
+            }
+        }
+
+        return (String[])newArgs.toArray(new String[0]);
+    }
 }
