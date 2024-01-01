@@ -20,6 +20,9 @@ public  class YamlConfig<A extends AtherialLib> implements Config {
     private A plugin;
     private File file;
 
+    public YamlConfiguration onLoad(YamlConfiguration yamlConfiguration) {
+        return yamlConfiguration;
+    }
     public YamlConfig(String path, A plugin) {
         this.path = path;
         this.plugin = plugin;
@@ -34,7 +37,7 @@ public  class YamlConfig<A extends AtherialLib> implements Config {
             this.saveDefaultConfig();
         }
 
-        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(configFile);
+        YamlConfiguration yamlConfiguration = onLoad(YamlConfiguration.loadConfiguration(configFile));
 
         Arrays.stream(getClass().getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(SerializedName.class))
