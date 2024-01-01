@@ -105,13 +105,13 @@
             <systemPath>${basedir}/lib/Spigot-1.8.8.jar</systemPath>
             <version>1.8</version>
         </dependency>
-        <dependency>
-            <groupId>spigot120</groupId>
-            <artifactId>spigot120</artifactId>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/spigot-1.20.2-R0.1-SNAPSHOT.jar</systemPath>
-            <version>spigot120</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>spigot120</groupId>-->
+<!--            <artifactId>spigot120</artifactId>-->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>${basedir}/lib/spigot-1.20.2-R0.1-SNAPSHOT.jar</systemPath>-->
+<!--            <version>spigot120</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>spigot1.14</groupId>

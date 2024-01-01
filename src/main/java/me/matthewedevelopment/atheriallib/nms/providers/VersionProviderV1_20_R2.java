@@ -8,8 +8,8 @@ import me.matthewedevelopment.atheriallib.nms.VersionProvider;
 import me.matthewedevelopment.atheriallib.nms.WorldBorderAction;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy;
+//import net.minecraft.nbt.NBTTagCompound;
+//import net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
