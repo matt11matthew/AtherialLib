@@ -51,7 +51,7 @@ public class MySQLConfig {
     }
 
     public String getDriverString(){
-        return "jdbc:"+driver+"://"+host+":"+port+"/"+database;
+        return "jdbc:"+driver+"://"+host+":"+port+"/"+database +"?autoReconnect=true";
 
     }
     public BukkitConfig getBukkitConfig() {

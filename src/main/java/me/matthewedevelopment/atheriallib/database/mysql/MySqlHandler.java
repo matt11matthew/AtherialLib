@@ -1,9 +1,11 @@
 package me.matthewedevelopment.atheriallib.database.mysql;
 
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.io.Callback;
 import me.matthewedevelopment.atheriallib.utilities.AtherialTasks;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -18,13 +20,35 @@ public class MySqlHandler {
     private boolean enabled;
     private MySQLConfig config;
 
-    private Connection connection;
+    private MysqlDataSource dataSource = null;
+
+        private Connection connection;
+    public DataSource getDataSource() {
+        if (dataSource == null) {
+            dataSource = new MysqlDataSource();
+            dataSource.setURL(this.config.getDriverString());
+            dataSource.setUser(this.config.getUsername());
+            dataSource.setPassword(this.config.getPassword());
+
+            // Optional: Configure additional properties
+            dataSource.setCachePreparedStatements(true);
+            dataSource.setPrepStmtCacheSize(250);
+            dataSource.setPrepStmtCacheSqlLimit(2048);
+            dataSource.setUseServerPrepStmts(true);
+            dataSource.setUseLocalSessionState(true);
+        }
+        return dataSource;
+    }
+
+
     public void start() {
         if (this.enabled) {
             this.config = new MySQLConfig(atherialLib);
             this.config.load();
             try {
-                this.connection = DriverManager.getConnection(this.config.getDriverString(),this.config.getUsername(),this.config.getPassword());
+                DataSource dataSource1 = getDataSource();
+
+                connection = dataSource1.getConnection();
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {
