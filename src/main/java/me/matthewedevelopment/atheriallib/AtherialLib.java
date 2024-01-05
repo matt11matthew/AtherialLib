@@ -5,6 +5,7 @@ import me.matthewedevelopment.atheriallib.command.spigot.config.SelfCommandConfi
 import me.matthewedevelopment.atheriallib.command.spigot.serializers.SelfCommandConfigSerializer;
 import me.matthewedevelopment.atheriallib.command.spigot.serializers.UsageSerializer;
 import me.matthewedevelopment.atheriallib.dependency.DependencyManager;
+import me.matthewedevelopment.atheriallib.events.jump.PlayerJumpListener;
 import me.matthewedevelopment.atheriallib.newcommand.AtherialLibDefaultCommandConfig;
 import org.bukkit.Location;
 import org.bukkit.command.*;
@@ -139,6 +140,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
 
         this.dependencyManager.enableDependencies();
 
+        registerListener(new PlayerJumpListener());
         if (sqlHandler.isEnabled()) {
             sqlHandler.start();
         }
