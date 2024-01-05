@@ -1,5 +1,7 @@
 package me.matthewedevelopment.atheriallib.dependency;
 
+import me.matthewedevelopment.atheriallib.AtherialLib;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,8 +15,8 @@ public class DependencyManager {
         this.loadedDependencies = new ArrayList<>();
     }
 
-    public <T> Dependency<T> getDependency(Class<T> clazz) {
-        return loadedDependencies.stream()
+    public <T extends Dependency> T getDependency(Class<T> clazz) {
+        return (T) loadedDependencies.stream()
                 .filter(dependency -> dependency.getClass().getName().equals(clazz.getName()))
                 .findFirst().orElseGet(null);
     }
@@ -30,7 +32,6 @@ public class DependencyManager {
 
     public void loadDependencies(Dependency... dependencies) {
         for (Dependency dependency : dependencies) {
-            dependency.setDependencyManager(this);
             loadedDependencies.add(dependency);
             dependency.onPreEnable();
         }

@@ -4,6 +4,7 @@ import me.matthewedevelopment.atheriallib.command.spigot.AtherialLibSpigotComman
 import me.matthewedevelopment.atheriallib.command.spigot.config.SelfCommandConfig;
 import me.matthewedevelopment.atheriallib.command.spigot.serializers.SelfCommandConfigSerializer;
 import me.matthewedevelopment.atheriallib.command.spigot.serializers.UsageSerializer;
+import me.matthewedevelopment.atheriallib.dependency.DependencyManager;
 import me.matthewedevelopment.atheriallib.newcommand.AtherialLibDefaultCommandConfig;
 import org.bukkit.Location;
 import org.bukkit.command.*;
@@ -55,8 +56,9 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AtherialLib extends JavaPlugin implements Listener {
-    private Map<String, Dependency<JavaPlugin>> dependencyMap;
     protected VersionProvider versionProvider;
+
+    private DependencyManager dependencyManager;
 
     public static AtherialLib getInstance() {
         return instance;
@@ -80,7 +82,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     public AtherialLib() {
         instance = this;
         this.debug = false;
-        this.dependencyMap = new HashMap<>();
+        this.dependencyManager = new DependencyManager();
         this.sqlHandler = new MySqlHandler(this);
         this.nmsRequired = false;
         initDependencies();
@@ -135,6 +137,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         this.profileManager = new AtherialProfileManager(this);
         getServer().getPluginManager().registerEvents(  this.profileManager, this);
 
+        this.dependencyManager.enableDependencies();
 
         if (sqlHandler.isEnabled()) {
             sqlHandler.start();
@@ -241,6 +244,9 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         if (sqlHandler.isEnabled()) {
             sqlHandler.stop();
         }
+
+
+        this.dependencyManager.disableDependencies();
     }
 
 

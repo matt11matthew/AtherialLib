@@ -1,5 +1,7 @@
 package me.matthewedevelopment.atheriallib.dependency;
 
+import me.matthewedevelopment.atheriallib.AtherialLib;
+
 import java.util.logging.Logger;
 
 /**
@@ -9,36 +11,21 @@ import java.util.logging.Logger;
 
 
 
-public abstract class Dependency<T> {
+public abstract class Dependency {
     protected String name;
-    protected T plugin;
-    protected DependencyManager dependencyManager;
-    protected Logger logger;
+    protected AtherialLib plugin;
 
-    public Dependency(String name, T plugin) {
+    public Dependency(String name,AtherialLib plugin) {
         this.name = name;
         this.plugin = plugin;
-        this.logger = Logger.getLogger(name);
     }
 
     public String getName() {
         return name;
     }
 
-    public T getPlugin() {
+    public AtherialLib getPlugin() {
         return plugin;
-    }
-
-    public DependencyManager getDependencyManager() {
-        return dependencyManager;
-    }
-
-    public Logger getLogger() {
-        return logger;
-    }
-
-    public void setDependencyManager(DependencyManager dependencyManager) {
-        this.dependencyManager = dependencyManager;
     }
 
     public abstract void onEnable();
