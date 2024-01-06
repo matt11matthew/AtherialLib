@@ -1,11 +1,8 @@
 package me.matthewedevelopment.atheriallib.playerdata;
 
 import me.matthewedevelopment.atheriallib.AtherialLib;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.checkerframework.checker.units.qual.A;
 
-import java.awt.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,6 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Created by Matthew E on 12/5/2023 at 9:49 PM for the project AtherialLib
@@ -42,10 +40,10 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
         return username;
     }
 
-    public void update() {
+    public void updateSync() {
         Connection connection = AtherialLib.getInstance().getProfileManager().getConnection();
         if (connection!=null){
-            saveToDatabase(connection);
+            saveToDatabaseSync(connection);
         }
     }
     public abstract T loadDefault(Player player);
@@ -64,7 +62,7 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
 
         return loadResultFromSet(resultSet);
     }
-    public T load(Player player, Connection sqliteConnection) {
+    public T loadSync(Player player, Connection sqliteConnection) {
 //        checkTable();
         try {
             // Construct and execute an SQL query to retrieve the player's data
@@ -84,7 +82,7 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
             } else {
                 // No data found in the database, load default data, and save it
                 T defaultProfile = loadDefault(player);
-                saveToDatabase(sqliteConnection); // Save default data to the database
+                saveToDatabaseSync(sqliteConnection); // Save default data to the database
                 return defaultProfile;
             }
         } catch (SQLException e) {
@@ -94,10 +92,10 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
     }
 
 
-
     public List<ProfileColumn> getColumns() {
         List<ProfileColumn> columns = new ArrayList<>();
 //        columns.add(new ProfileColumn("UUID", "VARCHAR", uuid+""));
+        columns.add(new ProfileColumn("uuid", "VARCHAR", uuid));
         columns.add(new ProfileColumn("username", "VARCHAR", username));
 
         columns.addAll(getCustomColumns());
@@ -107,7 +105,7 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
 
     // ...
     public abstract List<ProfileColumn> getCustomColumns();
-    public void saveToDatabase(Connection sqliteConnection) {
+    public void saveToDatabaseSync(Connection sqliteConnection) {
         if (sqliteConnection==null)return;
 
         try {
@@ -124,6 +122,7 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
 
                     // Add columns dynamically to the SQL query
                     for (ProfileColumn column : columns) {
+                        if (column.getName().equalsIgnoreCase("uuid"))continue;
                         query.append(", ").append(column.getName());
                         placeholders.append(", ?");
                     }
@@ -135,7 +134,7 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
 
                     // Set values for each column based on the profile's schema requirements
                     int parameterIndex = 2; // Start at the second parameter
-                    for (ProfileColumn column : columns) {
+                    for (ProfileColumn column : columns.stream().filter(profileColumn -> !profileColumn.getName().equalsIgnoreCase("uuid")).collect(Collectors.toList())) {
                         // Set the parameter value based on the column's data type
                         switch (column.getType().toUpperCase()) {
                             case "TEXT":
@@ -224,6 +223,7 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
                     List<ProfileColumn> columns = getColumns();
 
                     for (ProfileColumn column : columns) {
+                        if (column.getName().equalsIgnoreCase("uuid"))continue;
                         query.append(", ").append(column.getName());
                         placeholders.append(", ?");
                     }
@@ -248,6 +248,7 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
                     // Set values for each column based on the profile's schema requirements
                     int parameterIndex = 2; // Start at the second parameter
                     for (ProfileColumn column : columns) {
+                        if (column.getName().equalsIgnoreCase("uuid"))continue;
                         // Set the parameter value based on the column's data type
                         switch (column.getType().toUpperCase()) {
                             case "TEXT":

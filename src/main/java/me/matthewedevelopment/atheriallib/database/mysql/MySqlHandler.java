@@ -1,17 +1,11 @@
 package me.matthewedevelopment.atheriallib.database.mysql;
 
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import me.matthewedevelopment.atheriallib.AtherialLib;
-import me.matthewedevelopment.atheriallib.io.Callback;
-import me.matthewedevelopment.atheriallib.utilities.AtherialTasks;
 
-import javax.sql.DataSource;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.UUID;
 
 /**
  * Created by Matthew E on 12/13/2023 at 8:34 PM for the project AtherialLib
@@ -26,7 +20,7 @@ public class MySqlHandler {
     }
 
     private boolean lite =false;
-    private MysqlDataSource dataSource = null;
+//    private MysqlDataSource dataSource = null;
 
 //    private Connection connection;
 
@@ -35,22 +29,25 @@ public class MySqlHandler {
     }
 
     private Connection connection;
-    public DataSource getDataSource() {
-        if (dataSource == null) {
-            dataSource = new MysqlDataSource();
-            dataSource.setURL(this.config.getDriverString());
-            dataSource.setUser(this.config.getUsername());
-            dataSource.setPassword(this.config.getPassword());
-
-            // Optional: Configure additional properties
-            dataSource.setCachePreparedStatements(true);
-            dataSource.setPrepStmtCacheSize(250);
-            dataSource.setPrepStmtCacheSqlLimit(2048);
-            dataSource.setUseServerPrepStmts(true);
-            dataSource.setUseLocalSessionState(true);
-        }
-        return dataSource;
-    }
+//    public DataSource getDataSource() {
+//        if (dataSource == null) {
+////            hikari.setDataSourceClassName("com.mysql.cj.jdbc.MysqlDataSource");
+////            dataSource= new com.mysql.cj.jdbc.MysqlDataSource();
+//            dataSource = new MysqlDataSource();
+//            dataSource.setURL(this.config.getDriverString());
+//            dataSource.setUser(this.config.getUsername());
+//            dataSource.setPassword(this.config.getPassword());
+//
+//
+//            // Optional: Configure additional properties
+//            dataSource.setCachePrepStmts(true);
+//            dataSource.setPrepStmtCacheSize(250);
+//            dataSource.setPrepStmtCacheSqlLimit(2048);
+//            dataSource.setUseServerPrepStmts(true);
+//            dataSource.setUseLocalSessionState(true);
+//        }
+//        return dataSource;
+//    }
 
 
     public void start() {
@@ -61,8 +58,9 @@ public class MySqlHandler {
                 if (isLite()){
                     createLiteDB();
                 } else {
-                    DataSource dataSource1 = getDataSource();
-                    connection = dataSource1.getConnection();
+                    connection = DriverManager.getConnection(config.getDriverString(), config.getUsername(), config.getPassword());
+//                    DataSource dataSource1 = getDataSource();
+//                    connection = dataSource1.getConnection();
                 }
 
 

@@ -1,6 +1,8 @@
-package me.matthewedevelopment.atheriallib.playerdata.db;
+package me.matthewedevelopment.atheriallib.database.registry.db;
 
-import me.matthewedevelopment.atheriallib.playerdata.ProfileColumn;
+import me.matthewedevelopment.atheriallib.AtherialLib;
+import me.matthewedevelopment.atheriallib.database.registry.DataColumn;
+import me.matthewedevelopment.atheriallib.database.registry.DataColumnType;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -8,14 +10,14 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SQLiteDatabaseTableManager implements DatabaseTableManager {
+public class SQLiteDatabaseTableManagerCustom implements DatabaseTableManagerCustomData {
 
     @Override
-    public void createOrUpdateTable(Connection connection, String tableName, List<ProfileColumn> columns) throws SQLException {
-        List<ProfileColumn> newCols = new ArrayList<>();
-
-        newCols.add(new ProfileColumn("uuid", "VARCHAR", ""));
-        for (ProfileColumn column : columns) {
+    public void createOrUpdateTable(Connection connection, String tableName, List<DataColumn> columns) throws SQLException {
+        List<DataColumn> newCols = new ArrayList<>();
+        boolean hasUUID = false;
+        newCols.add(new DataColumn("uuid", DataColumnType.VARCHAR, ""));
+        for (DataColumn column : columns) {
             if (column.getName().equalsIgnoreCase("uuid")){
 
                 continue;
@@ -23,11 +25,15 @@ public class SQLiteDatabaseTableManager implements DatabaseTableManager {
             newCols.add(column);
         }
 
+
         try (Statement statement = connection.createStatement()) {
             // Check if the table already exists
             boolean tableExists = tableExists(connection, tableName);
 
             if (tableExists) {
+                if (AtherialLib.getInstance().isDebug()){
+                    System.err.println("TABLE NOT EXISTS?");
+                }
                 // Modify existing table (e.g., add new columns)
                 modifyExistingTable(statement, tableName, newCols);
             } else {
@@ -46,9 +52,9 @@ public class SQLiteDatabaseTableManager implements DatabaseTableManager {
     }
 
     @Override
-    public void modifyExistingTable(Statement statement, String tableName, List<ProfileColumn> columns) throws SQLException {
+    public void modifyExistingTable(Statement statement, String tableName, List<DataColumn> columns) throws SQLException {
 //        columns.add(new ProfileColumn("uuid", "VARCHAR", ""));
-        for (ProfileColumn column : columns) {
+        for (DataColumn column : columns) {
             // Check if the column already exists in the table
             if (!columnExists(statement, tableName, column.getName())) {
                 // If it doesn't exist, add the column to the table
@@ -57,12 +63,12 @@ public class SQLiteDatabaseTableManager implements DatabaseTableManager {
         }
     }
 
-    private static void createNewTable(Statement statement, String tableName, List<ProfileColumn> columns) throws SQLException {
+    private static void createNewTable(Statement statement, String tableName, List<DataColumn> columns) throws SQLException {
 //        columns.add(new ProfileColumn("uuid", "VARCHAR", ""));
         StringBuilder query = new StringBuilder("CREATE TABLE IF NOT EXISTS ");
         query.append(tableName).append(" (");
 
-        for (ProfileColumn column : columns) {
+        for (DataColumn column : columns) {
             query.append(column.getName()).append(" ").append(column.getType()).append(", ");
         }
 
@@ -88,9 +94,10 @@ public class SQLiteDatabaseTableManager implements DatabaseTableManager {
         return false;
     }
 
-    private static void addColumnToTable(Statement statement, String tableName, ProfileColumn column) throws SQLException {
+    private static void addColumnToTable(Statement statement, String tableName, DataColumn column) throws SQLException {
         // Use SQLite-specific SQL syntax to add a new column to the table
-        String query = "ALTER TABLE " + tableName + " ADD COLUMN " + column.getName() + " " + column.getType();
+        String query = "ALTER TABLE " + tableName + " ADD COLUMN " + column.getName() + " " + column.getType().toString();
         statement.execute(query);
     }
 }
+

@@ -1,13 +1,13 @@
 package me.matthewedevelopment.atheriallib.playerdata;
 
 import me.matthewedevelopment.atheriallib.AtherialLib;
-import me.matthewedevelopment.atheriallib.config.BukkitConfig;
 import me.matthewedevelopment.atheriallib.database.mysql.MySqlHandler;
+import me.matthewedevelopment.atheriallib.io.Callback;
 import me.matthewedevelopment.atheriallib.playerdata.db.DatabaseTableManager;
 import me.matthewedevelopment.atheriallib.playerdata.db.MySQLDatabaseTableManager;
 import me.matthewedevelopment.atheriallib.playerdata.db.SQLiteDatabaseTableManager;
+import me.matthewedevelopment.atheriallib.utilities.AtherialTasks;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -72,7 +72,7 @@ public class AtherialProfileManager  implements Listener {
             atherialLib.getLogger().info("Loading " + value.getSimpleName() + " profile system....");
             this.playerDataMap.put(value.getSimpleName(), new HashMap<>());
             for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
-                loadData(value, onlinePlayer);
+                loadDataSync(value, onlinePlayer);
             }
         }
 //        if (bukkitConfig!=null){
@@ -86,7 +86,7 @@ public class AtherialProfileManager  implements Listener {
                 for (Class<? extends AtherialProfile> value : profiles.values()) {
                     AtherialProfile profile = getProfile(value, onlinePlayer);
                     if (profile!=null){
-                        profile.saveToDatabase(getConnection());
+                        AtherialTasks.runAsync(() ->   profile.saveToDatabaseSync(getConnection()));
 //                        saveData(onlinePlayer, profile, false);
                     }
                 }
@@ -112,7 +112,14 @@ public class AtherialProfileManager  implements Listener {
 //        return null;
     }
 
-    private AtherialProfile loadData(Class<? extends AtherialProfile> value, Player player) {
+    public void loadDataASync(Class<? extends AtherialProfile> value, Player player, Callback<AtherialProfile> atherialProfileCallback) {
+        AtherialTasks.runAsync(() -> {
+            AtherialProfile atherialProfile = loadDataSync(value, player);
+            atherialProfileCallback.call(atherialProfile);
+        });
+    }
+
+    private AtherialProfile loadDataSync(Class<? extends AtherialProfile> value, Player player) {
 
 
 
@@ -120,11 +127,13 @@ public class AtherialProfileManager  implements Listener {
         AtherialProfile returnProfile;
         try {
             AtherialProfile atherialProfile = value.getConstructor(UUID.class, String.class).newInstance(player.getUniqueId(), player.getName());
-            returnProfile = atherialProfile.load(player, getConnection());
+            returnProfile = atherialProfile.loadSync(player, getConnection());
             playerDataMap.get(simpleName).put(player.getUniqueId(), returnProfile);
 
-            AtherialProfileLoadEvent customEvent = new AtherialProfileLoadEvent(player,returnProfile);
-            Bukkit.getServer().getPluginManager().callEvent(customEvent);
+            AtherialTasks.runSync(() -> {
+                AtherialProfileLoadEvent customEvent = new AtherialProfileLoadEvent(player,returnProfile);
+                Bukkit.getServer().getPluginManager().callEvent(customEvent);
+            });
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -157,7 +166,7 @@ public class AtherialProfileManager  implements Listener {
                 System.out.println("ERROR COULD NOT FIND PROFILE");
                 return;
             }
-            profile.saveToDatabase(getConnection());
+           AtherialTasks.runAsync(() -> { profile.saveToDatabaseSync(getConnection());});
             playerDataMap.get(value.getSimpleName()).remove(event.getPlayer().getUniqueId());
             System.out.println("Removed player data for " + event.getPlayer().getName() );
         }
@@ -170,7 +179,7 @@ public class AtherialProfileManager  implements Listener {
             return;
         }
         for (Class<? extends AtherialProfile> value : profiles.values()) {
-            loadData(value, event.getPlayer());
+            loadDataASync(value, event.getPlayer(),atherialProfile -> {});
 
         }
 

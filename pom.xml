@@ -6,7 +6,7 @@
 
     <groupId>me.matthewedevelopment</groupId>
     <artifactId>atheriallib</artifactId>
-    <version>0.17</version>
+    <version>0.19</version>
     <packaging>jar</packaging>
 
     <name>AtherialLib</name>
@@ -80,6 +80,12 @@
             <version>1.20.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>mysql</groupId>-->
+<!--            <artifactId>mysql-connector-java</artifactId>-->
+<!--            <version>8.0.28</version> &lt;!&ndash; Use the appropriate version &ndash;&gt;-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
 
 <!--        <dependency>-->
 <!--            <groupId>com.matthewedevelopment.api</groupId>-->
@@ -182,5 +188,7 @@
             <groupId>vault</groupId>
             <artifactId>vault</artifactId>
         </dependency>
+
+
     </dependencies>
 </project>
