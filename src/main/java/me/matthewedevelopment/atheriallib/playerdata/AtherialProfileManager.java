@@ -96,7 +96,7 @@ public class AtherialProfileManager  implements Listener {
 //
 //                bukkitConfig.saveConfiguration();
 //            }
-        }, 20*5, 20*5);
+        }, 20*30, 20*30);
     }
 
     public void stop(){
