@@ -24,6 +24,11 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
             serializedData.put("displayName", item.getDisplayName());
 
         }
+        if (item.getData()==-1){
+
+        } else {
+            serializedData.put("data", item.getData());
+        }
         if (item.getLore()!=null&&!item.getLore().isEmpty()){
             serializedData.put("lore", item.getLore());
         }
@@ -43,6 +48,17 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
         Material type = Material.valueOf((String) map.get("type"));  // Mandatory
 
 
+        boolean saveData = false;
+        int dt = -1;
+
+        if (map.containsKey("data")){
+            int data = (int) map.get("data");
+            if (data!=-1) {
+                saveData=true;
+                dt=data;
+
+            }
+        }
 
         List<String> lore = map.containsKey("lore") ? (List<String>) map.get("lore") : null;
         String skullOwner = map.containsKey("skullOwner") ? (String) map.get("skullOwner") : null;
@@ -50,8 +66,12 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
 
         int slot = map.containsKey("slot") ? (int) map.get("slot") : -1;
         int amount = map.containsKey("amount") ? (int) map.get("amount") : 1;
+        AtherialLibItem atherialLibItem = new AtherialLibItem(type, amount, displayName, lore, skullOwner, slot);
+        if (saveData){
+            atherialLibItem=atherialLibItem.setData(dt);
+        }
 
-        return new AtherialLibItem(type, amount, displayName, lore, skullOwner, slot);
+        return atherialLibItem;
     }
 
     @Override

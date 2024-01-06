@@ -7,6 +7,7 @@ import me.matthewedevelopment.atheriallib.command.spigot.serializers.UsageSerial
 import me.matthewedevelopment.atheriallib.dependency.DependencyManager;
 import me.matthewedevelopment.atheriallib.events.jump.PlayerJumpListener;
 import me.matthewedevelopment.atheriallib.newcommand.AtherialLibDefaultCommandConfig;
+import me.matthewedevelopment.atheriallib.playerdata.AtherialProfile;
 import org.bukkit.Location;
 import org.bukkit.command.*;
 import spigui.SpiGUI;
@@ -97,8 +98,16 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
 
     public void enableMySql() {
         this.sqlHandler.setEnabled(true);
+        this.sqlHandler.setLite(false);
+    }
+    public void enableLiteSql() {
+        this.sqlHandler.setEnabled(true);
+        this.sqlHandler.setLite(true);
     }
 
+    public DependencyManager getDependencyManager() {
+        return dependencyManager;
+    }
 
     public AtherialLib setNmsRequired(boolean nmsRequired) {
         this.nmsRequired = nmsRequired;
@@ -132,6 +141,9 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         if (!getDataFolder().exists()) {
             getDataFolder().mkdirs();
         }
+        if (sqlHandler.isEnabled()) {
+            sqlHandler.start();
+        }
         AtherialItemAPI.setAtherialLib(this);
         getServer().getPluginManager().registerEvents(this, this);
         this.menu=  new SpiGUI(this);
@@ -141,9 +153,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         this.dependencyManager.enableDependencies();
 
         registerListener(new PlayerJumpListener());
-        if (sqlHandler.isEnabled()) {
-            sqlHandler.start();
-        }
+
         this.onStart();
 
 
@@ -187,6 +197,9 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         CustomTypeRegistry.registerType(SelfCommandConfig.class, new SelfCommandConfigSerializer());
 
     }
+
+
+
 
 
     public boolean isDebug() {
@@ -328,6 +341,8 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     public AtherialLibDefaultCommandConfig getCommandConfig() {
         return commandConfig;
     }
+
+    public abstract List<Class<? extends AtherialProfile>> getProfileClazzes();
 
     public static final class ReflectCommand extends Command {
         public AtherialCommand spigotCommand;

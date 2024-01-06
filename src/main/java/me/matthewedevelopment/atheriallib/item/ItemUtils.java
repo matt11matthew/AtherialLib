@@ -1,6 +1,7 @@
 package me.matthewedevelopment.atheriallib.item;
 
 import org.bukkit.Material;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
@@ -24,6 +25,14 @@ public class ItemUtils {
         }
 
         return Base64.getEncoder().encodeToString(outputStream.toByteArray());
+    }
+    public static boolean isEmpty(Inventory inventory) {
+        for (ItemStack itemStack : inventory) {
+            if (itemStack!=null&&itemStack.getType()!=Material.AIR){
+                return false;
+            }
+        }
+        return true;
     }
     public static ItemStack fromBase64(String data) {
         if (data==null||data.equals("AIR"))return new ItemStack(Material.AIR);

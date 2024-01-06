@@ -16,6 +16,7 @@ public class MySQLConfig {
     private String password;
     private String database;
 
+
     private AtherialLib lib;
 
     public MySQLConfig(AtherialLib atherialLib) {
@@ -23,27 +24,38 @@ public class MySQLConfig {
     }
 // this.connection = DriverManager.getConnection("jdbc:mysql://" + this.config.database.host.address + ":" + this.config.database.host.port + "/" + this.config.database.database, this.config.database.auth.username, this.config.database.auth.password);
 
-    public void load() {
+    public void load(MySqlHandler mySqlHandler) {
         this.bukkitConfig = new BukkitConfig("database.yml", lib);
         if (bukkitConfig.getConfiguration().getKeys(false).isEmpty()){
             FileConfiguration configuration = bukkitConfig.getConfiguration();
-            configuration.set("driver", "mysql");
-            configuration.set("database", "atherial");
-            configuration.set("host.address", "localhost");
-            configuration.set("host.port",3306);
-            configuration.set("auth.username", "matthew");
-            configuration.set("auth.password", "matthew");
+            if (mySqlHandler.isLite()){
+                configuration.set("driver", "lite");
+
+            } else {
+
+                configuration.set("driver", "mysql");
+                configuration.set("database", "atherial");
+                configuration.set("host.address", "localhost");
+                configuration.set("host.port",3306);
+                configuration.set("auth.username", "matthew");
+                configuration.set("auth.password", "matthew");
+            }
             this.bukkitConfig.setConfiguration(configuration);
             this.bukkitConfig.saveConfiguration();
         }
 
         FileConfiguration config = bukkitConfig.getConfiguration();
-        this.host = config.getString("host.address");
-        this.port = config.getInt("host.port");
         this.driver = config.getString("driver");
-        this.database = config.getString("database");
-        this.username = config.getString("auth.username");
-        this.password = config.getString("auth.password");
+        if (driver.equalsIgnoreCase("lite")){
+            mySqlHandler.setLite(true);
+        } else {
+            mySqlHandler.setLite(false);
+            this.host = config.getString("host.address");
+            this.port = config.getInt("host.port");
+            this.database = config.getString("database");
+            this.username = config.getString("auth.username");
+            this.password = config.getString("auth.password");
+        }
     }
 
     public String getDatabase() {
@@ -80,5 +92,9 @@ public class MySQLConfig {
 
     public AtherialLib getLib() {
         return lib;
+    }
+
+    public boolean isLite() {
+        return driver!=null&&driver.equalsIgnoreCase("lite");
     }
 }

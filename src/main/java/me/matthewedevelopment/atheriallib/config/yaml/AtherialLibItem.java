@@ -21,6 +21,12 @@ public class AtherialLibItem {
     private String displayName;
     private List<String> lore;
 
+    public int getData() {
+        return data;
+    }
+
+    private int data = -1;
+
     private String skullOwner;
 
     private int slot = -1;
@@ -46,6 +52,11 @@ public class AtherialLibItem {
         return this;
     }
 
+    public AtherialLibItem setData(int data) {
+        this.data = data;
+        return this;
+    }
+
     public AtherialLibItem() {
     }
     public AtherialLibItem(ItemStack itemStack) {
@@ -54,6 +65,7 @@ public class AtherialLibItem {
         this.amount = itemStack.getAmount();
 
         this.type=itemStack.getType();
+//        this.data = itemStack.getData().getData();
 
         if (itemStack.hasItemMeta()){
             ItemMeta itemMeta = itemStack.getItemMeta();
@@ -70,7 +82,13 @@ public class AtherialLibItem {
         return build(ChatUtils::colorize);
     }
     public ItemStack build(StringReplacer stringReplacer) {
-        ItemStack itemStack = new ItemStack(type, amount);
+        ItemStack itemStack=null;
+        if (data!=-1){
+            itemStack = new ItemStack(type, amount, (short) data);
+        } else {
+
+            itemStack = new ItemStack(type, amount);
+        }
 
         ItemMeta itemMeta=itemStack.getItemMeta();
 

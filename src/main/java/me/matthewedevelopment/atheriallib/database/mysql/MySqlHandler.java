@@ -6,6 +6,7 @@ import me.matthewedevelopment.atheriallib.io.Callback;
 import me.matthewedevelopment.atheriallib.utilities.AtherialTasks;
 
 import javax.sql.DataSource;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -20,9 +21,20 @@ public class MySqlHandler {
     private boolean enabled;
     private MySQLConfig config;
 
+    public boolean isLite() {
+        return lite;
+    }
+
+    private boolean lite =false;
     private MysqlDataSource dataSource = null;
 
-        private Connection connection;
+//    private Connection connection;
+
+    public void setLite(boolean lite) {
+        this.lite = lite;
+    }
+
+    private Connection connection;
     public DataSource getDataSource() {
         if (dataSource == null) {
             dataSource = new MysqlDataSource();
@@ -44,40 +56,83 @@ public class MySqlHandler {
     public void start() {
         if (this.enabled) {
             this.config = new MySQLConfig(atherialLib);
-            this.config.load();
+            this.config.load(this);
             try {
-                DataSource dataSource1 = getDataSource();
+                if (isLite()){
+                    createLiteDB();
+                } else {
+                    DataSource dataSource1 = getDataSource();
+                    connection = dataSource1.getConnection();
+                }
 
-                connection = dataSource1.getConnection();
+
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {
-                this.atherialLib.getLogger().info("[MySQLHandler] MySQL Connected!");
+                if (lite){
+
+                    this.atherialLib.getLogger().info("[SQLHandler] SQLite Connected!");
+                } else {
+                    this.atherialLib.getLogger().info("[SQLHandler] MySQL Connected!");
+
+                }
             }
         }
 
     }
 
-    public void executePlayerUpdateAsync(String sql, UUID uuid, Callback<Boolean> onComplete) {
-        AtherialTasks.runAsync(() -> {
-            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 
-                pstmt.setString(1, uuid.toString());
 
-                int affectedRows = pstmt.executeUpdate();
-                if (affectedRows > 0) {
-                    onComplete.call(true);
-                } else {
-                    onComplete.call(false);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                onComplete.call(false);
-                // Handle exception or rethrow it as needed
+
+//    public void executePlayerUpdateAsync(String sql, UUID uuid, Callback<Boolean> onComplete) {
+//        AtherialTasks.runAsync(() -> {
+//            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+//
+//                pstmt.setString(1, uuid.toString());
+//
+//                int affectedRows = pstmt.executeUpdate();
+//                if (affectedRows > 0) {
+//                    onComplete.call(true);
+//                } else {
+//                    onComplete.call(false);
+//                }
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//                onComplete.call(false);
+//                // Handle exception or rethrow it as needed
+//            }
+//        });
+//    }
+
+    public  void createLiteDB() {
+//        Connection connection = null;
+        try {
+            // Create a directory for the database file if it doesn't exist
+            File dbDirectory = new File(AtherialLib.getInstance().getDataFolder()+"/databases"); // Change to your desired directory
+            if (!dbDirectory.exists()) {
+                dbDirectory.mkdirs();
             }
-        });
-    }
 
+            // Construct the JDBC URL for the database file
+            String url = "jdbc:sqlite:" + dbDirectory.getAbsolutePath() + File.separator + "atherial.db";
+
+            // Create a connection to the database
+            connection = DriverManager.getConnection(url);
+
+            if (connection != null) {
+                System.out.println("SQLite database created: " + url);
+
+                // You can execute SQL statements or create tables here if needed
+
+                // Close the connection when done
+//                connection.close();
+            } else {
+                System.err.println("Failed to create the SQLite database.");
+            }
+        } catch (SQLException e) {
+            System.err.println("SQL Exception: " + e.getMessage());
+        }
+    }
     public Connection getConnection() {
         return connection;
     }
@@ -104,4 +159,7 @@ public class MySqlHandler {
     }
 
 
+    public String getDatabaseName() {
+        return config.getDatabase();
+    }
 }

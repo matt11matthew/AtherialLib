@@ -45,7 +45,12 @@ public class VaultDependency extends Dependency
         }
         return true;
     }
-    
+
+    public boolean safeWithdraw(OfflinePlayer player, double cost) {
+        EconomyResponse withdraw = withdraw(player, cost);
+        return withdraw!=null&&withdraw.type== EconomyResponse.ResponseType.SUCCESS;
+
+    }
     public String getPrimaryGroup(final Player player) {
         return this.permission.getPrimaryGroup(player);
     }
