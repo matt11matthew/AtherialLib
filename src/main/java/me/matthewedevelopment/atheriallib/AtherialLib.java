@@ -59,7 +59,7 @@ import java.util.Map;
 public abstract class AtherialLib extends JavaPlugin implements Listener {
     protected VersionProvider versionProvider;
 
-    private DependencyManager dependencyManager;
+    protected DependencyManager dependencyManager;
 
     public static AtherialLib getInstance() {
         return instance;

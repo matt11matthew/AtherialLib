@@ -175,5 +175,12 @@
             <version>1.9</version>
             <systemPath>${basedir}/lib/spigot-1.9.jar</systemPath>
         </dependency>
+        <dependency>
+            <systemPath>${basedir}/lib/Vault (2).jar</systemPath>
+            <scope>system</scope>
+            <version>1</version>
+            <groupId>vault</groupId>
+            <artifactId>vault</artifactId>
+        </dependency>
     </dependencies>
 </project>
