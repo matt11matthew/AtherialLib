@@ -277,7 +277,7 @@ public abstract class DataObjectRegistry<T extends DataObject<T>> {
                     // Execute the query to save or update the data
                     statement.executeUpdate();
                     statement.close();
-                    onComplete.run();
+                    AtherialTasks.runSync(onComplete);
                 }
             } catch ( Exception e) {
                 e.printStackTrace();
