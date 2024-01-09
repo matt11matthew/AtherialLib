@@ -18,11 +18,30 @@ import java.util.UUID;
 public class HotBarListener  implements Listener {
     private Map<UUID, Integer> slotMap = new HashMap<>();
     private AtherialLib atherialLib;
+    private Map<UUID, Long> DELAY_MAP = new HashMap<>();
 
     public HotBarListener(AtherialLib atherialLib) {
         this.atherialLib = atherialLib;
     }
 
+    public void addDelay(Player player, long delay){
+        DELAY_MAP.put(player.getUniqueId(), delay+System.currentTimeMillis());
+    }
+    public void removeDelay(Player player) {
+        if (DELAY_MAP.containsKey(player.getUniqueId())) {
+            DELAY_MAP.remove(player.getUniqueId());
+        }
+    }
+    public boolean isDelayed(Player player) {
+        if (!DELAY_MAP.containsKey(player.getUniqueId())){
+            return false;
+        }
+        if (System.currentTimeMillis()>DELAY_MAP.get(player.getUniqueId())){
+            DELAY_MAP.remove(player.getUniqueId());
+            return false;
+        }
+        return true;
+    }
     @EventHandler
     public void onPlayerSwapHandItems(PlayerItemHeldEvent event) {
         slotMap.put(event.getPlayer().getUniqueId(),event.getNewSlot());
@@ -62,6 +81,9 @@ public class HotBarListener  implements Listener {
             event.setUseInteractedBlock(Event.Result.DENY);
             event.setUseItemInHand(Event.Result.DENY);
 
+            if (isDelayed(event.getPlayer())) return;
+
+            addDelay(event.getPlayer(), 500L);
             orDefault.on(event.getPlayer(),hotBarMenu, slotMap.get(event.getPlayer().getUniqueId()),clickType);
         }
     }
@@ -69,6 +91,6 @@ public class HotBarListener  implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         HotBarMenu.destroy(event.getPlayer());
-
+        removeDelay(event.getPlayer());
     }
 }
