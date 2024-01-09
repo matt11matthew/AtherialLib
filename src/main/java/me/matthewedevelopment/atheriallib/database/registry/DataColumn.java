@@ -47,5 +47,9 @@ public class DataColumn {
         return type.toString();
     }
 
+    public long getValueAsLong() {
+        return (long) value;
+    }
+
     // Add getters and setters as needed
 }

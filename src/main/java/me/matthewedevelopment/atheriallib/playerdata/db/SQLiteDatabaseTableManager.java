@@ -1,6 +1,7 @@
 package me.matthewedevelopment.atheriallib.playerdata.db;
 
 import me.matthewedevelopment.atheriallib.playerdata.ProfileColumn;
+import me.matthewedevelopment.atheriallib.playerdata.ProfileColumnType;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -14,7 +15,7 @@ public class SQLiteDatabaseTableManager implements DatabaseTableManager {
     public void createOrUpdateTable(Connection connection, String tableName, List<ProfileColumn> columns) throws SQLException {
         List<ProfileColumn> newCols = new ArrayList<>();
 
-        newCols.add(new ProfileColumn("uuid", "VARCHAR", ""));
+        newCols.add(new ProfileColumn("uuid", ProfileColumnType.VARCHAR, ""));
         for (ProfileColumn column : columns) {
             if (column.getName().equalsIgnoreCase("uuid")){
 

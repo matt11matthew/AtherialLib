@@ -84,7 +84,7 @@ public class MySQLDatabaseTableManager implements DatabaseTableManager{
 
     public  void addColumnToTable(Statement statement, String tableName, ProfileColumn column) throws SQLException {
         // Use MySQL-specific SQL syntax to add a new column to the table
-        String query = "ALTER TABLE " + tableName + " ADD COLUMN " + column.getName() + " " + column.getType();
+        String query = "ALTER TABLE " + tableName + " ADD COLUMN " + column.getName() + " " + column.getTypeToString();
         if (AtherialLib.getInstance().isDebug()){
 
             System.err.println(query);

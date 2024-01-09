@@ -11,10 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class DataObjectRegistry<T extends DataObject<T>> {
@@ -62,6 +59,7 @@ public abstract class DataObjectRegistry<T extends DataObject<T>> {
             for (T t1 : ts) {
                 map.put(t1.getUuid(),t1);
             }
+            onLoadAll(ts);
         });
 
     }
@@ -80,6 +78,22 @@ public abstract class DataObjectRegistry<T extends DataObject<T>> {
         });
     }
 
+    public void uploadAllSync() {
+        Connection connection = getConnection();
+        if (connection==null)return;
+        updateSyncBatch(connection,new ArrayList<>(map.values()));
+    }
+
+    public void onLoadAll(final List<T> list) {
+
+    }
+
+    public void uploadAllAsync(Runnable runnable) {
+        AtherialTasks.runAsync(() ->{
+            uploadAllSync();
+            runnable.run();
+        });
+    }
     public void updateSyncBatch(Connection connection, List<T> dataObjects) {
         if (tableName==null){
             if (AtherialLib.getInstance().isDebug()){
@@ -99,6 +113,7 @@ public abstract class DataObjectRegistry<T extends DataObject<T>> {
                 List<DataColumn> columns = dataObject.getColumns(); // Assuming DataObject has a method to get its columns
 
                 for (DataColumn column : columns) {
+                    if (column.getName().equalsIgnoreCase("uuid"))continue;
                     updateQuery.append(column.getName()).append(" = ?, ");
                 }
 
@@ -109,8 +124,12 @@ public abstract class DataObjectRegistry<T extends DataObject<T>> {
 
                 int updateParameterIndex = 1;
                 for (DataColumn column : columns) {
+                    if (column.getName().equalsIgnoreCase("uuid"))continue;
                     // Set the parameters for each column
                     switch (column.getType()) {
+                        case LONG:
+                            statement.setLong(updateParameterIndex, column.getValueAsLong());
+                            break;
                         case TEXT:
                             statement.setString(updateParameterIndex, column.getValueAsString());
                             break;
@@ -156,6 +175,25 @@ public abstract class DataObjectRegistry<T extends DataObject<T>> {
         }
     }
 
+    public void deleteSync(UUID uuid) {
+        if (map.containsKey(uuid)) {
+            T remove = map.get(uuid);
+            Connection connection = getConnection();
+            if (connection==null)return;
+            String sql = "DELETE FROM " + remove.getTableName() +" WHERE uuid=?;";
+            try {
+                PreparedStatement statement= connection.prepareStatement(sql);
+                statement.setString(1, uuid.toString());
+                statement.executeUpdate();
+                statement.close();
+                map.remove(uuid);
+            } catch (SQLException e) {
+               e.printStackTrace();
+            }
+        }
+
+    }
+
     public Map<UUID, T> getMap() {
         return map;
     }
@@ -196,6 +234,9 @@ public abstract class DataObjectRegistry<T extends DataObject<T>> {
                         for (DataColumn column : columns.stream().filter(dataColumn -> !dataColumn.getName().equalsIgnoreCase("uuid")).collect(Collectors.toList())) {
                             // Set the parameter value based on the column's data type
                             switch (column.getType()) {
+                                case LONG:
+                                    statement.setLong(parameterIndex, column.getValueAsLong());
+                                    break;
                                 case TEXT:
                                     statement.setString(parameterIndex, column.getValueAsString());
                                     break;
@@ -250,6 +291,9 @@ public abstract class DataObjectRegistry<T extends DataObject<T>> {
                     for (DataColumn column : columns.stream().filter(dataColumn -> !dataColumn.getName().equalsIgnoreCase("uuid")).collect(Collectors.toList())) {
                         // Set the parameter value based on the column's data type
                         switch (column.getType()) {
+                            case LONG:
+                                statement.setLong(parameterIndex, column.getValueAsLong());
+                                break;
                             case TEXT:
                                 statement.setString(parameterIndex, column.getValueAsString());
                                 break;

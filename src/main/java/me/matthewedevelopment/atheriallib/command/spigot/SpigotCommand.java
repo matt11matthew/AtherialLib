@@ -2,6 +2,7 @@ package me.matthewedevelopment.atheriallib.command.spigot;
 
 
 import me.matthewedevelopment.atheriallib.command.AnnotationlessAtherialCommand;
+import me.matthewedevelopment.atheriallib.utilities.ChatUtils;
 import me.matthewedevelopment.atheriallib.utilities.ListUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -24,7 +25,9 @@ import static me.matthewedevelopment.atheriallib.utilities.ChatUtils.formatEnum;
 public abstract class SpigotCommand extends AnnotationlessAtherialCommand {
     protected boolean playerOnly = false;
     protected String permission = null;
-
+    public String colorize(String input){
+        return ChatUtils.colorize(input);
+    }
 
     protected Map<String, SpigotCommand> subCommandMap;
 

@@ -4,10 +4,10 @@ import me.matthewedevelopment.atheriallib.AtherialLib;
 
 public class ProfileColumn {
     private String name;
-    private String type;
+    private ProfileColumnType type;
     private Object value;
 
-    public ProfileColumn(String name, String type, Object value) {
+    public ProfileColumn(String name, ProfileColumnType type, Object value) {
         this.name = name;
         this.type = type;
         this.value = value;
@@ -17,7 +17,7 @@ public class ProfileColumn {
         return name;
     }
 
-    public String getType() {
+    public ProfileColumnType getType() {
         return type;
     }
 
@@ -28,7 +28,9 @@ public class ProfileColumn {
     public String getValueAsString() {
         return String.valueOf(value);
     }
-
+    public long getValueAsLong() {
+        return (long) value;
+    }
     public int getValueAsInt() {
         return (int) value;
     }
@@ -40,11 +42,11 @@ public class ProfileColumn {
     public String getTypeToString() {
         if (!AtherialLib.getInstance().getSqlHandler().isLite()){
 
-            if (type.equalsIgnoreCase("VARCHAR")){
+            if (type==ProfileColumnType.VARCHAR){
                 return "VARCHAR(255)";
             }
         }
-        return type;
+        return type.toString();
     }
 
     // Add getters and setters as needed

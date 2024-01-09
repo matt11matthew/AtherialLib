@@ -1,6 +1,7 @@
 package me.matthewedevelopment.atheriallib.playerdata;
 
 import me.matthewedevelopment.atheriallib.AtherialLib;
+import me.matthewedevelopment.atheriallib.utilities.AtherialTasks;
 import org.bukkit.entity.Player;
 
 import java.sql.Connection;
@@ -17,9 +18,9 @@ import java.util.stream.Collectors;
  */
 public abstract class AtherialProfile<T extends AtherialProfile<T>> {
 
-    private UUID uuid;
+    protected UUID uuid;
 
-    private String username;
+    protected String username;
 
     public AtherialProfile(){
 
@@ -45,6 +46,12 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
         if (connection!=null){
             saveToDatabaseSync(connection);
         }
+    }
+    public void updateAsync(Runnable runnable) {
+        AtherialTasks.runAsync(() -> {
+            updateSync();
+            runnable.run();
+        });
     }
     public abstract T loadDefault(Player player);
 
@@ -95,8 +102,8 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
     public List<ProfileColumn> getColumns() {
         List<ProfileColumn> columns = new ArrayList<>();
 //        columns.add(new ProfileColumn("UUID", "VARCHAR", uuid+""));
-        columns.add(new ProfileColumn("uuid", "VARCHAR", uuid));
-        columns.add(new ProfileColumn("username", "VARCHAR", username));
+        columns.add(new ProfileColumn("uuid", ProfileColumnType.VARCHAR, uuid));
+        columns.add(new ProfileColumn("username", ProfileColumnType.VARCHAR, username));
 
         columns.addAll(getCustomColumns());
         return columns;
@@ -136,17 +143,20 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
                     int parameterIndex = 2; // Start at the second parameter
                     for (ProfileColumn column : columns.stream().filter(profileColumn -> !profileColumn.getName().equalsIgnoreCase("uuid")).collect(Collectors.toList())) {
                         // Set the parameter value based on the column's data type
-                        switch (column.getType().toUpperCase()) {
-                            case "TEXT":
+                        switch (column.getType()) {
+                            case LONG:
+                                statement.setLong(parameterIndex, column.getValueAsLong());
+                                break;
+                            case TEXT:
                                 statement.setString(parameterIndex, column.getValueAsString());
                                 break;
-                            case "INTEGER":
+                            case INTEGER:
                                 statement.setInt(parameterIndex, column.getValueAsInt());
                                 break;
-                            case "BOOLEAN":
+                            case BOOLEAN:
                                 statement.setBoolean(parameterIndex, column.getValueAsBoolean());
                                 break;
-                            case "VARCHAR": // Handle VARCHAR
+                            case VARCHAR: // Handle VARCHAR
                                 statement.setString(parameterIndex, column.getValueAsString());
                                 break;
                             default:
@@ -190,17 +200,20 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
                     for (ProfileColumn column : columns) {
                         if (!column.getName().equalsIgnoreCase("uuid")) {
                             // Set the parameter value based on the column's data type
-                            switch (column.getType().toUpperCase()) {
-                                case "TEXT":
+                            switch (column.getType()) {
+                                case LONG:
+                                    statement.setLong(updateParameterIndex, column.getValueAsLong());
+                                    break;
+                                case TEXT:
                                     statement.setString(updateParameterIndex, column.getValueAsString());
                                     break;
-                                case "INTEGER":
+                                case INTEGER:
                                     statement.setInt(updateParameterIndex, column.getValueAsInt());
                                     break;
-                                case "BOOLEAN":
+                                case BOOLEAN:
                                     statement.setBoolean(updateParameterIndex, column.getValueAsBoolean());
                                     break;
-                                case "VARCHAR": // Handle VARCHAR
+                                case VARCHAR: // Handle VARCHAR
                                     statement.setString(updateParameterIndex, column.getValueAsString());
                                     break;
                                 default:
@@ -250,17 +263,20 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
                     for (ProfileColumn column : columns) {
                         if (column.getName().equalsIgnoreCase("uuid"))continue;
                         // Set the parameter value based on the column's data type
-                        switch (column.getType().toUpperCase()) {
-                            case "TEXT":
+                        switch (column.getType()) {
+                            case LONG:
+                                statement.setLong(parameterIndex, column.getValueAsLong());
+                                break;
+                            case TEXT:
                                 statement.setString(parameterIndex, column.getValueAsString());
                                 break;
-                            case "INTEGER":
+                            case INTEGER:
                                 statement.setInt(parameterIndex, column.getValueAsInt());
                                 break;
-                            case "BOOLEAN":
+                            case BOOLEAN:
                                 statement.setBoolean(parameterIndex, column.getValueAsBoolean());
                                 break;
-                            case "VARCHAR": // Handle VARCHAR
+                            case VARCHAR: // Handle VARCHAR
                                 statement.setString(parameterIndex, column.getValueAsString());
                                 break;
                             default:
@@ -304,17 +320,20 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
                     for (ProfileColumn column : columns) {
                         if (!column.getName().equalsIgnoreCase("uuid")) {
                             // Set the parameter value based on the column's data type
-                            switch (column.getType().toUpperCase()) {
-                                case "TEXT":
+                            switch (column.getType()) {
+                                case LONG:
+                                    statement.setLong(updateParameterIndex, column.getValueAsLong());
+                                    break;
+                                case TEXT:
                                     statement.setString(updateParameterIndex, column.getValueAsString());
                                     break;
-                                case "INTEGER":
+                                case INTEGER:
                                     statement.setInt(updateParameterIndex, column.getValueAsInt());
                                     break;
-                                case "BOOLEAN":
+                                case BOOLEAN:
                                     statement.setBoolean(updateParameterIndex, column.getValueAsBoolean());
                                     break;
-                                case "VARCHAR": // Handle VARCHAR
+                                case VARCHAR: // Handle VARCHAR
                                     statement.setString(updateParameterIndex, column.getValueAsString());
                                     break;
                                 default:
