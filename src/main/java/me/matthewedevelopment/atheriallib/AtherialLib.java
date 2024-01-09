@@ -1,20 +1,11 @@
 package me.matthewedevelopment.atheriallib;
 
+import me.matthewedevelopment.atheriallib.command.AnnotationlessAtherialCommand;
+import me.matthewedevelopment.atheriallib.command.AtherialCommand;
 import me.matthewedevelopment.atheriallib.command.spigot.AtherialLibSpigotCommand;
 import me.matthewedevelopment.atheriallib.command.spigot.config.SelfCommandConfig;
 import me.matthewedevelopment.atheriallib.command.spigot.serializers.SelfCommandConfigSerializer;
 import me.matthewedevelopment.atheriallib.command.spigot.serializers.UsageSerializer;
-import me.matthewedevelopment.atheriallib.dependency.DependencyManager;
-import me.matthewedevelopment.atheriallib.events.jump.PlayerJumpListener;
-import me.matthewedevelopment.atheriallib.newcommand.AtherialLibDefaultCommandConfig;
-import me.matthewedevelopment.atheriallib.playerdata.AtherialProfile;
-import org.bukkit.Location;
-import org.bukkit.command.*;
-import spigui.SpiGUI;
-import me.matthewedevelopment.atheriallib.command.AnnotationlessAtherialCommand;
-import me.matthewedevelopment.atheriallib.command.AtherialCommand;
-import me.matthewedevelopment.atheriallib.command.CommandMessages;
-import me.matthewedevelopment.atheriallib.config.BukkitConfig;
 import me.matthewedevelopment.atheriallib.config.yaml.AtherialLibItem;
 import me.matthewedevelopment.atheriallib.config.yaml.CustomTypeRegistry;
 import me.matthewedevelopment.atheriallib.config.yaml.serializables.AtherialItemBuilderSerializable;
@@ -26,9 +17,11 @@ import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.seriali
 import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.serializer.IntSimpleListSerializer;
 import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.serializer.StringSimpleListSerializer;
 import me.matthewedevelopment.atheriallib.database.mysql.MySqlHandler;
-import me.matthewedevelopment.atheriallib.dependency.Dependency;
+import me.matthewedevelopment.atheriallib.dependency.DependencyManager;
+import me.matthewedevelopment.atheriallib.events.jump.PlayerJumpListener;
 import me.matthewedevelopment.atheriallib.item.AtherialItemAPI;
 import me.matthewedevelopment.atheriallib.item.AtherialItemBuilder;
+import me.matthewedevelopment.atheriallib.menu.HotBarListener;
 import me.matthewedevelopment.atheriallib.message.message.ActionBarMessage;
 import me.matthewedevelopment.atheriallib.message.message.ChatMessage;
 import me.matthewedevelopment.atheriallib.message.message.MessageTitle;
@@ -36,26 +29,27 @@ import me.matthewedevelopment.atheriallib.message.message.json.ActionBarMessageS
 import me.matthewedevelopment.atheriallib.message.message.json.ChatMessageSerializer;
 import me.matthewedevelopment.atheriallib.message.message.json.TitleJsonSerializer;
 import me.matthewedevelopment.atheriallib.message.title.AtherialTitle;
+import me.matthewedevelopment.atheriallib.newcommand.AtherialLibDefaultCommandConfig;
 import me.matthewedevelopment.atheriallib.nms.Version;
 import me.matthewedevelopment.atheriallib.nms.VersionProvider;
+import me.matthewedevelopment.atheriallib.playerdata.AtherialProfile;
 import me.matthewedevelopment.atheriallib.playerdata.AtherialProfileManager;
 import me.matthewedevelopment.atheriallib.utilities.AtherialTasks;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.World;
-import org.bukkit.event.EventHandler;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandMap;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
-import org.bukkit.event.weather.WeatherChangeEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import spigui.SpiGUI;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public abstract class AtherialLib extends JavaPlugin implements Listener {
     protected VersionProvider versionProvider;
@@ -141,6 +135,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         if (!getDataFolder().exists()) {
             getDataFolder().mkdirs();
         }
+        registerListener(new HotBarListener(this));
         if (sqlHandler.isEnabled()) {
             sqlHandler.start();
         }
