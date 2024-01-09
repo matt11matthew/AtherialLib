@@ -13,6 +13,10 @@ public class HotBarMenu {
     private Map<Integer, OnHotBarAction> actionMap;
     private Player player;
 
+
+    public static boolean hasHotBar(Player player){
+        return MENUS.containsKey(player.getUniqueId());
+    }
     public static Map<UUID, HotBarMenu> MENUS = new HashMap<>();
 
     public Map<Integer, OnHotBarAction> getActionMap() {
