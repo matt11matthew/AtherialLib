@@ -82,7 +82,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         this.sqlHandler = new MySqlHandler(this);
         this.nmsRequired = false;
         initDependencies();
-
+        AtherialTasks.setPlugin(this);
         AtherialTitle.setAtherialPlugin(this);
     }
 
@@ -110,6 +110,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     private boolean guiEnabled = true;
     public AtherialLib setGUIDisabled() {
         this.guiEnabled = false;
+
         return this;
     }
     public VersionProvider getVersionProvider() {
@@ -131,7 +132,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         this.commandConfig = new AtherialLibDefaultCommandConfig(this);
         this.commandConfig.loadConfig();
 
-        AtherialTasks.setPlugin(this);
+
         if (!getDataFolder().exists()) {
             getDataFolder().mkdirs();
         }

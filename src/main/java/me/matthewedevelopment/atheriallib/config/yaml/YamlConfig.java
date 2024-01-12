@@ -4,9 +4,7 @@ import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.config.Config;
 import me.matthewedevelopment.atheriallib.config.IgnoreValue;
 import me.matthewedevelopment.atheriallib.config.SerializedName;
-import me.matthewedevelopment.atheriallib.message.message.ChatMessage;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import me.matthewedevelopment.atheriallib.utilities.AtherialTasks;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -29,12 +27,15 @@ public  class YamlConfig<A extends AtherialLib> implements Config {
 
     }
 
+    private boolean newConfig = false;
+    private boolean done = false;
     @Override
     public void loadConfig() {
         // Ensure the configuration file and its parent directories exist
         File configFile = this.getFile();
         if (!configFile.exists()) {
             this.saveDefaultConfig();
+            newConfig=true;
         }
 
         YamlConfiguration yamlConfiguration = onLoad(YamlConfiguration.loadConfiguration(configFile));
@@ -161,6 +162,12 @@ public  class YamlConfig<A extends AtherialLib> implements Config {
             yamlConfiguration.save(configFile);
         } catch (IOException e) {
             e.printStackTrace(); // Consider better error handling
+        }
+        if (newConfig&&!done){
+            AtherialTasks.runIn(() -> {
+                loadConfig();
+            },10);
+            done = true;
         }
 
     }
