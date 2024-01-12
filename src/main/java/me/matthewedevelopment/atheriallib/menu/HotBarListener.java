@@ -1,10 +1,12 @@
 package me.matthewedevelopment.atheriallib.menu;
 
 import me.matthewedevelopment.atheriallib.AtherialLib;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -13,6 +15,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public class HotBarListener  implements Listener {
@@ -67,7 +70,7 @@ public class HotBarListener  implements Listener {
         if (!HotBarMenu.MENUS.containsKey(event.getPlayer().getUniqueId())){
             return;
         }
-        if (event.getAction().toString().contains("RIGHT")){
+        if (event.getAction().toString().contains("RIGHT")) {
             clickType = HotBarClickType.RIGHT;
         } else if (event.getAction().toString().contains("LEFT")) {
             clickType=HotBarClickType.LEFT;
@@ -84,7 +87,8 @@ public class HotBarListener  implements Listener {
             if (isDelayed(event.getPlayer())) return;
 
             addDelay(event.getPlayer(), 500L);
-            orDefault.on(event.getPlayer(),hotBarMenu, slotMap.get(event.getPlayer().getUniqueId()),clickType);
+            Optional<Block> blockOptional =(event.getAction()== Action.RIGHT_CLICK_BLOCK||event.getAction()==Action.LEFT_CLICK_BLOCK)? Optional.ofNullable(event.getClickedBlock()) : Optional.empty();
+            orDefault.on(event.getPlayer(),hotBarMenu, slotMap.get(event.getPlayer().getUniqueId()),clickType, blockOptional);
         }
     }
 
