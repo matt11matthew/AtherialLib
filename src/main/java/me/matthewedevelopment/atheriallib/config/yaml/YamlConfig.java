@@ -52,7 +52,6 @@ public  class YamlConfig<A extends AtherialLib> implements Config {
 
                         // Check if the field type is registered in the CustomTypeRegistry
 
-
                         ConfigSerializable serializer = CustomTypeRegistry.getSerializer(field.getType());
                         if (serializer != null) {
                             if (!yamlConfiguration.isSet(key)) {

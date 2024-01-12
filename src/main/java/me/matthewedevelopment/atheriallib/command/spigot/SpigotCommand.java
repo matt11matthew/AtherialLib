@@ -129,6 +129,10 @@ public abstract class SpigotCommand extends AnnotationlessAtherialCommand {
         return ListUtils.filterStartsWith(output,partialString);
     }
     public List<String> getPlayersCompletion(String partialString) {
+        if (partialString==null||partialString.isEmpty()){
+            List<String> output = Bukkit.getServer().getOnlinePlayers().stream().map(player -> player.getName()).collect(Collectors.toList());
+            return output;
+        }
         List<String> output = Bukkit.getServer().getOnlinePlayers().stream().map(player -> player.getName()).collect(Collectors.toList());
         return ListUtils.filterStartsWith(output,partialString);
     }

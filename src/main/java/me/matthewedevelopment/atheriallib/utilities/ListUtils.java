@@ -34,6 +34,9 @@ public class ListUtils {
         return maxPage;
     }
     public static List<String> filterStartsWith(List<String> completions, String partialInput) {
+        if (partialInput==null||partialInput.isEmpty()){
+            return completions;
+        }
         List<String> filteredList = new ArrayList<>();
         for (String completion : completions) {
             if (completion.toLowerCase().startsWith(partialInput.toLowerCase())) {
