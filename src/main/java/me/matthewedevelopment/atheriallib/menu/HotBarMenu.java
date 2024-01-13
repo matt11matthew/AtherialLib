@@ -4,13 +4,12 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class HotBarMenu {
     private Map<Integer, ItemStack> itemMap;
     private Map<Integer, OnHotBarAction> actionMap;
+    private HashSet<Integer> hiddenList = new HashSet<>();
     private Player player;
 
 
@@ -27,6 +26,25 @@ public class HotBarMenu {
         actionMap.put(slot, onHotBarAction);
         return this;
     }
+
+    public void show(Integer slot) {
+        if (hiddenList.contains(slot)){
+            hiddenList.remove(slot);
+        }
+    }
+    public void hide(Integer slot) {
+        if (hiddenList.contains(slot))return;
+        hiddenList.add(slot);
+
+    }
+    public void remove(int slot) {
+        if (itemMap.containsKey(slot)) {
+            itemMap.remove(slot);
+        }
+        if (actionMap.containsKey(slot)) {
+            actionMap.remove(slot);
+        }
+    }
     public void show() {
         update();
     }
@@ -34,8 +52,14 @@ public class HotBarMenu {
     public void update(){
         if (player!=null&&player.isOnline()){
             itemMap.forEach((integer, itemStack) -> {
-                player.getInventory().setItem(integer, itemStack);
-                player.updateInventory();
+                if (hiddenList.contains(integer)) {
+
+                    player.getInventory().setItem(integer, new ItemStack(Material.AIR));
+                } else {
+                    player.getInventory().setItem(integer, itemStack);
+
+                }
+//                player.updateInventory();
             });
         }
     }

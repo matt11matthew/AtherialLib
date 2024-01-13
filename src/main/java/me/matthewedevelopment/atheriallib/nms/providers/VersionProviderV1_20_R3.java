@@ -15,21 +15,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 
-public class VersionProviderV1_20_R2 extends VersionProvider {
+public class VersionProviderV1_20_R3 extends VersionProvider {
     private NbtAPI nbtAPI;
 
 
-    public VersionProviderV1_20_R2(AtherialLib atherialPlugin) {
-        super(Version.V1_20_R2,atherialPlugin);
+    public VersionProviderV1_20_R3(AtherialLib atherialPlugin) {
+        super(Version.V1_20_R3,atherialPlugin);
         this.nbtAPI = new NbtAPI() {
             @Override
             public Version getVersion() {
-                return Version.V1_20_R2;
+                return Version.V1_20_R3;
             }
 
             @Override
             public VersionProvider getVersionProvider() {
-                return VersionProviderV1_20_R2.this;
+                return VersionProviderV1_20_R3.this;
             }
 
             @Override
