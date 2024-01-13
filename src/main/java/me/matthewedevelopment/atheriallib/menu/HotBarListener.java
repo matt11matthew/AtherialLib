@@ -58,6 +58,7 @@ public class HotBarListener  implements Listener {
             }
             HotBarMenu hotBarMenu = HotBarMenu.get((Player) event.getWhoClicked());
             if (hotBarMenu.getItemMap().containsKey(event.getSlot())){
+                if (hotBarMenu.isHidden(event.getSlot()))return;
                 event.setCancelled(true);
                 event.setResult(Event.Result.DENY);
             }
@@ -78,6 +79,7 @@ public class HotBarListener  implements Listener {
         if (clickType==null)return;
         HotBarMenu hotBarMenu = HotBarMenu.get(event.getPlayer());
         if (hotBarMenu.getItemMap().containsKey(slotMap.getOrDefault(event.getPlayer().getUniqueId(), -1))) {
+            if (hotBarMenu.isHidden(slotMap.get(event.getPlayer().getUniqueId())))return;
             OnHotBarAction orDefault = hotBarMenu.getActionMap().getOrDefault(slotMap.getOrDefault(event.getPlayer().getUniqueId(), -1), null);
             if (orDefault==null)return;
             event.setCancelled(true);

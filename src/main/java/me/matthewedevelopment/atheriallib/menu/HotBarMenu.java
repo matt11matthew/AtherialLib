@@ -45,6 +45,10 @@ public class HotBarMenu {
             actionMap.remove(slot);
         }
     }
+
+    public boolean  isHidden(Integer slot) {
+        return hiddenList.contains(slot);
+    }
     public void show() {
         update();
     }
