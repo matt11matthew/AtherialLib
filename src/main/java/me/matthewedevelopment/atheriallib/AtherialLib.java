@@ -22,6 +22,7 @@ import me.matthewedevelopment.atheriallib.events.jump.PlayerJumpListener;
 import me.matthewedevelopment.atheriallib.item.AtherialItemAPI;
 import me.matthewedevelopment.atheriallib.item.AtherialItemBuilder;
 import me.matthewedevelopment.atheriallib.menu.HotBarListener;
+import me.matthewedevelopment.atheriallib.menu.gui.AtherialMenuRegistry;
 import me.matthewedevelopment.atheriallib.message.message.ActionBarMessage;
 import me.matthewedevelopment.atheriallib.message.message.ChatMessage;
 import me.matthewedevelopment.atheriallib.message.message.MessageTitle;
@@ -63,6 +64,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     public abstract void onStop();
 
     private static AtherialLib instance;
+    private AtherialMenuRegistry atherialMenuRegistry;
     private SpiGUI menu;
     public abstract void initDependencies();
 
@@ -143,13 +145,15 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         AtherialItemAPI.setAtherialLib(this);
         getServer().getPluginManager().registerEvents(this, this);
         this.menu=  new SpiGUI(this);
+
         this.profileManager = new AtherialProfileManager(this);
         getServer().getPluginManager().registerEvents(  this.profileManager, this);
 
         this.dependencyManager.enableDependencies();
 
         registerListener(new PlayerJumpListener());
-
+        atherialMenuRegistry = new AtherialMenuRegistry();
+        atherialMenuRegistry.start();
         this.onStart();
 
 
@@ -170,6 +174,10 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
             }, 20L, 20); // Schedule this to run every 5 minutes, for example
         }
 
+    }
+
+    public AtherialMenuRegistry getMenuRegistry() {
+        return atherialMenuRegistry;
     }
 
     public abstract void registerTypes();
