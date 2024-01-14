@@ -1,5 +1,6 @@
 package me.matthewedevelopment.atheriallib;
 
+import me.matthewedevelopment.atheriallib.chat.ChatPromptHandler;
 import me.matthewedevelopment.atheriallib.command.AnnotationlessAtherialCommand;
 import me.matthewedevelopment.atheriallib.command.AtherialCommand;
 import me.matthewedevelopment.atheriallib.command.spigot.AtherialLibSpigotCommand;
@@ -42,6 +43,8 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Slime;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import spigui.SpiGUI;
@@ -76,6 +79,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
 
     protected AtherialProfileManager profileManager;
 
+    protected ChatPromptHandler chatPromptHandler;
 
     public AtherialLib() {
         instance = this;
@@ -88,7 +92,11 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         AtherialTitle.setAtherialPlugin(this);
     }
 
-    protected void registerListener(Listener listener){
+    public ChatPromptHandler getChatPromptHandler() {
+        return chatPromptHandler;
+    }
+
+    public void registerListener(Listener listener){
         Bukkit.getPluginManager().registerEvents(listener, this);
     }
 
@@ -154,6 +162,9 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         registerListener(new PlayerJumpListener());
         atherialMenuRegistry = new AtherialMenuRegistry();
         atherialMenuRegistry.start();
+
+        this.chatPromptHandler= new ChatPromptHandler();
+        registerListener(chatPromptHandler);
         this.onStart();
 
 
@@ -165,6 +176,10 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
                 @Override
                 public void run() {
                     for (World world : Bukkit.getServer().getWorlds()) {
+                        if (!slimesEnabled){
+                            world.getEntitiesByClass(Slime.class).forEach(Entity::remove);
+                        }
+
                         world.setStorm(false);
                         world.setThundering(false);
                         world.setTime(500);
@@ -174,6 +189,16 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
             }, 20L, 20); // Schedule this to run every 5 minutes, for example
         }
 
+    }
+
+    private boolean slimesEnabled = false;
+
+    public boolean isSlimesEnabled() {
+        return slimesEnabled;
+    }
+
+    public void setSlimesEnabled(boolean slimesEnabled) {
+        this.slimesEnabled = slimesEnabled;
     }
 
     public AtherialMenuRegistry getMenuRegistry() {
