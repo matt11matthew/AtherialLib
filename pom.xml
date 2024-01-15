@@ -80,6 +80,13 @@
             <version>1.20.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>luckperms</groupId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/LuckPerms.jar</systemPath>
+            <artifactId>luckperms</artifactId>
+        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>mysql</groupId>-->
 <!--            <artifactId>mysql-connector-java</artifactId>-->
