@@ -50,8 +50,8 @@ public class ChatPromptHandler  implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         if(this.listeningMap.containsKey(event.getPlayer().getUniqueId())){
             ChatPrompt chatPrompt = this.listeningMap.get(event.getPlayer().getUniqueId());
-            chatPrompt.getChat().onTimeout(Optional.empty());
             this.listeningMap.remove(event.getPlayer().getUniqueId());
+            chatPrompt.getChat().onTimeout(Optional.empty());
         }
     }
     public boolean hasPrompt(Player player) {
@@ -66,17 +66,17 @@ public class ChatPromptHandler  implements Listener {
             ChatPrompt chatPrompt = this.listeningMap.get(event.getPlayer().getUniqueId());
             String lowerCase = baseMessage.toLowerCase();
             if (System.currentTimeMillis()>chatPrompt.getTimeout()){
-                chatPrompt.getChat().onTimeout(Optional.of(event.getPlayer()));
                 this.listeningMap.remove(event.getPlayer().getUniqueId());
+                chatPrompt.getChat().onTimeout(Optional.of(event.getPlayer()));
                 return;
             }
             if(lowerCase.equals("n")||lowerCase.equals("cancel")) {
-                chatPrompt.getChat().onCancel(event.getPlayer());
                 this.listeningMap.remove(event.getPlayer().getUniqueId());
+                chatPrompt.getChat().onCancel(event.getPlayer());
                 return;
             } else {
-                chatPrompt.getChat().onChat(event.getPlayer(),event.getMessage());
                 this.listeningMap.remove(event.getPlayer().getUniqueId());
+                chatPrompt.getChat().onChat(event.getPlayer(),event.getMessage());
             }
         }
     }
