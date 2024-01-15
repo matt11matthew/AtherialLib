@@ -166,8 +166,11 @@ public class AtherialProfileManager  implements Listener {
                 System.out.println("ERROR COULD NOT FIND PROFILE");
                 return;
             }
-            AtherialProfileQuitEvent atherialProfileQuitEvent = new AtherialProfileQuitEvent(event.getPlayer(),profile);
-            Bukkit.getPluginManager().callEvent(atherialProfileQuitEvent);
+            AtherialTasks.runSync(() -> {
+
+                AtherialProfileQuitEvent atherialProfileQuitEvent = new AtherialProfileQuitEvent(event.getPlayer(),profile);
+                Bukkit.getPluginManager().callEvent(atherialProfileQuitEvent);
+            });
 
            AtherialTasks.runAsync(() -> { profile.saveToDatabaseSync(getConnection());});
             playerDataMap.get(value.getSimpleName()).remove(event.getPlayer().getUniqueId());
