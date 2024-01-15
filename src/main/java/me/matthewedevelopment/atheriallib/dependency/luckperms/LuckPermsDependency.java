@@ -40,6 +40,17 @@ public class LuckPermsDependency  extends Dependency {
         return prefix;
     }
 
+    public Rank getRank(Player player){
+        PlayerAdapter<Player> playerAdapter = luckPerms.getPlayerAdapter(Player.class);
+        if (playerAdapter!=null){
+
+            CachedMetaData metaData = playerAdapter.getMetaData((Player) player);
+            if (metaData!=null){
+                return new Rank(metaData.getPrimaryGroup(), metaData.getPrefix(), metaData.getWeight());
+            }
+        }
+        return null;
+    }
     public static String getPrefixedName(Player player) {
         if (player==null)return "NULL";
         LuckPermsDependency luckPermsDependency = get();

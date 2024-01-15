@@ -1,5 +1,6 @@
 package me.matthewedevelopment.atheriallib.utilities;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.util.regex.Matcher;
@@ -42,7 +43,9 @@ public class ChatUtils {
             matcher.appendReplacement(buffer, "§x§" + group.charAt(0) + '§' + group.charAt(1) + '§' + group.charAt(2) + '§' + group.charAt(3) + '§' + group.charAt(4) + '§' + group.charAt(5));
         }
 
-        return matcher.appendTail(buffer).toString();
+        String finalString =  matcher.appendTail(buffer).toString();
+
+       return ChatColor.translateAlternateColorCodes('&', finalString);
     }
 
 //    public static String translateHexColorCodes(String message) {
