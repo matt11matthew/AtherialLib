@@ -1,6 +1,5 @@
 package me.matthewedevelopment.atheriallib.utilities;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.util.regex.Matcher;
@@ -16,24 +15,53 @@ public class ChatUtils {
         }
         sender.sendMessage(message);
     }
+    public static String getMessageFromArgs(String[] args) {
+        return getMessageFromArgs(0, args);
+
+    }
+    public static String getMessageFromArgs(int start, String[] args) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = start; i < args.length; i++) {
+            stringBuilder.append(args[i]);
+            if (i < args.length-1) {
+                stringBuilder.append(' ');
+            }
+        }
+        return stringBuilder.toString();
+    }
+    private static final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
 
     public static String translateHexColorCodes(String message) {
-        final char COLOR_CHAR = '§';
-        // This pattern matches hex color codes in the format "#FFFFFF"
-        final Pattern hexPattern = Pattern.compile("#[a-fA-F0-9]{6}");
-        Matcher matcher = hexPattern.matcher(message);
+        if (message==null||message.isEmpty())return message;
+        char colorChar = '§';
+        Matcher matcher = HEX_PATTERN.matcher(message);
+        StringBuffer buffer = new StringBuffer(message.length() + 32);
 
-        StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
-        while (matcher.find()) {
-            String group = matcher.group();
-            // Replace the hex color code with the Spigot format
-            matcher.appendReplacement(buffer, COLOR_CHAR + "x"
-                    + COLOR_CHAR + group.charAt(1) + COLOR_CHAR + group.charAt(2)
-                    + COLOR_CHAR + group.charAt(3) + COLOR_CHAR + group.charAt(4)
-                    + COLOR_CHAR + group.charAt(5) + COLOR_CHAR + group.charAt(6));
+        while(matcher.find()) {
+            String group = matcher.group(1);
+            matcher.appendReplacement(buffer, "§x§" + group.charAt(0) + '§' + group.charAt(1) + '§' + group.charAt(2) + '§' + group.charAt(3) + '§' + group.charAt(4) + '§' + group.charAt(5));
         }
-        return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
+
+        return matcher.appendTail(buffer).toString();
     }
+
+//    public static String translateHexColorCodes(String message) {
+//        final char COLOR_CHAR = '§';
+//        // This pattern matches hex color codes in the format "#FFFFFF"
+//        final Pattern hexPattern = Pattern.compile("#[a-fA-F0-9]{6}");
+//        Matcher matcher = hexPattern.matcher(message);
+//
+//        StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
+//        while (matcher.find()) {
+//            String group = matcher.group();
+//            // Replace the hex color code with the Spigot format
+//            matcher.appendReplacement(buffer, COLOR_CHAR + "x"
+//                    + COLOR_CHAR + group.charAt(1) + COLOR_CHAR + group.charAt(2)
+//                    + COLOR_CHAR + group.charAt(3) + COLOR_CHAR + group.charAt(4)
+//                    + COLOR_CHAR + group.charAt(5) + COLOR_CHAR + group.charAt(6));
+//        }
+//        return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
+//    }
     public static String splitSentence(String sentence, int maxLineLength) {
         if (maxLineLength < 2) {
             return sentence;
