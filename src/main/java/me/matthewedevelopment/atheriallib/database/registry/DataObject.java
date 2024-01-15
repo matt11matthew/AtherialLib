@@ -112,6 +112,9 @@ public abstract class DataObject<T extends DataObject<T>> {
                         case VARCHAR: // Handle VARCHAR
                             statement.setString(updateParameterIndex, column.getValueAsString());
                             break;
+                        case LONG:
+                            statement.setLong(updateParameterIndex, column.getValueAsLong());
+                            break;
                         default:
                             // Handle other data types as needed
                             break;

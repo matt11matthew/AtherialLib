@@ -5,6 +5,7 @@ import me.matthewedevelopment.atheriallib.utilities.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -53,23 +54,29 @@ public class ChatPromptHandler  implements Listener {
             this.listeningMap.remove(event.getPlayer().getUniqueId());
         }
     }
+    public boolean hasPrompt(Player player) {
+        return listeningMap.containsKey(player.getUniqueId());
+    }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
         if (this.listeningMap.containsKey(event.getPlayer().getUniqueId())){
             event.setCancelled(true);
             String baseMessage = event.getMessage();
             ChatPrompt chatPrompt = this.listeningMap.get(event.getPlayer().getUniqueId());
             String lowerCase = baseMessage.toLowerCase();
+            if (System.currentTimeMillis()>chatPrompt.getTimeout()){
+                chatPrompt.getChat().onTimeout(Optional.of(event.getPlayer()));
+                this.listeningMap.remove(event.getPlayer().getUniqueId());
+                return;
+            }
             if(lowerCase.equals("n")||lowerCase.equals("cancel")) {
-                if (System.currentTimeMillis()>chatPrompt.getTimeout()){
-                    chatPrompt.getChat().onTimeout(Optional.of(event.getPlayer()));
-                    this.listeningMap.remove(event.getPlayer().getUniqueId());
-                    return;
-                }
                 chatPrompt.getChat().onCancel(event.getPlayer());
                 this.listeningMap.remove(event.getPlayer().getUniqueId());
                 return;
+            } else {
+                chatPrompt.getChat().onChat(event.getPlayer(),event.getMessage());
+                this.listeningMap.remove(event.getPlayer().getUniqueId());
             }
         }
     }
