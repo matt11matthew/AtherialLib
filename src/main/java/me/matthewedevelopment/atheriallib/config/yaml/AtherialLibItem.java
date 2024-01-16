@@ -1,13 +1,11 @@
 package me.matthewedevelopment.atheriallib.config.yaml;
 
-import spigui.item.ItemBuilder;
-import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.io.StringReplacer;
 import me.matthewedevelopment.atheriallib.utilities.ChatUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
+import spigui.item.ItemBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +81,7 @@ public class AtherialLibItem {
     }
     public ItemStack build(StringReplacer stringReplacer) {
         ItemStack itemStack=null;
+        amount = 1;
         if (data!=-1){
             itemStack = new ItemStack(type, amount, (short) data);
         } else {
