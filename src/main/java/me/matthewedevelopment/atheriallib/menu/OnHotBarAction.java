@@ -7,5 +7,5 @@ import java.util.Optional;
 
 @FunctionalInterface
 public interface OnHotBarAction {
-    void on(Player player, HotBarMenu hotBarMenu, int slot, HotBarClickType clickType, Optional<Block> block);
+    boolean on(Player player, HotBarMenu hotBarMenu, int slot, HotBarClickType clickType, Optional<Block> block);
 }

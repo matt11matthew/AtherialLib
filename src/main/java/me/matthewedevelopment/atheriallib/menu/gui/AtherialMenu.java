@@ -101,8 +101,16 @@ public abstract class AtherialMenu<C extends YamlConfig> {
         });
     }
 
+    private boolean updating = false;
+
+    public boolean isUpdating() {
+        return updating;
+    }
+
     public void firstUpdate() {
+        updating = true;
         update();
         menu.refreshInventory(player);
+        updating = false;
     }
 }

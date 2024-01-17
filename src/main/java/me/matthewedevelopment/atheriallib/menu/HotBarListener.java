@@ -82,15 +82,27 @@ public class HotBarListener  implements Listener {
             if (hotBarMenu.isHidden(slotMap.get(event.getPlayer().getUniqueId())))return;
             OnHotBarAction orDefault = hotBarMenu.getActionMap().getOrDefault(slotMap.getOrDefault(event.getPlayer().getUniqueId(), -1), null);
             if (orDefault==null)return;
-            event.setCancelled(true);
-            event.setUseInteractedBlock(Event.Result.DENY);
-            event.setUseItemInHand(Event.Result.DENY);
 
-            if (isDelayed(event.getPlayer())) return;
+            if (isDelayed(event.getPlayer())) {
+                event.setCancelled(true);
+                event.setUseInteractedBlock(Event.Result.DENY);
+                event.setUseItemInHand(Event.Result.DENY);
+
+                return;
+            }
 
             addDelay(event.getPlayer(), 500L);
             Optional<Block> blockOptional =(event.getAction()== Action.RIGHT_CLICK_BLOCK||event.getAction()==Action.LEFT_CLICK_BLOCK)? Optional.ofNullable(event.getClickedBlock()) : Optional.empty();
-            orDefault.on(event.getPlayer(),hotBarMenu, slotMap.get(event.getPlayer().getUniqueId()),clickType, blockOptional);
+            boolean on = orDefault.on(event.getPlayer(), hotBarMenu, slotMap.get(event.getPlayer().getUniqueId()), clickType, blockOptional);
+            if (!on){
+                event.setCancelled(false);
+                event.setUseInteractedBlock(Event.Result.ALLOW);
+                event.setUseItemInHand(Event.Result.ALLOW);
+            } else {
+                event.setCancelled(true);
+                event.setUseInteractedBlock(Event.Result.DENY);
+                event.setUseItemInHand(Event.Result.DENY);
+            }
         }
     }
 

@@ -19,7 +19,7 @@ public class AtherialMenuRegistry {
     }
 
     public  void start() {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(AtherialLib.getInstance(),() -> updateGUI(),10L,10L);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(AtherialLib.getInstance(),() -> updateGUI(),20L,20L);
     }
 
     public Map<UUID, AtherialMenu> getMenuMap() {
