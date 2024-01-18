@@ -5,6 +5,10 @@ import me.matthewedevelopment.atheriallib.dependency.Dependency;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.cacheddata.CachedMetaData;
+import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.Node;
+import net.luckperms.api.node.NodeType;
+import net.luckperms.api.node.types.InheritanceNode;
 import net.luckperms.api.platform.PlayerAdapter;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -38,6 +42,32 @@ public class LuckPermsDependency  extends Dependency {
             prefix= ChatColor.GRAY+"";
         }
         return prefix;
+    }
+
+    public void setRank(Player player, String rank) {
+        this.luckPerms.getUserManager().modifyUser(player.getUniqueId(), (User user) -> {
+
+            // Remove all other inherited groups the user had before.
+            user.data().clear(NodeType.INHERITANCE.predicate(inheritanceNode -> inheritanceNode.getGroupName().equalsIgnoreCase(rank)));
+
+            // Create a node to add to the player.
+            Node node = InheritanceNode.builder(rank).build();
+
+            // Add the node to the user.
+            user.data().add(node);
+
+        });
+    }
+    public void removeRank(Player player, String rank) {
+        this.luckPerms.getUserManager().modifyUser(player.getUniqueId(), (User user) -> {
+
+            // Remove all other inherited groups the user had before.
+            user.data().clear(NodeType.INHERITANCE.predicate(inheritanceNode ->{
+                System.err.println( inheritanceNode.getGroupName());
+              return   inheritanceNode.getGroupName().equalsIgnoreCase(rank);
+            }));
+
+        });
     }
 
     public Rank getRank(Player player){

@@ -15,6 +15,8 @@ public class NumberUtils {
             return false;
         }
     }
+
+
     public static String formatMoney(double number) {
         if (number < 1000) {
             return String.format("%.0f", number); // No formatting for numbers less than 1000
