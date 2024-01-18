@@ -55,6 +55,32 @@ public class AtherialLibItem {
         return this;
     }
 
+    public AtherialLibItem(AtherialLibItem clone) {
+        this.type=clone.type;
+        this.displayName=clone.displayName;
+        this.lore=clone.lore;
+        this.amount=clone.amount;
+        this.data=clone.data;
+        this.skullOwner=clone.skullOwner;
+        this.slot=clone.slot;
+
+    }
+    /*
+        private Material type;
+    private int amount;
+    private String displayName;
+    private List<String> lore;
+
+    public int getData() {
+        return data;
+    }
+
+    private int data = -1;
+
+    private String skullOwner;
+
+    private int slot = -1;
+     */
     public AtherialLibItem() {
     }
     public AtherialLibItem(ItemStack itemStack) {
@@ -71,6 +97,7 @@ public class AtherialLibItem {
             this.displayName =itemMeta.hasDisplayName()?itemMeta.getDisplayName():null;
         }
     }
+
 
     public int getSlot() {
         return slot;

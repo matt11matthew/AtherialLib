@@ -4,18 +4,19 @@ import me.matthewedevelopment.atheriallib.config.yaml.AtherialLibItem;
 import me.matthewedevelopment.atheriallib.config.yaml.ConfigSerializable;
 import me.matthewedevelopment.atheriallib.config.yaml.SerializeType;
 import org.bukkit.Material;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class AtherialLibItemSerializable implements ConfigSerializable<AtherialLibItem> {
 
     @Override
     public Map<String, Object> serializeComplex(AtherialLibItem item) {
         Map<String, Object> serializedData = new HashMap<>();
-        serializedData.put("type", item.getType().toString());  // Mandatory
-
+        if (item.getType()!=null) {
+            serializedData.put("type", item.getType().toString());  // Mandatory
+        }
         // Optional fields
         if (item.getAmount()>1){
             serializedData.put("amount", item.getAmount());
@@ -45,7 +46,7 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
 
     @Override
     public AtherialLibItem deserializeComplex(Map<String, Object> map) {
-        Material type = Material.valueOf((String) map.get("type"));  // Mandatory
+        Material type =map.containsKey("type")?Material.valueOf((String) map.get("type")):null;  // Mandatory
 
 
         boolean saveData = false;

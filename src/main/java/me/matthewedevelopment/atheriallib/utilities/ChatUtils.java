@@ -161,9 +161,9 @@ public class ChatUtils {
                 stringBuilder.append(formatEnum(s));
                 stringBuilder.append(" ");
             }
-            return stringBuilder.toString();
+            return stringBuilder.toString().trim();
         } else {
-            return input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
+            return input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase().trim();
         }
     }
     public static String colorize(String message){

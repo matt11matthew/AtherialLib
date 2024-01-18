@@ -72,7 +72,9 @@ public  class YamlConfig<A extends AtherialLib> implements Config {
                                     } else if (configSection instanceof Map) {
                                         map = (Map<String, Object>) configSection;
                                     } else {
+                                        System.err.println(configSection);
                                         throw new IllegalArgumentException("Unsupported configuration object type");
+
                                     }
                                     Object deserializedObject = serializer.deserializeComplex(map);
                                     field.set(this, deserializedObject);
