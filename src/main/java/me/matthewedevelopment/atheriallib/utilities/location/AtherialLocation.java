@@ -50,6 +50,16 @@ public class AtherialLocation {
         return new Location(Bukkit.getWorld(this.world),x,y,z,pitch,yaw);
     }
 
+    public String toFancyString() {
+        StringBuilder output = new StringBuilder();
+        if (this.world!=null){
+            output.append(world).append(',').append(' ');
+        }
+        output.append((int)x).append(',').append(' ')
+                .append((int)y).append(',').append(' ')
+                .append((int)z);
+        return output.toString();
+    }
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
