@@ -27,9 +27,18 @@ public abstract class DataObject<T extends DataObject<T>> {
 
 
     public abstract List<DataColumn> getDefaultColumns();
+    public List<DataColumn> getOptionalColumns() {
+        return new ArrayList<>();
+    }
     public List<DataColumn> getColumns() {
         List<DataColumn> columns = new ArrayList<>();
         columns.add(new DataColumn("uuid", DataColumnType.VARCHAR, ""));
+
+        List<DataColumn> optionalColumns = getOptionalColumns();
+        if (optionalColumns!=null&&!optionalColumns.isEmpty()){
+
+            columns.addAll(optionalColumns);
+        }
         columns.addAll(getDefaultColumns());
         return columns;
     }
@@ -53,8 +62,13 @@ public abstract class DataObject<T extends DataObject<T>> {
 
 
 
+        loadOptionalFromRS(resultSet);
 
         return loadResultFromSet(resultSet);
+    }
+
+    public void loadOptionalFromRS(ResultSet resultSet) throws SQLException {
+
     }
 
     public abstract T loadResultFromSet(ResultSet resultSet);

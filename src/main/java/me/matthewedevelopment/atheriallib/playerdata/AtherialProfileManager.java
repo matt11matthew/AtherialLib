@@ -86,7 +86,10 @@ public class AtherialProfileManager  implements Listener {
                 for (Class<? extends AtherialProfile> value : profiles.values()) {
                     AtherialProfile profile = getProfile(value, onlinePlayer);
                     if (profile!=null){
-                        AtherialTasks.runAsync(() ->   profile.saveToDatabaseSync(getConnection()));
+                        AtherialTasks.runAsync(() ->   {
+                            profile.preSave(onlinePlayer, PreSaveType.INTERVAL);
+                            profile.saveToDatabaseSync(getConnection());
+                        });
 //                        saveData(onlinePlayer, profile, false);
                     }
                 }
@@ -172,6 +175,7 @@ public class AtherialProfileManager  implements Listener {
                 Bukkit.getPluginManager().callEvent(atherialProfileQuitEvent);
             });
 
+            profile.preSave(event.getPlayer(), PreSaveType.QUIT);
            AtherialTasks.runAsync(() -> { profile.saveToDatabaseSync(getConnection());});
             playerDataMap.get(value.getSimpleName()).remove(event.getPlayer().getUniqueId());
             System.out.println("Removed player data for " + event.getPlayer().getName() );

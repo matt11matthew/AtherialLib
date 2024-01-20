@@ -37,6 +37,8 @@ import me.matthewedevelopment.atheriallib.nms.VersionProvider;
 import me.matthewedevelopment.atheriallib.playerdata.AtherialProfile;
 import me.matthewedevelopment.atheriallib.playerdata.AtherialProfileManager;
 import me.matthewedevelopment.atheriallib.utilities.AtherialTasks;
+import me.matthewedevelopment.atheriallib.utilities.location.AtherialLocation;
+import me.matthewedevelopment.atheriallib.utilities.location.AtherialLocationSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.World;
@@ -224,6 +226,8 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
 
         CustomTypeRegistry.registerType(SelfCommandConfig.Usage.class, new UsageSerializer());
         CustomTypeRegistry.registerType(SelfCommandConfig.class, new SelfCommandConfigSerializer());
+
+        CustomTypeRegistry.registerType(AtherialLocation.class, new AtherialLocationSerializer());
 
     }
 

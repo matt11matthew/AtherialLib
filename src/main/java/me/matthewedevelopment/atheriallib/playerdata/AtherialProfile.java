@@ -44,6 +44,7 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
     public void updateSync() {
         Connection connection = AtherialLib.getInstance().getProfileManager().getConnection();
         if (connection!=null){
+
             saveToDatabaseSync(connection);
         }
     }
@@ -53,6 +54,8 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
             runnable.run();
         });
     }
+
+    public abstract void preSave(Player player, PreSaveType type);
     public abstract T loadDefault(Player player);
 
     public abstract T loadResultFromSet(ResultSet resultSet);
