@@ -16,6 +16,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -103,10 +104,95 @@ public class AtherialProfileManager  implements Listener {
     }
 
     public void stop(){
+        saveAllProfiles();
 
     }
 
+    public void saveAllProfiles()  {
+        Connection connection = getConnection();
+        if (connection == null) return;
 
+
+        try {
+            for (Map.Entry<String, Map<UUID, AtherialProfile<?>>> value : playerDataMap.entrySet()) {
+
+
+                PreparedStatement statement = null;
+
+                for (AtherialProfile<?> atherialProfile : value.getValue().values()) {
+                    StringBuilder updateQuery = new StringBuilder("UPDATE ").append(atherialProfile.getKey()).append(" SET ");
+
+// Add each column to the update query
+                    List<ProfileColumn> columns = atherialProfile.getColumns();
+                    for (ProfileColumn column : columns) {
+                        if (!column.getName().equalsIgnoreCase("uuid")) { // Exclude the UUID column from the update
+                            updateQuery.append(column.getName()).append(" = ?, ");
+                        }
+                    }
+
+// Remove the trailing comma and space from the update query
+                    if (columns.size() > 0) {
+                        updateQuery.delete(updateQuery.length() - 2, updateQuery.length());
+                    }
+
+// Add the WHERE clause to specify which row to update
+                    updateQuery.append(" WHERE uuid = ?;");
+
+                    if (AtherialLib.getInstance().isDebug()) {
+                        System.err.println(updateQuery);
+                    }
+
+// Now you have the update query, and you can use it to update the existing row
+                    statement = connection.prepareStatement(updateQuery.toString());
+
+// Set values for each column based on the profile's schema requirements (excluding UUID)
+                    int updateParameterIndex = 1; // Start at the first parameter
+                    for (ProfileColumn column : columns) {
+                        if (!column.getName().equalsIgnoreCase("uuid")) {
+                            // Set the parameter value based on the column's data type
+                            switch (column.getType()) {
+                                case LONG:
+                                    statement.setLong(updateParameterIndex, column.getValueAsLong());
+                                    break;
+                                case TEXT:
+                                    statement.setString(updateParameterIndex, column.getValueAsString());
+                                    break;
+                                case INTEGER:
+                                    statement.setInt(updateParameterIndex, column.getValueAsInt());
+                                    break;
+                                case BOOLEAN:
+                                    statement.setBoolean(updateParameterIndex, column.getValueAsBoolean());
+                                    break;
+                                case VARCHAR: // Handle VARCHAR
+                                    statement.setString(updateParameterIndex, column.getValueAsString());
+                                    break;
+                                default:
+                                    // Handle other data types as needed
+                                    break;
+                            }
+
+                            updateParameterIndex++;
+                        }
+                    }
+
+                    statement.setString(updateParameterIndex, atherialProfile.getUuid().toString());
+
+                    statement.addBatch();
+                }
+                statement.executeBatch();
+
+                statement.close();
+
+
+
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 
 
     public Connection getConnection() {
