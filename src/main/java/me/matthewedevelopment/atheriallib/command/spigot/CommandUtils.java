@@ -34,6 +34,15 @@ public class CommandUtils {
             AtherialLib.getInstance().getCommandConfig().NO_PERMISSION_MESSAGE.send(sender);
         }
     }
+    public static void sendInvalidNumberMessage(CommandSender sender, String number) {
+        AtherialLib.getInstance().getCommandConfig().INVALID_NUM_WITH.send(sender, s -> colorize(s).replace("%num%", number));
+    }
+    public static void sendInvalidNumberMessage(CommandSender sender) {
+        AtherialLib.getInstance().getCommandConfig().INVALID_NUM.send(sender);
+    }
+    public static void sendPlayerOfflineMessage(CommandSender sender, String name) {
+        AtherialLib.getInstance().getCommandConfig().P_DOESNT_EXIST.send(sender, s -> colorize(s).replace("%player%", name));
+    }
 
     public static void sendNoPermissionMessage(CommandSender sender) {
         sendNoPermissionMessage(sender, null);

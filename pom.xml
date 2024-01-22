@@ -6,7 +6,7 @@
 
     <groupId>me.matthewedevelopment</groupId>
     <artifactId>atheriallib</artifactId>
-    <version>0.27</version>
+    <version>0.28</version>
     <packaging>jar</packaging>
 
     <name>AtherialLib</name>
@@ -86,6 +86,11 @@
             <scope>system</scope>
             <systemPath>${basedir}/lib/LuckPerms.jar</systemPath>
             <artifactId>luckperms</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-api</artifactId>
+            <version>4.15.0</version>
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>mysql</groupId>-->
@@ -194,6 +199,11 @@
             <version>1</version>
             <groupId>vault</groupId>
             <artifactId>vault</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-text-serializer-legacy</artifactId>
+            <version>4.15.0</version>
         </dependency>
 
 
