@@ -20,6 +20,7 @@ import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.seriali
 import me.matthewedevelopment.atheriallib.database.mysql.MySqlHandler;
 import me.matthewedevelopment.atheriallib.dependency.DependencyManager;
 import me.matthewedevelopment.atheriallib.events.jump.PlayerJumpListener;
+import me.matthewedevelopment.atheriallib.handler.HandlerManager;
 import me.matthewedevelopment.atheriallib.item.AtherialItemAPI;
 import me.matthewedevelopment.atheriallib.item.AtherialItemBuilder;
 import me.matthewedevelopment.atheriallib.menu.HotBarListener;
@@ -61,6 +62,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     protected VersionProvider versionProvider;
 
     protected DependencyManager dependencyManager;
+    protected HandlerManager handlerManager;
 
     public static AtherialLib getInstance() {
         return instance;
@@ -74,6 +76,10 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     public abstract void initDependencies();
 
     private MySqlHandler sqlHandler;
+
+    public HandlerManager getHandlerManager() {
+        return handlerManager;
+    }
 
     private  boolean debug;
 
@@ -91,6 +97,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         this.nmsRequired = false;
         initDependencies();
         AtherialTasks.setPlugin(this);
+        handlerManager =new HandlerManager(this);
         AtherialTitle.setAtherialPlugin(this);
     }
 
@@ -125,11 +132,15 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
 
         return this;
     }
+
     public VersionProvider getVersionProvider() {
         return versionProvider;
     }
 
 
+    public void registerHandlers() {
+
+    }
     @Override
     public void onEnable() {
         if(!loadNMS()){
@@ -139,6 +150,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
                 return;
             }
         }
+
         defaultRegisterTypes();
         registerTypes();
         this.commandConfig = new AtherialLibDefaultCommandConfig(this);
@@ -167,7 +179,9 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
 
         this.chatPromptHandler= new ChatPromptHandler();
         registerListener(chatPromptHandler);
+        registerHandlers();
         this.onStart();
+        handlerManager.enableHandlers();
 
 
         this.profileManager.load();
@@ -288,6 +302,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         profileManager.stop();
+        handlerManager.disableHandlers();
         this.onStop();
         if (sqlHandler.isEnabled()) {
             sqlHandler.stop();
