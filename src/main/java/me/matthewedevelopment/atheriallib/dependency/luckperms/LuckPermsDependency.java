@@ -13,6 +13,8 @@ import net.luckperms.api.platform.PlayerAdapter;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public class LuckPermsDependency  extends Dependency {
     public LuckPermsDependency(AtherialLib plugin) {
         super("LuckPermsDependency", plugin);
@@ -99,4 +101,11 @@ public class LuckPermsDependency  extends Dependency {
     public void onDisable() {
 
     }
+
+
+    public static boolean hasPermission(UUID uuid, String perm) {
+        LuckPermsDependency luckPermsDependency = get();
+        return luckPermsDependency.luckPerms.getUserManager().getUser(uuid).getCachedData().getPermissionData().checkPermission(perm).asBoolean();
+    }
+
 }

@@ -6,15 +6,13 @@ package me.matthewedevelopment.atheriallib.dependency.vault;
 
 import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.dependency.Dependency;
-import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.Bukkit;
+import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
+import net.milkbowl.vault.permission.Permission;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import java.util.logging.Logger;
-import net.milkbowl.vault.permission.Permission;
-import net.milkbowl.vault.economy.Economy;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class VaultDependency extends Dependency
 {
@@ -50,6 +48,10 @@ public class VaultDependency extends Dependency
         EconomyResponse withdraw = withdraw(player, cost);
         return withdraw!=null&&withdraw.type== EconomyResponse.ResponseType.SUCCESS;
 
+    }
+    public boolean hasPermission(String world, OfflinePlayer player, String perm) {
+
+       return permission.playerHas(world, player,perm);
     }
     public String getPrimaryGroup(final Player player) {
         return this.permission.getPrimaryGroup(player);
@@ -113,6 +115,7 @@ public class VaultDependency extends Dependency
             return false;
         }
         this.permission = (Permission)rsp.getProvider();
+        System.err.println("Permissions setup " + permission.toString());
         return this.permission != null;
     }
 }
