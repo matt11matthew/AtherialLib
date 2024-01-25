@@ -18,10 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by Matthew E on 12/5/2023 at 9:50 PM for the project AtherialLib
@@ -54,6 +51,24 @@ public class AtherialProfileManager  implements Listener {
         T t = clazz.getConstructor(UUID.class, String.class, boolean.class).newInstance(uniqueId, player.getName(), true);
                     T deserialize = t.deserialize(jsonObject);
          */
+
+    private List<String> LOADED = new ArrayList<>();
+
+    public void postLoadClazz(Class<? extends AtherialProfile> clazz) {
+        if (LOADED.contains(clazz.getSimpleName()))return;
+        registerProfileClass((Class<? extends AtherialProfile<?>>) clazz);
+        LOADED.add(clazz.getSimpleName());
+
+        atherialLib.getLogger().info("Loading new profile " + clazz.getSimpleName());
+        for (Class<? extends AtherialProfile> value : profiles.values()) {
+            if (LOADED.contains(value.getSimpleName()))continue;
+            atherialLib.getLogger().info("Loading " + value.getSimpleName() + " profile system....");
+            this.playerDataMap.put(value.getSimpleName(), new HashMap<>());
+            for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
+                loadDataSync(value, onlinePlayer);
+            }
+        }
+    }
     public void load() {
 //        if (!profiles.isEmpty()){
 //            this.bukkitConfig = new BukkitConfig("players.yml", this.atherialLib);
@@ -68,6 +83,7 @@ public class AtherialProfileManager  implements Listener {
         List<Class<? extends AtherialProfile>> profileClazzes = atherialLib.getProfileClazzes();
         for (Class<? extends AtherialProfile> profileClazz : profileClazzes) {
             registerProfileClass((Class<? extends AtherialProfile<?>>) profileClazz);
+            LOADED.add(profileClazz.getSimpleName());
         }
         for (Class<? extends AtherialProfile> value : profiles.values()) {
             atherialLib.getLogger().info("Loading " + value.getSimpleName() + " profile system....");
