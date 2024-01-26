@@ -185,6 +185,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
 
 
         this.profileManager.load();
+        onPostProfileLoad();
 
 
         if (debug) {
@@ -204,6 +205,9 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
                 }
             }, 20L, 20); // Schedule this to run every 5 minutes, for example
         }
+
+    }
+    public void onPostProfileLoad() {
 
     }
 
