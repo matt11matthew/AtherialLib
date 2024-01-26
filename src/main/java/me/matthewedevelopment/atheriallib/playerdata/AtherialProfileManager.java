@@ -7,7 +7,9 @@ import me.matthewedevelopment.atheriallib.playerdata.db.DatabaseTableManager;
 import me.matthewedevelopment.atheriallib.playerdata.db.MySQLDatabaseTableManager;
 import me.matthewedevelopment.atheriallib.playerdata.db.SQLiteDatabaseTableManager;
 import me.matthewedevelopment.atheriallib.utilities.AtherialTasks;
+import net.minecraft.server.v1_7_R4.ChatBaseComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -55,18 +57,25 @@ public class AtherialProfileManager  implements Listener {
     private List<String> LOADED = new ArrayList<>();
 
     public void postLoadClazz(Class<? extends AtherialProfile> clazz) {
-        if (LOADED.contains(clazz.getSimpleName()))return;
+        Bukkit.getConsoleSender().sendMessage(ChatColor.RED+"GOING " + clazz.getSimpleName());
+        if (LOADED.contains(clazz.getSimpleName())) {
+            System.err.println("ALREADY LOADED");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED+"Already loaded " + clazz.getSimpleName());
+            return;
+        }
         registerProfileClass((Class<? extends AtherialProfile<?>>) clazz);
-        LOADED.add(clazz.getSimpleName());
 
-        atherialLib.getLogger().info("Loading new profile " + clazz.getSimpleName());
-        for (Class<? extends AtherialProfile> value : profiles.values()) {
-            if (LOADED.contains(value.getSimpleName()))continue;
-            atherialLib.getLogger().info("Loading " + value.getSimpleName() + " profile system....");
-            this.playerDataMap.put(value.getSimpleName(), new HashMap<>());
-            for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
-                loadDataSync(value, onlinePlayer);
-            }
+        Bukkit.getConsoleSender().sendMessage(ChatColor.RED+"Loading new profile " + clazz.getSimpleName());
+        if (LOADED.contains(clazz.getSimpleName())) {
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED+"ALREADY profile " + clazz.getSimpleName());
+            return;
+        }
+        LOADED.add(clazz.getSimpleName());
+        atherialLib.getLogger().info("Loading " + clazz.getSimpleName() + " profile system....");
+        this.playerDataMap.put(clazz.getSimpleName(), new HashMap<>());
+        Bukkit.getConsoleSender().sendMessage(ChatColor.RED+"LOAD SYNC profile " + clazz.getSimpleName());
+        for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
+            loadDataSync(clazz, onlinePlayer);
         }
     }
     public void load() {
@@ -92,6 +101,7 @@ public class AtherialProfileManager  implements Listener {
                 loadDataSync(value, onlinePlayer);
             }
         }
+        atherialLib.onPostProfileLoad();
 //        if (bukkitConfig!=null){
 //
 //            bukkitConfig.saveConfiguration();

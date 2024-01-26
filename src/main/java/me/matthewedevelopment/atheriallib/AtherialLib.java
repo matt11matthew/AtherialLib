@@ -185,7 +185,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
 
 
         this.profileManager.load();
-        onPostProfileLoad();
+
 
 
         if (debug) {
