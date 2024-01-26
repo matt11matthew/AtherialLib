@@ -9,14 +9,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class HotBarListener  implements Listener {
     private Map<UUID, Integer> slotMap = new HashMap<>();
@@ -63,6 +61,11 @@ public class HotBarListener  implements Listener {
                 event.setResult(Event.Result.DENY);
             }
         }
+    }
+
+    @EventHandler
+    public void onPlayerDropItem(PlayerDropItemEvent event) {
+        if (HotBarMenu.hasHotBar(event.getPlayer()))event.setCancelled(true);
     }
 
     @EventHandler
