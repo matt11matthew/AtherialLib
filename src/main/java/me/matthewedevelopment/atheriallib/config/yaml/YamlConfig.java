@@ -8,12 +8,13 @@ import me.matthewedevelopment.atheriallib.utilities.AtherialTasks;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public  class YamlConfig<A extends AtherialLib> implements Config {
+public  class YamlConfig<A extends JavaPlugin> implements Config {
     private String path;
     private A plugin;
     private File file;
