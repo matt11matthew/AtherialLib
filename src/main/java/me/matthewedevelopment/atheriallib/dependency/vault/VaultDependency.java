@@ -62,7 +62,14 @@ public class VaultDependency extends Dependency
         this.economy.withdrawPlayer(offlinePlayer, this.getBalance(offlinePlayer));
         return this.economy.depositPlayer(offlinePlayer, balance);
     }
-    
+    public boolean safeDeposit(final OfflinePlayer offlinePlayer, final double amount) {
+        this.checkAccount(offlinePlayer);
+        EconomyResponse economyResponse = this.economy.depositPlayer(offlinePlayer, amount);
+        if (economyResponse!=null&&economyResponse.type==EconomyResponse.ResponseType.SUCCESS){
+            return true;
+        }
+        return false;
+    }
     public EconomyResponse deposit(final OfflinePlayer offlinePlayer, final double amount) {
         this.checkAccount(offlinePlayer);
         return this.economy.depositPlayer(offlinePlayer, amount);
