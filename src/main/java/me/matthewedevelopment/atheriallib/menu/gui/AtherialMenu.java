@@ -14,8 +14,7 @@ import spigui.menu.SGMenu;
 public abstract class AtherialMenu<C extends YamlConfig> {
     protected Player player;
     protected SGMenu menu;
-
-
+    protected C c;
 
 
 
@@ -23,15 +22,16 @@ public abstract class AtherialMenu<C extends YamlConfig> {
 
     public abstract void update();
 
-    public AtherialMenu(Player player) {
+    public AtherialMenu(Player player, C c) {
         this.player = player;
         this.menu = null;
+        this.c = c;
     }
 
     public void destroy(){
         AtherialLib.getInstance().getMenuRegistry().destroy(player);
     }
-    public void create(C config) {
+    public void create() {
 
         if (AtherialLib.getInstance().getMenuRegistry().getMenuMap().containsKey(player.getUniqueId())) {
 
@@ -40,7 +40,7 @@ public abstract class AtherialMenu<C extends YamlConfig> {
         AtherialLib.getInstance().getMenuRegistry().getMenuMap().put(player.getUniqueId(), this);
 
         if (menu == null) {
-            menu = generateMenu(player, config);
+            menu = generateMenu(player);
 
         }
 
@@ -78,7 +78,7 @@ public abstract class AtherialMenu<C extends YamlConfig> {
         return menu;
     }
 
-    public abstract SGMenu generateMenu(Player player, C config);
+    public abstract SGMenu generateMenu(Player player);
     public void open() {
 
         AtherialTasks.runAsync(() -> {

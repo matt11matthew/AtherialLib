@@ -6,6 +6,7 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.cacheddata.CachedMetaData;
 import net.luckperms.api.model.user.User;
+import net.luckperms.api.model.user.UserManager;
 import net.luckperms.api.node.Node;
 import net.luckperms.api.node.NodeType;
 import net.luckperms.api.node.types.InheritanceNode;
@@ -16,6 +17,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class LuckPermsDependency  extends Dependency {
     public LuckPermsDependency(AtherialLib plugin) {
@@ -50,10 +52,13 @@ public class LuckPermsDependency  extends Dependency {
 
     public String getPrefix(UUID uuid) {
         String prefix = ChatColor.GRAY+"";
-        PlayerAdapter<UUID> playerAdapter = luckPerms.getPlayerAdapter(UUID.class);
-        if (playerAdapter!=null){
 
-            CachedMetaData metaData = playerAdapter.getMetaData(uuid);
+        User user = giveMeADamnUser(uuid);
+
+
+        if (user!=null){
+
+            CachedMetaData metaData =  user.getCachedData().getMetaData();
             if (metaData!=null){
                 prefix=metaData.getPrefix();
             }
@@ -105,10 +110,19 @@ public class LuckPermsDependency  extends Dependency {
     public static String getPrefixedName(UUID player) {
         if (player==null)return "NULL";
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
+        if (offlinePlayer==null||!offlinePlayer.hasPlayedBefore())return null;
         LuckPermsDependency luckPermsDependency = get();
         if (luckPermsDependency==null)return offlinePlayer.getName();
 
+
         return luckPermsDependency.getPrefix(player)+offlinePlayer.getName();
+    }
+
+    public User giveMeADamnUser(UUID uniqueId) {
+        UserManager userManager = luckPerms.getUserManager();
+        CompletableFuture<User> userFuture = userManager.loadUser(uniqueId);
+
+        return userFuture.join(); // ouch! (block until the User is loaded)
     }
 
     public static String getPrefixedName(Player player) {
