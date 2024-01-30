@@ -23,6 +23,19 @@ public class ListUtils {
         }
         return returnItems;
     }
+
+    public static String getMessage(String[] args, int start) {
+        String[] args1 = ListUtils.getArgs(args, start);
+        String msg = "";
+        for (int i = 0; i < args1.length; i++) {
+            msg+= args1[i];
+
+            if (i < args[1].length()-1){
+                msg+=" ";
+            }
+        }
+        return msg;
+    }
     public static <T> T getRandomElement(List<T> list) {
         if (list == null || list.isEmpty()) {
             return null; // Or throw an exception, depending on your requirement

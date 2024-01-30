@@ -10,7 +10,9 @@ import net.luckperms.api.node.Node;
 import net.luckperms.api.node.NodeType;
 import net.luckperms.api.node.types.InheritanceNode;
 import net.luckperms.api.platform.PlayerAdapter;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -36,6 +38,22 @@ public class LuckPermsDependency  extends Dependency {
         if (playerAdapter!=null){
 
             CachedMetaData metaData = playerAdapter.getMetaData((Player) player);
+            if (metaData!=null){
+                prefix=metaData.getPrefix();
+            }
+        }
+        if (prefix==null){
+            prefix= ChatColor.GRAY+"";
+        }
+        return prefix;
+    }
+
+    public String getPrefix(UUID uuid) {
+        String prefix = ChatColor.GRAY+"";
+        PlayerAdapter<UUID> playerAdapter = luckPerms.getPlayerAdapter(UUID.class);
+        if (playerAdapter!=null){
+
+            CachedMetaData metaData = playerAdapter.getMetaData(uuid);
             if (metaData!=null){
                 prefix=metaData.getPrefix();
             }
@@ -83,6 +101,16 @@ public class LuckPermsDependency  extends Dependency {
         }
         return null;
     }
+
+    public static String getPrefixedName(UUID player) {
+        if (player==null)return "NULL";
+        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
+        LuckPermsDependency luckPermsDependency = get();
+        if (luckPermsDependency==null)return offlinePlayer.getName();
+
+        return luckPermsDependency.getPrefix(player)+offlinePlayer.getName();
+    }
+
     public static String getPrefixedName(Player player) {
         if (player==null)return "NULL";
         LuckPermsDependency luckPermsDependency = get();
