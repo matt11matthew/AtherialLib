@@ -157,6 +157,9 @@ public abstract class DataObject<T extends DataObject<T>> {
         this.uuid = uuid;
     }
 
+    public boolean isTextClear(String text) {
+        return text!=null&&!text.equalsIgnoreCase("null")&&!text.isEmpty()&&!text.equalsIgnoreCase("none");
+    }
     public List<T> loadAllSync(Connection connection){
         List<T> results = new ArrayList<>();
         ResultSet resultSet = null;
