@@ -7,11 +7,15 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 
 public class HotBarMenu {
+    private String name;
     private Map<Integer, ItemStack> itemMap;
     private Map<Integer, OnHotBarAction> actionMap;
     private HashSet<Integer> hiddenList = new HashSet<>();
     private Player player;
 
+    public String getName() {
+        return name;
+    }
 
     public static boolean hasHotBar(Player player){
         return MENUS.containsKey(player.getUniqueId());
@@ -86,18 +90,19 @@ public class HotBarMenu {
         }
     }
 
-    public HotBarMenu(Player player) {
+    public HotBarMenu(String name, Player player) {
+        this.name = name;
         this.itemMap = new HashMap<>();
         this.actionMap = new HashMap<>();
         this.player = player;
     }
 
 
-    public static HotBarMenu create(Player player) {
+    public static HotBarMenu create(String name, Player player) {
         if (MENUS.containsKey(player.getUniqueId())){
             MENUS.remove(player.getUniqueId());
         }
-        MENUS.put(player.getUniqueId(),new HotBarMenu(player));
+        MENUS.put(player.getUniqueId(),new HotBarMenu(name, player));
         return MENUS.get(player.getUniqueId());
     }
 

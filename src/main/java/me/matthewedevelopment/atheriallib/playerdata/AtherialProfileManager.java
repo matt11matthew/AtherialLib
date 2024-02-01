@@ -7,7 +7,6 @@ import me.matthewedevelopment.atheriallib.playerdata.db.DatabaseTableManager;
 import me.matthewedevelopment.atheriallib.playerdata.db.MySQLDatabaseTableManager;
 import me.matthewedevelopment.atheriallib.playerdata.db.SQLiteDatabaseTableManager;
 import me.matthewedevelopment.atheriallib.utilities.AtherialTasks;
-import net.minecraft.server.v1_7_R4.ChatBaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -145,6 +144,7 @@ public class AtherialProfileManager  implements Listener {
 
                 PreparedStatement statement = null;
 
+                if ( value.getValue().values().isEmpty())continue;
                 for (AtherialProfile<?> atherialProfile : value.getValue().values()) {
                     StringBuilder updateQuery = new StringBuilder("UPDATE ").append(atherialProfile.getKey()).append(" SET ");
 
@@ -205,6 +205,7 @@ public class AtherialProfileManager  implements Listener {
 
                     statement.addBatch();
                 }
+
                 statement.executeBatch();
 
                 statement.close();

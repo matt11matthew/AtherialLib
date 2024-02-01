@@ -7,7 +7,9 @@ import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.IntSimp
 import me.matthewedevelopment.atheriallib.item.ItemUtils;
 import me.matthewedevelopment.atheriallib.utilities.AtherialTasks;
 import me.matthewedevelopment.atheriallib.utilities.ChatUtils;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import spigui.buttons.SGButton;
 import spigui.menu.SGMenu;
 
@@ -28,6 +30,12 @@ public abstract class AtherialMenu<C extends YamlConfig> {
         this.c = c;
     }
 
+
+    public void clearMenu() {
+        for (int i = 0; i < (menu.getRowsPerPage() * 9) - 1; i++) {
+            menu.setButton(i,new SGButton(new ItemStack(Material.AIR)));
+        }
+    }
     public void destroy(){
         AtherialLib.getInstance().getMenuRegistry().destroy(player);
     }
