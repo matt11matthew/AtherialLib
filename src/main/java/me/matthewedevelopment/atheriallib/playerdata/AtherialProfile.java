@@ -24,6 +24,8 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
 
     public AtherialProfile(){
 
+    }    public boolean isTextClear(String text) {
+        return text!=null&&!text.equalsIgnoreCase("null")&&!text.isEmpty()&&!text.equalsIgnoreCase("none");
     }
     public AtherialProfile(UUID uuid, String username) {
         this.uuid = uuid;
