@@ -19,6 +19,16 @@ public class MySQLConfig {
 
     private AtherialLib lib;
 
+    private String SET_URL = null;
+
+    public void setSET_URL(String SET_URL) {
+        this.SET_URL = SET_URL;
+    }
+
+    public String getSET_URL() {
+        return SET_URL;
+    }
+
     public MySQLConfig(AtherialLib atherialLib) {
         this.lib = atherialLib;
     }
@@ -63,6 +73,7 @@ public class MySQLConfig {
     }
 
     public String getDriverString(){
+        if (getSET_URL()!=null)return getSET_URL();
         return "jdbc:"+driver+"://"+host+":"+port+"/"+database +"?autoReconnect=true";
 
     }
