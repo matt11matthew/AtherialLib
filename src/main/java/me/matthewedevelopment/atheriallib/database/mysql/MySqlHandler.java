@@ -52,6 +52,7 @@ public class MySqlHandler {
 
     public void start() {
         if (this.enabled) {
+
             this.config = new MySQLConfig(atherialLib);
             this.config.load(this);
             try {
@@ -59,8 +60,6 @@ public class MySqlHandler {
                     createLiteDB();
                 } else {
                     connection = DriverManager.getConnection(config.getDriverString(), config.getUsername(), config.getPassword());
-//                    DataSource dataSource1 = getDataSource();
-//                    connection = dataSource1.getConnection();
                 }
 
 
