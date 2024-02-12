@@ -59,7 +59,16 @@ public class MySqlHandler {
                 if (isLite()){
                     createLiteDB();
                 } else {
-                    connection = DriverManager.getConnection(config.getDriverString(), config.getUsername(), config.getPassword());
+                    if (AtherialLib.getInstance().isDisableSQLLogin()){
+                        this.atherialLib.getLogger().info("[SQLHandler #1] Attempting to connect with "+   config.getDriverString());
+
+//                        connection = DriverManager.getConnection(config.getDriverString());
+                        connection = DriverManager.getConnection(config.getDriverString(), config.getUsername(), config.getPassword());
+                    } else {
+                        this.atherialLib.getLogger().info("[SQLHandler #2] Attempting to connect with "+   config.getDriverString());
+                        connection = DriverManager.getConnection(config.getDriverString(), config.getUsername(), config.getPassword());
+
+                    }
                 }
 
 

@@ -77,8 +77,18 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
 
     private MySqlHandler sqlHandler;
 
+    private boolean disableSQLLogin = false;
+
     public HandlerManager getHandlerManager() {
         return handlerManager;
+    }
+
+    public void setDisableSQLLogin(boolean disableSQLLogin) {
+        this.disableSQLLogin = disableSQLLogin;
+    }
+
+    public boolean isDisableSQLLogin() {
+        return disableSQLLogin;
     }
 
     private  boolean debug;
@@ -273,7 +283,15 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         return menu;
     }
 
+    private String sqlURL = null;
 
+    public void setSqlURL(String sqlURL) {
+        this.sqlURL = sqlURL;
+    }
+
+    public String getSqlURL() {
+        return sqlURL;
+    }
 
     private boolean nmsEnabled;
     protected boolean nmsRequired ;

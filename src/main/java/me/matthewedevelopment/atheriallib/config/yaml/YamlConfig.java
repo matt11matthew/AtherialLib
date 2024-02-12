@@ -1,6 +1,5 @@
 package me.matthewedevelopment.atheriallib.config.yaml;
 
-import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.config.Config;
 import me.matthewedevelopment.atheriallib.config.IgnoreValue;
 import me.matthewedevelopment.atheriallib.config.SerializedName;
@@ -108,6 +107,10 @@ public  class YamlConfig<A extends JavaPlugin> implements Config {
                                 ConfigSerializable serializer2 = null;
                                 for (String s : toIterate) {
                                     Object o = maps.get(s);
+                                    if( o==null) {
+                                        System.err.println(s +":" + o + " is null");
+                                        continue;
+                                    }
                                     if (serializer2==null){
                                         serializer2 =  CustomTypeRegistry.getSerializer(o.getClass());
                                     }

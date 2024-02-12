@@ -73,6 +73,9 @@ public class MySQLConfig {
     }
 
     public String getDriverString(){
+        if (AtherialLib.getInstance().getSqlURL()!=null){
+            return AtherialLib.getInstance().getSqlURL();
+        }
         if (getSET_URL()!=null)return getSET_URL();
         return "jdbc:"+driver+"://"+host+":"+port+"/"+database +"?autoReconnect=true";
 
