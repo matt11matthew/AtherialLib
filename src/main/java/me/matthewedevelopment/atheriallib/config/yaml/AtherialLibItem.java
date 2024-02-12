@@ -3,6 +3,7 @@ package me.matthewedevelopment.atheriallib.config.yaml;
 import me.matthewedevelopment.atheriallib.io.StringReplacer;
 import me.matthewedevelopment.atheriallib.utilities.ChatUtils;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import spigui.item.ItemBuilder;
@@ -130,10 +131,12 @@ public class AtherialLibItem {
                 itemMeta.setLore(newLore);
             }
         }
+        itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE,ItemFlag.HIDE_ATTRIBUTES);
         itemStack.setItemMeta(itemMeta);
         if (skullOwner!=null){
             return new ItemBuilder(itemStack).skullOwner(skullOwner).build();
         }
+
         return itemStack;
     }
 
