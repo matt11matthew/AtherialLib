@@ -244,6 +244,10 @@ public class AtherialProfileManager  implements Listener {
         try {
             AtherialProfile atherialProfile = value.getConstructor(UUID.class, String.class).newInstance(player.getUniqueId(), player.getName());
             returnProfile = atherialProfile.loadSync(player, getConnection());
+            if (!playerDataMap.containsKey(simpleName)){
+                playerDataMap.put(simpleName,new HashMap<>());
+
+            }
             playerDataMap.get(simpleName).put(player.getUniqueId(), returnProfile);
 
             AtherialTasks.runSync(() -> {
