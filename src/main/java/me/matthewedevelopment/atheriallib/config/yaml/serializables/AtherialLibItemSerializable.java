@@ -4,6 +4,7 @@ import me.matthewedevelopment.atheriallib.config.yaml.AtherialLibItem;
 import me.matthewedevelopment.atheriallib.config.yaml.ConfigSerializable;
 import me.matthewedevelopment.atheriallib.config.yaml.SerializeType;
 import org.bukkit.Material;
+import org.bukkit.configuration.MemorySection;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +41,14 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
         if (item.getSlot()!=-1){
             serializedData.put("slot", item.getSlot());
         }
+        if (item.getEnchantments()!=null&&!item.getEnchantments().isEmpty()) {
+            Map<String, Integer> enchants = new HashMap<>();
+            for (String s : item.getEnchantments().keySet()) {
+                int i = item.getEnchantments().get(s);
+                enchants.put(s,i);
+            }
+            serializedData.put("enchantments",enchants);
+        }
 
         return serializedData;
     }
@@ -67,7 +76,18 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
 
         int slot = map.containsKey("slot") ? (int) map.get("slot") : -1;
         int amount = map.containsKey("amount") ? (int) map.get("amount") : 1;
-        AtherialLibItem atherialLibItem = new AtherialLibItem(type, amount, displayName, lore, skullOwner, slot);
+        Map<String, Integer> enchantments = new HashMap<>();
+        if (map.containsKey("enchantments")) {
+            MemorySection memorySection = (MemorySection) map.get("enchantments");
+            Map<String, Object> values = memorySection.getValues(false);
+
+            for (String s : values.keySet()) {
+                enchantments.put(s, (int) values.get(s));
+
+            }
+        }
+
+        AtherialLibItem atherialLibItem = new AtherialLibItem(type, amount, displayName, lore, skullOwner, slot, enchantments);
         if (saveData){
             atherialLibItem=atherialLibItem.setData(dt);
         }

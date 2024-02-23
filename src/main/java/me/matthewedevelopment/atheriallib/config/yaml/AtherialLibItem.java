@@ -3,13 +3,16 @@ package me.matthewedevelopment.atheriallib.config.yaml;
 import me.matthewedevelopment.atheriallib.io.StringReplacer;
 import me.matthewedevelopment.atheriallib.utilities.ChatUtils;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import spigui.item.ItemBuilder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Matthew E on 12/23/2023 at 10:19 PM for the project AtherialLib
@@ -19,9 +22,14 @@ public class AtherialLibItem {
     private int amount;
     private String displayName;
     private List<String> lore;
+    private Map<String, Integer> enchantments;
 
     public int getData() {
         return data;
+    }
+
+    public Map<String, Integer> getEnchantments() {
+        return enchantments;
     }
 
     private int data = -1;
@@ -29,19 +37,28 @@ public class AtherialLibItem {
     private String skullOwner;
 
     private int slot = -1;
-    public AtherialLibItem(Material type, int amount, String displayName, List<String> lore, String skullOwner, int slot) {
+    public AtherialLibItem(Material type, int amount, String displayName, List<String> lore, String skullOwner, int slot,Map<String, Integer> enchantments) {
         this.type = type;
         this.amount = amount;
         this.displayName = displayName;
         this.lore = lore;
         this.skullOwner = skullOwner;
         this.slot = slot;
+        this.enchantments = enchantments;
     }
     public AtherialLibItem setLore(String... lore) {
         this.lore = new ArrayList<>();
         for (String s : lore) {
             this.lore.add(s);
         }
+        return this;
+    }
+
+    public AtherialLibItem addEnchantment(Enchantment enchantment, int level) {
+       if (this.enchantments==null){
+           this.enchantments=new HashMap<>();
+       }
+       this.enchantments.put(enchantment.getName().toUpperCase(),level);
         return this;
     }
 
@@ -64,6 +81,7 @@ public class AtherialLibItem {
         this.data=clone.data;
         this.skullOwner=clone.skullOwner;
         this.slot=clone.slot;
+        this.enchantments = clone.enchantments;
 
     }
     /*
@@ -96,6 +114,12 @@ public class AtherialLibItem {
             ItemMeta itemMeta = itemStack.getItemMeta();
             this.lore=itemMeta.hasLore()?itemMeta.getLore():new ArrayList<>();
             this.displayName =itemMeta.hasDisplayName()?itemMeta.getDisplayName():null;
+        }
+        if (!itemStack.getEnchantments().isEmpty()){
+            this.enchantments=new HashMap<>();
+            for (Map.Entry<Enchantment, Integer> entry : itemStack.getEnchantments().entrySet()) {
+                enchantments.put(entry.getKey().getName().toUpperCase(),entry.getValue());
+            }
         }
     }
 
@@ -133,10 +157,19 @@ public class AtherialLibItem {
         }
         itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE,ItemFlag.HIDE_ATTRIBUTES);
         itemStack.setItemMeta(itemMeta);
+
+        if (!enchantments.isEmpty()){
+            for (String s : enchantments.keySet()) {
+                Enchantment byName = Enchantment.getByName(s.toLowerCase());
+                if (byName==null)continue;
+
+                itemStack.addUnsafeEnchantment(byName,enchantments.get(s));
+
+            }
+        }
         if (skullOwner!=null){
             return new ItemBuilder(itemStack).skullOwner(skullOwner).build();
         }
-
         return itemStack;
     }
 
