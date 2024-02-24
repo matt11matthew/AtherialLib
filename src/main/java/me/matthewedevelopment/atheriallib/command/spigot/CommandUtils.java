@@ -1,7 +1,12 @@
 package me.matthewedevelopment.atheriallib.command.spigot;
 
 import me.matthewedevelopment.atheriallib.AtherialLib;
+import me.matthewedevelopment.atheriallib.utilities.ListUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static me.matthewedevelopment.atheriallib.utilities.ChatUtils.colorize;
 import static me.matthewedevelopment.atheriallib.utilities.ChatUtils.message;
@@ -26,7 +31,16 @@ public class CommandUtils {
         }
         message(sender, colorize(AtherialLib.getInstance().getCommandConfig().CORRECT_USAGE_MESSAGE).replaceAll("%command%", command).replaceAll("%arguments%", argumentsString.toString()));
     }
+    public static List<String> getOnlinePlayersCompletion(String[] args ) {
+        return getOnlinePlayersCompletion(args,0);
 
+    }
+    public static List<String> getOnlinePlayersCompletion(String[] args, int start  ) {
+        if (args.length==start){
+            return Bukkit.getOnlinePlayers().stream().map(player -> player.getName()).collect(Collectors.toList());
+        }
+        return ListUtils.filterStartsWith(Bukkit.getOnlinePlayers().stream().map(player -> player.getName()).collect(Collectors.toList()), args[start]);
+    }
     public static void sendNoPermissionMessage(CommandSender sender, String permission) {
         if (permission != null) {
             AtherialLib.getInstance().getCommandConfig().NO_PERMISSION_MESSAGE.send(sender, s -> colorize(s).replace("%permission%", permission));
