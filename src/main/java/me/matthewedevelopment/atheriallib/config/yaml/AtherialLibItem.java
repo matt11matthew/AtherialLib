@@ -158,7 +158,7 @@ public class AtherialLibItem {
         itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE,ItemFlag.HIDE_ATTRIBUTES);
         itemStack.setItemMeta(itemMeta);
 
-        if (!enchantments.isEmpty()){
+        if (enchantments!=null&&!enchantments.isEmpty()){
             for (String s : enchantments.keySet()) {
                 Enchantment byName = Enchantment.getByName(s.toLowerCase());
                 if (byName==null)continue;
