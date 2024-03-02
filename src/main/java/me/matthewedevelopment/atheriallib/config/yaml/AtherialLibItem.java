@@ -1,8 +1,11 @@
 package me.matthewedevelopment.atheriallib.config.yaml;
 
+import me.matthewedevelopment.atheriallib.config.yaml.serializables.AtherialLibItemSerializable;
 import me.matthewedevelopment.atheriallib.io.StringReplacer;
 import me.matthewedevelopment.atheriallib.utilities.ChatUtils;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -30,6 +33,12 @@ public class AtherialLibItem {
 
     public Map<String, Integer> getEnchantments() {
         return enchantments;
+    }
+
+    public static AtherialLibItem of(ConfigurationSection section, String key) {
+        if (!section.isSet(key))return null;
+        MemorySection memorySection = (MemorySection) section.get(key);
+        return new AtherialLibItemSerializable().deserializeComplex(memorySection.getValues(false));
     }
 
     private int data = -1;
