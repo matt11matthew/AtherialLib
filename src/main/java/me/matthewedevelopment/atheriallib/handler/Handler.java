@@ -6,11 +6,12 @@ import me.matthewedevelopment.atheriallib.command.spigot.AtherialLibSpigotComman
 import me.matthewedevelopment.atheriallib.config.yaml.YamlConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * Created by Matthew E on 12/31/2023 at 12:29 AM for the project Extraction
  */
-public abstract class Handler<T extends AtherialLib, C  extends YamlConfig> implements Listener {
+public abstract class Handler<T extends JavaPlugin, C  extends YamlConfig> implements Listener {
     protected C config;
     protected T core;
 
@@ -40,11 +41,11 @@ public abstract class Handler<T extends AtherialLib, C  extends YamlConfig> impl
     }
 
     public void registerCommand(AtherialLibSpigotCommand spigotCommand) {
-        core.registerCommand(spigotCommand);
+            AtherialLib.getInstance().registerCommand(spigotCommand);
     }
 
     public void registerCommand(AtherialCommand atherialCommand) {
-        core.registerAtherialCommand(atherialCommand);
+        AtherialLib.getInstance().registerAtherialCommand(atherialCommand);
     }
 
 

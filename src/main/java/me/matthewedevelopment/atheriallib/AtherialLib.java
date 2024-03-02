@@ -20,7 +20,6 @@ import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.seriali
 import me.matthewedevelopment.atheriallib.database.mysql.MySqlHandler;
 import me.matthewedevelopment.atheriallib.dependency.DependencyManager;
 import me.matthewedevelopment.atheriallib.events.jump.PlayerJumpListener;
-import me.matthewedevelopment.atheriallib.handler.HandlerManager;
 import me.matthewedevelopment.atheriallib.item.AtherialItemAPI;
 import me.matthewedevelopment.atheriallib.item.AtherialItemBuilder;
 import me.matthewedevelopment.atheriallib.menu.HotBarListener;
@@ -62,7 +61,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     protected VersionProvider versionProvider;
 
     protected DependencyManager dependencyManager;
-    protected HandlerManager handlerManager;
+//    protected HandlerManager handlerManager;
 
     public static AtherialLib getInstance() {
         return instance;
@@ -79,9 +78,9 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
 
     private boolean disableSQLLogin = false;
 
-    public HandlerManager getHandlerManager() {
-        return handlerManager;
-    }
+//    public HandlerManager getHandlerManager() {
+//        return handlerManager;
+//    }
 
     public void setDisableSQLLogin(boolean disableSQLLogin) {
         this.disableSQLLogin = disableSQLLogin;
@@ -107,7 +106,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         this.nmsRequired = false;
         initDependencies();
         AtherialTasks.setPlugin(this);
-        handlerManager =new HandlerManager(this);
+//        handlerManager =new HandlerManager(this);
         AtherialTitle.setAtherialPlugin(this);
     }
 
@@ -191,7 +190,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         registerListener(chatPromptHandler);
         registerHandlers();
         this.onStart();
-        handlerManager.enableHandlers();
+//        handlerManager.enableHandlers();
 
 
         this.profileManager.load();
@@ -324,7 +323,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         profileManager.stop();
-        handlerManager.disableHandlers();
+//        handlerManager.disableHandlers();
         this.onStop();
         if (sqlHandler.isEnabled()) {
             sqlHandler.stop();
