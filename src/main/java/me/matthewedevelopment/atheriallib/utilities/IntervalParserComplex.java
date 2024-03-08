@@ -1,9 +1,25 @@
 package me.matthewedevelopment.atheriallib.utilities;
 
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class IntervalParserComplex {
+    public static  long getDuration(String input) {
+        try {
+            if (input.endsWith("m")){
+                return TimeUnit.MINUTES.toMillis(Long.parseLong(input.substring(0, input.length()-1)));
+            } else if (input.endsWith("d")){
+                return TimeUnit.DAYS.toMillis(Long.parseLong(input.substring(0, input.length()-1)));
+            } else if (input.endsWith("s")){
+                return TimeUnit.SECONDS.toMillis(Long.parseLong(input.substring(0, input.length()-1)));
+            }
+        }catch ( Exception e) {
+            return -1;
+        }
+        return -1;
+
+    }
 
     /**
      * Parses a complex interval string with multiple units (e.g., "1h 30m") into seconds.
