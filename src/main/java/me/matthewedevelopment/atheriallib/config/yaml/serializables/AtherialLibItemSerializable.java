@@ -38,6 +38,10 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
             serializedData.put("skullOwner", item.getSkullOwner());
 
         }
+        if (item.getHeadDatabaseHead()!=null){
+            serializedData.put("headDatabaseHead", item.getHeadDatabaseHead());
+
+        }
         if (item.getSlot()!=-1){
             serializedData.put("slot", item.getSlot());
         }
@@ -74,6 +78,7 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
         String skullOwner = map.containsKey("skullOwner") ? (String) map.get("skullOwner") : null;
         String displayName = map.containsKey("displayName") ? (String) map.get("displayName") : null;
 
+        String headDatabaseHead = map.containsKey("headDatabaseHead") ? (String) map.get("headDatabaseHead") : null;
         int slot = map.containsKey("slot") ? (int) map.get("slot") : -1;
         int amount = map.containsKey("amount") ? (int) map.get("amount") : 1;
         Map<String, Integer> enchantments = new HashMap<>();
@@ -90,6 +95,9 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
         AtherialLibItem atherialLibItem = new AtherialLibItem(type, amount, displayName, lore, skullOwner, slot, enchantments);
         if (saveData){
             atherialLibItem=atherialLibItem.setData(dt);
+        }
+        if (headDatabaseHead!=null){
+            atherialLibItem= atherialLibItem.setHeadDatabaseHead(headDatabaseHead);
         }
 
         return atherialLibItem;

@@ -1,6 +1,7 @@
 package me.matthewedevelopment.atheriallib.config.yaml;
 
 import me.matthewedevelopment.atheriallib.config.yaml.serializables.AtherialLibItemSerializable;
+import me.matthewedevelopment.atheriallib.dependency.headdatabase.HeadDatabaseDependency;
 import me.matthewedevelopment.atheriallib.io.StringReplacer;
 import me.matthewedevelopment.atheriallib.utilities.ChatUtils;
 import org.bukkit.Material;
@@ -26,6 +27,7 @@ public class AtherialLibItem {
     private String displayName;
     private List<String> lore;
     private Map<String, Integer> enchantments;
+    private String headDatabaseHead;
 
     public int getData() {
         return data;
@@ -39,6 +41,15 @@ public class AtherialLibItem {
         if (!section.isSet(key))return null;
         MemorySection memorySection = (MemorySection) section.get(key);
         return new AtherialLibItemSerializable().deserializeComplex(memorySection.getValues(false));
+    }
+
+    public AtherialLibItem setHeadDatabaseHead(String headDatabaseHead) {
+        this.headDatabaseHead = headDatabaseHead;
+        return this;
+    }
+
+    public String getHeadDatabaseHead() {
+        return headDatabaseHead;
     }
 
     private int data = -1;
@@ -91,6 +102,7 @@ public class AtherialLibItem {
         this.skullOwner=clone.skullOwner;
         this.slot=clone.slot;
         this.enchantments = clone.enchantments;
+        this.headDatabaseHead = clone.headDatabaseHead;
 
     }
     /*
@@ -142,12 +154,19 @@ public class AtherialLibItem {
     }
     public ItemStack build(StringReplacer stringReplacer) {
         ItemStack itemStack=null;
-        amount = 1;
-        if (data!=-1){
-            itemStack = new ItemStack(type, amount, (short) data);
+        if (amount < 1) {
+            amount = 1;
+        }
+        if (headDatabaseHead!=null&&HeadDatabaseDependency.get()!=null){
+            itemStack = HeadDatabaseDependency.get().createHead(headDatabaseHead);
         } else {
 
-            itemStack = new ItemStack(type, amount);
+            if (data!=-1){
+                itemStack = new ItemStack(type, amount, (short) data);
+            } else {
+
+                itemStack = new ItemStack(type, amount);
+            }
         }
 
         ItemMeta itemMeta=itemStack.getItemMeta();

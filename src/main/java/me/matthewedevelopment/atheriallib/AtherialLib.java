@@ -104,11 +104,12 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         this.dependencyManager = new DependencyManager();
         this.sqlHandler = new MySqlHandler(this);
         this.nmsRequired = false;
-        initDependencies();
+//        initDependencies();
         AtherialTasks.setPlugin(this);
 //        handlerManager =new HandlerManager(this);
         AtherialTitle.setAtherialPlugin(this);
     }
+
 
     public ChatPromptHandler getChatPromptHandler() {
         return chatPromptHandler;
@@ -152,6 +153,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     }
     @Override
     public void onEnable() {
+        initDependencies();
         if(!loadNMS()){
             if (nmsRequired){
                 getLogger().severe("NMS is required for this plugin!");
