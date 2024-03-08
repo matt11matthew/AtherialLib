@@ -1,10 +1,9 @@
 package me.matthewedevelopment.atheriallib.command.spigot;
 
-import me.matthewedevelopment.atheriallib.AtherialLib;
-import me.matthewedevelopment.atheriallib.command.spigot.config.SelfCommandConfig;
 import me.matthewedevelopment.atheriallib.config.yaml.YamlConfig;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +12,7 @@ import java.util.List;
 /**
  * Created by Matthew E on 12/30/2023 at 9:46 PM for the project AtherialLib
  */
-public abstract class AtherialLibSpigotCommand<T extends YamlConfig, A extends AtherialLib> extends SpigotCommand {
+public abstract class AtherialLibSpigotCommand<T extends YamlConfig, A extends JavaPlugin> extends SpigotCommand {
     public T config;
     public A main;
     public String label;

@@ -1,12 +1,12 @@
 package me.matthewedevelopment.atheriallib.command.spigot;
 
-import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.config.yaml.YamlConfig;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * Created by Matthew E on 12/30/2023 at 9:49 PM for the project AtherialLib
  */
-public  abstract class AtherialLibSelfSubCommand<A extends AtherialLib, T extends YamlConfig, C extends AtherialLibSpigotCommand<T, A>> extends SpigotCommand {
+public  abstract class AtherialLibSelfSubCommand<A extends JavaPlugin, T extends YamlConfig, C extends AtherialLibSpigotCommand<T, A>> extends SpigotCommand {
     protected C parentCommand;
     protected A main;
     protected T config;
