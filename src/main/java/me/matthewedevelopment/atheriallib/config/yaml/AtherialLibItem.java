@@ -26,8 +26,18 @@ public class AtherialLibItem {
     private int amount;
     private String displayName;
     private List<String> lore;
+    private int modelId=0;
     private Map<String, Integer> enchantments;
     private String headDatabaseHead;
+
+    public int getModelId() {
+        return modelId;
+    }
+
+    public AtherialLibItem setModelId(int modelId) {
+        this.modelId = modelId;
+        return this;
+    }
 
     public int getData() {
         return data;
@@ -103,6 +113,7 @@ public class AtherialLibItem {
         this.slot=clone.slot;
         this.enchantments = clone.enchantments;
         this.headDatabaseHead = clone.headDatabaseHead;
+        this.modelId = clone.modelId;
 
     }
     /*
@@ -184,6 +195,10 @@ public class AtherialLibItem {
             }
         }
         itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE,ItemFlag.HIDE_ATTRIBUTES);
+        if (this.modelId!=0){
+            itemMeta.setCustomModelData(modelId);
+
+        }
         itemStack.setItemMeta(itemMeta);
 
         if (enchantments!=null&&!enchantments.isEmpty()){

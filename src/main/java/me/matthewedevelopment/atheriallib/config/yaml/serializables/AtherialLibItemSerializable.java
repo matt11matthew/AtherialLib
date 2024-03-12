@@ -18,6 +18,9 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
         if (item.getType()!=null) {
             serializedData.put("type", item.getType().toString());  // Mandatory
         }
+        if (item.getModelId()!=0) {
+            serializedData.put("modelId", item.getModelId());  // Mandatory
+        }
         // Optional fields
         if (item.getAmount()>1){
             serializedData.put("amount", item.getAmount());
@@ -77,6 +80,7 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
         List<String> lore = map.containsKey("lore") ? (List<String>) map.get("lore") : null;
         String skullOwner = map.containsKey("skullOwner") ? (String) map.get("skullOwner") : null;
         String displayName = map.containsKey("displayName") ? (String) map.get("displayName") : null;
+        int modelId = map.containsKey("modelId") ? (int) map.get("modelId") : 0;
 
         String headDatabaseHead = map.containsKey("headDatabaseHead") ? (String) map.get("headDatabaseHead") : null;
         int slot = map.containsKey("slot") ? (int) map.get("slot") : -1;
@@ -98,6 +102,9 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
         }
         if (headDatabaseHead!=null){
             atherialLibItem= atherialLibItem.setHeadDatabaseHead(headDatabaseHead);
+        }
+        if (modelId!=0){
+            atherialLibItem = atherialLibItem.setModelId(modelId);
         }
 
         return atherialLibItem;

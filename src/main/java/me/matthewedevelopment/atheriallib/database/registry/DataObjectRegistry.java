@@ -198,90 +198,32 @@ public abstract class DataObjectRegistry<T extends DataObject<T>> {
         return map;
     }
 
-    public T insertAsync(T t, Runnable onComplete) {
-        map.put(t.getUuid(),t);
-        Connection connection=getConnection();
-        AtherialTasks.runAsync(() -> {
+    public T insertSync(T t) {
+        map.put(t.getUuid(), t);
+        Connection connection = getConnection();
 
-            try {
-                PreparedStatement statement= null;
-                if (AtherialLib.getInstance().getSqlHandler().isLite()) {
+        try {
+            PreparedStatement statement = null;
+            if (AtherialLib.getInstance().getSqlHandler().isLite()) {
 
-                    if (!existsInDBSync(t.getUuid(),connection)) {
+                if (!existsInDBSync(t.getUuid(), connection)) {
 
-                        StringBuilder query = new StringBuilder("INSERT OR REPLACE INTO ").append(tableName).append(" (uuid");
-                        StringBuilder placeholders = new StringBuilder(" VALUES (?");
+                    StringBuilder query = new StringBuilder("INSERT OR REPLACE INTO ").append(tableName).append(" (uuid");
+                    StringBuilder placeholders = new StringBuilder(" VALUES (?");
 
-                        // Get the schema requirements from the profile (this is just a conceptual example)
-                        List<DataColumn> columns = t.getColumns();
-
-                        // Add columns dynamically to the SQL query
-                        for (DataColumn column : columns) {
-                            if( !column.getName().equalsIgnoreCase("uuid")) {
-                                query.append(", ").append(column.getName());
-
-                                placeholders.append(", ?");
-                            }
-                        }
-
-                        query.append(")").append(placeholders).append(");");
-
-                        statement = connection.prepareStatement(query.toString());
-                        statement.setString(1, t.getUuid().toString());
-
-                        // Set values for each column based on the profile's schema requirements
-                        int parameterIndex = 2; // Start at the second parameter
-                        for (DataColumn column : columns.stream().filter(dataColumn -> !dataColumn.getName().equalsIgnoreCase("uuid")).collect(Collectors.toList())) {
-                            // Set the parameter value based on the column's data type
-                            switch (column.getType()) {
-                                case LONG:
-                                    statement.setLong(parameterIndex, column.getValueAsLong());
-                                    break;
-                                case TEXT:
-                                    statement.setString(parameterIndex, column.getValueAsString());
-                                    break;
-                                case INTEGER:
-                                    statement.setInt(parameterIndex, column.getValueAsInt());
-                                    break;
-                                case BOOLEAN:
-                                    statement.setBoolean(parameterIndex, column.getValueAsBoolean());
-                                    break;
-                                case VARCHAR: // Handle VARCHAR
-                                    statement.setString(parameterIndex, column.getValueAsString());
-                                    break;
-                                default:
-                                    // Handle other data types as needed
-                                    break;
-                            }
-
-                            parameterIndex++;
-                        }
-                    }
-                } else {
-                    StringBuilder query = new StringBuilder("INSERT INTO ").append(t.getTableName()).append(" (uuid");
-                    StringBuilder placeholders = new StringBuilder(") VALUES (?");
-
+                    // Get the schema requirements from the profile (this is just a conceptual example)
                     List<DataColumn> columns = t.getColumns();
 
+                    // Add columns dynamically to the SQL query
                     for (DataColumn column : columns) {
-                        if( !column.getName().equalsIgnoreCase("uuid")) {
+                        if (!column.getName().equalsIgnoreCase("uuid")) {
                             query.append(", ").append(column.getName());
+
                             placeholders.append(", ?");
-
                         }
-//                        query.append(", ").append(column.getName());
                     }
 
-                    placeholders.append(")");
-
-
-                    // Combine the main query and placeholders
-                    query.append(placeholders).append(";");
-
-                    if (AtherialLib.getInstance().isDebug()) {
-                        System.err.println(query);
-                    }
-
+                    query.append(")").append(placeholders).append(");");
 
                     statement = connection.prepareStatement(query.toString());
                     statement.setString(1, t.getUuid().toString());
@@ -314,24 +256,82 @@ public abstract class DataObjectRegistry<T extends DataObject<T>> {
                         parameterIndex++;
                     }
                 }
-                if (statement!=null){
-                    if (AtherialLib.getInstance().isDebug()) {
-                        System.err.println(statement.toString());
+            } else {
+                StringBuilder query = new StringBuilder("INSERT INTO ").append(t.getTableName()).append(" (uuid");
+                StringBuilder placeholders = new StringBuilder(") VALUES (?");
+
+                List<DataColumn> columns = t.getColumns();
+
+                for (DataColumn column : columns) {
+                    if (!column.getName().equalsIgnoreCase("uuid")) {
+                        query.append(", ").append(column.getName());
+                        placeholders.append(", ?");
+
                     }
-                    // Execute the query to save or update the data
-                    statement.executeUpdate();
-                    statement.close();
-                    AtherialTasks.runSync(onComplete);
+//                        query.append(", ").append(column.getName());
                 }
-            } catch ( Exception e) {
-                e.printStackTrace();
+
+                placeholders.append(")");
+
+
+                // Combine the main query and placeholders
+                query.append(placeholders).append(";");
+
+                if (AtherialLib.getInstance().isDebug()) {
+                    System.err.println(query);
+                }
+
+
+                statement = connection.prepareStatement(query.toString());
+                statement.setString(1, t.getUuid().toString());
+
+                // Set values for each column based on the profile's schema requirements
+                int parameterIndex = 2; // Start at the second parameter
+                for (DataColumn column : columns.stream().filter(dataColumn -> !dataColumn.getName().equalsIgnoreCase("uuid")).collect(Collectors.toList())) {
+                    // Set the parameter value based on the column's data type
+                    switch (column.getType()) {
+                        case LONG:
+                            statement.setLong(parameterIndex, column.getValueAsLong());
+                            break;
+                        case TEXT:
+                            statement.setString(parameterIndex, column.getValueAsString());
+                            break;
+                        case INTEGER:
+                            statement.setInt(parameterIndex, column.getValueAsInt());
+                            break;
+                        case BOOLEAN:
+                            statement.setBoolean(parameterIndex, column.getValueAsBoolean());
+                            break;
+                        case VARCHAR: // Handle VARCHAR
+                            statement.setString(parameterIndex, column.getValueAsString());
+                            break;
+                        default:
+                            // Handle other data types as needed
+                            break;
+                    }
+
+                    parameterIndex++;
+                }
             }
-        });
-
-
-
-
+            if (statement != null) {
+                if (AtherialLib.getInstance().isDebug()) {
+                    System.err.println(statement.toString());
+                }
+                // Execute the query to save or update the data
+                statement.executeUpdate();
+                statement.close();
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return map.get(t.getUuid());
+    }
+    public void insertAsync(T t, Runnable onComplete) {
+        AtherialTasks.runAsync(() -> {
+            T t1 = insertSync(t);
+            onComplete.run();
+        });
     }
 
     private boolean existsInDBSync(UUID uuid, Connection connection) {
