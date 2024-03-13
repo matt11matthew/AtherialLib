@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.text.DecimalFormat;
+import java.util.Objects;
 
 public class AtherialLocation {
     private String world;
@@ -18,6 +19,26 @@ public class AtherialLocation {
         this.z = z;
         this.yaw = yaw;
         this.pitch = pitch;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(world, x, y, z);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof AtherialLocation){
+            AtherialLocation atherialLocation = (AtherialLocation) obj;
+            boolean worldMatch = true;
+            if (atherialLocation!=null&&world!=null){
+                worldMatch = atherialLocation.world.equals(world);
+            }
+            if (worldMatch&&(int)atherialLocation.x==(int)x&&(int)atherialLocation.y==(int)y&&(int)atherialLocation.z==(int)z){
+                return true;
+            }
+        }
+        return false;
     }
 
     public AtherialLocation(String world, double x, double y, double z) {
