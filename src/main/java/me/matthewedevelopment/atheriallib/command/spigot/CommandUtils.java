@@ -41,7 +41,14 @@ public class CommandUtils {
         }
         return ListUtils.filterStartsWith(Bukkit.getOnlinePlayers().stream().map(player -> player.getName()).collect(Collectors.toList()), args[start]);
     }
+
+
+    public static void sendConsoleOnlyMessage(CommandSender sender) {
+        AtherialLib.getInstance().getCommandConfig().CONSOLE_ONLY_MESSAGE.send(sender);
+
+    }
     public static void sendNoPermissionMessage(CommandSender sender, String permission) {
+
         if (permission != null) {
             AtherialLib.getInstance().getCommandConfig().NO_PERMISSION_MESSAGE.send(sender, s -> colorize(s).replace("%permission%", permission));
         } else {

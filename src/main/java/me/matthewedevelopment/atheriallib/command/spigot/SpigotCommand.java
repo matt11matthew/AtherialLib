@@ -7,6 +7,7 @@ import me.matthewedevelopment.atheriallib.utilities.ListUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -91,6 +92,11 @@ public abstract class SpigotCommand extends AnnotationlessAtherialCommand {
     private boolean checkPermission(CommandSender sender) {
         if (permission == null) {
             return true;
+        }
+        if (permission.equalsIgnoreCase("CONSOLE") && (!(sender instanceof
+                ConsoleCommandSender))){
+            CommandUtils.sendConsoleOnlyMessage(sender);
+            return false;
         }
         if (!sender.hasPermission(permission)) {
             CommandUtils.sendNoPermissionMessage(sender, permission);

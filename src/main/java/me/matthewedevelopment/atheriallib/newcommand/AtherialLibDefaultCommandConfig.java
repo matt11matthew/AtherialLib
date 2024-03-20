@@ -17,6 +17,10 @@ public class AtherialLibDefaultCommandConfig  extends YamlConfig {
     public ChatMessage PLAYER_ONLY_MESSAGE = new ChatMessage("&cThis command is player-only.");
     @SerializedName("noPermission")
     public ChatMessage NO_PERMISSION_MESSAGE = new ChatMessage("&cYou lack the permission %permission%");
+
+    @SerializedName("consoleOnly")
+    public ChatMessage CONSOLE_ONLY_MESSAGE = new ChatMessage("&cThis command is console-only.");
+
     @SerializedName("pDoesntExist")
     public ChatMessage P_DOESNT_EXIST = new ChatMessage("&c%player% is &lOFFLINE&c.");
     @SerializedName("invalidNum")
