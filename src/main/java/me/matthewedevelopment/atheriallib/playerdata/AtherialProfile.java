@@ -56,6 +56,10 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
             runnable.run();
         });
     }
+//    public void save() {
+//        updateAsync(() -> {});
+//
+//    }
 
     public abstract void preSave(Player player, PreSaveType type);
     public abstract T loadDefault(Player player);
