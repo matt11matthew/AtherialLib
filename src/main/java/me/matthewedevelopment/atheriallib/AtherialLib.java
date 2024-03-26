@@ -7,6 +7,8 @@ import me.matthewedevelopment.atheriallib.command.spigot.AtherialLibSpigotComman
 import me.matthewedevelopment.atheriallib.command.spigot.config.SelfCommandConfig;
 import me.matthewedevelopment.atheriallib.command.spigot.serializers.SelfCommandConfigSerializer;
 import me.matthewedevelopment.atheriallib.command.spigot.serializers.UsageSerializer;
+import me.matthewedevelopment.atheriallib.config.sound.AtherialSound;
+import me.matthewedevelopment.atheriallib.config.sound.AtherialSoundSerializer;
 import me.matthewedevelopment.atheriallib.config.yaml.AtherialLibItem;
 import me.matthewedevelopment.atheriallib.config.yaml.CustomTypeRegistry;
 import me.matthewedevelopment.atheriallib.config.yaml.serializables.AtherialItemBuilderSerializable;
@@ -266,6 +268,8 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         CustomTypeRegistry.registerType(SelfCommandConfig.class, new SelfCommandConfigSerializer());
 
         CustomTypeRegistry.registerType(AtherialLocation.class, new AtherialLocationSerializer());
+
+        CustomTypeRegistry.registerType(AtherialSound.class, new AtherialSoundSerializer());
 
     }
 
