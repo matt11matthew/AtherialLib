@@ -1,7 +1,7 @@
-package me.matthewedevelopment.atheriallib.menu.gui;
+package me.matthewedevelopment.atheriallib.menu.gui.speed;
 
 import me.matthewedevelopment.atheriallib.AtherialLib;
-import me.matthewedevelopment.atheriallib.menu.gui.events.AtherialMenuCloseEvent;
+import me.matthewedevelopment.atheriallib.menu.gui.events.AtherialFastMenuCloseEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import spigui.menu.SGMenu;
@@ -11,19 +11,22 @@ import java.util.*;
 /**
  * Created by Matthew E on 1/11/2024 at 3:01 PM for the project MazeServer-Clans
  */
-public class AtherialMenuRegistry {
-    private  Map<UUID, AtherialMenu> menuHashMap = new HashMap<>();
+public class FastAtherialMenuRegistry {
+    private  Map<UUID, FastAtherialMenu> menuHashMap = new HashMap<>();
 
-    public AtherialMenuRegistry() {
+    public FastAtherialMenuRegistry() {
 
         this.menuHashMap =new HashMap<>();
     }
 
     public  void start() {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(AtherialLib.getInstance(),() -> updateGUI(),15L,15L);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(AtherialLib.getInstance(),() -> updateGUI(),5L, 5);
+
+
+
     }
 
-    public Map<UUID, AtherialMenu> getMenuMap() {
+    public Map<UUID, FastAtherialMenu> getMenuMap() {
         return menuHashMap;
     }
 
@@ -50,7 +53,7 @@ public class AtherialMenuRegistry {
         }
 
         toRemove.stream().filter(uuid -> menuHashMap.containsKey(uuid)).forEach(uuid -> {
-            AtherialMenuCloseEvent atherialMenuCloseEvent  = new AtherialMenuCloseEvent(menuHashMap.get(uuid));
+            AtherialFastMenuCloseEvent atherialMenuCloseEvent  = new AtherialFastMenuCloseEvent(menuHashMap.get(uuid));
             Bukkit.getPluginManager().callEvent(atherialMenuCloseEvent);
             menuHashMap.get(uuid).onRealClose();
             menuHashMap.remove(uuid);

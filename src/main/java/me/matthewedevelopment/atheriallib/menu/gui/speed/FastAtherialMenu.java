@@ -1,4 +1,4 @@
-package me.matthewedevelopment.atheriallib.menu.gui;
+package me.matthewedevelopment.atheriallib.menu.gui.speed;
 
 import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.config.yaml.AtherialLibItem;
@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import spigui.buttons.SGButton;
 import spigui.menu.SGMenu;
 
-public abstract class AtherialMenu<C extends YamlConfig> {
+public abstract class FastAtherialMenu<C extends YamlConfig> {
     protected Player player;
     protected SGMenu menu;
     protected C c;
@@ -27,7 +27,7 @@ public abstract class AtherialMenu<C extends YamlConfig> {
     public boolean isOnline(){
         return player!=null&&player.isOnline();
     }
-    public AtherialMenu(Player player, C c) {
+    public FastAtherialMenu(Player player, C c) {
         this.player = player;
         this.menu = null;
         this.c = c;
@@ -44,11 +44,15 @@ public abstract class AtherialMenu<C extends YamlConfig> {
     }
     public void create() {
 
-        if (AtherialLib.getInstance().getMenuRegistry().getMenuMap().containsKey(player.getUniqueId())) {
-            AtherialLib.getInstance().getMenuRegistry().getMenuMap().get(player.getUniqueId()).onRealClose();
-            AtherialLib.getInstance().getMenuRegistry().getMenuMap().remove(player.getUniqueId());
+        if (AtherialLib.getInstance().getFastAtherialMenuRegistry().getMenuMap().containsKey(player.getUniqueId())) {
+            FastAtherialMenu fastAtherialMenu = AtherialLib.getInstance().getFastAtherialMenuRegistry().getMenuMap().get(player.getUniqueId());
+            if (!fastAtherialMenu.getClass().getSimpleName().equals(this.getClass().getSimpleName())){
+
+                fastAtherialMenu.onRealClose();
+            }
+            AtherialLib.getInstance().getFastAtherialMenuRegistry().getMenuMap().remove(player.getUniqueId());
         }
-        AtherialLib.getInstance().getMenuRegistry().getMenuMap().put(player.getUniqueId(), this);
+        AtherialLib.getInstance().getFastAtherialMenuRegistry().getMenuMap().put(player.getUniqueId(), this);
 
         if (menu == null) {
             menu = generateMenu(player);
@@ -129,4 +133,8 @@ public abstract class AtherialMenu<C extends YamlConfig> {
         menu.refreshInventory(player);
         updating = false;
     }
+
+
+
+
 }

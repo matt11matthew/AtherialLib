@@ -1,6 +1,5 @@
 package me.matthewedevelopment.atheriallib.events.jump;
 
-import me.matthewedevelopment.atheriallib.playerdata.AtherialProfile;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -20,12 +19,12 @@ public class PlayerJumpEvent   extends Event {
         return handlers;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     public Player getPlayer() {
         return player;
     }
 
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
 }

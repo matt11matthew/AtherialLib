@@ -1,7 +1,8 @@
 package spigui.buttons;
 
-import spigui.buttons.SGButtonListener;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Objects;
 
 /**
  * An SGButton represents a clickable item in an SGMenu (GUI).
@@ -21,6 +22,19 @@ public class SGButton {
 
     /** The Bukkit {@link ItemStack} that will be used as the button's icon. */
     private ItemStack icon;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SGButton sgButton = (SGButton) o;
+        return Objects.equals(icon, sgButton.icon);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(icon);
+    }
 
     /**
      * Creates an SGButton with the specified {@link ItemStack} as it's 'icon' in the inventory.

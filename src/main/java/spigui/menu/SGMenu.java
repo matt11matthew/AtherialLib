@@ -49,6 +49,22 @@ public class SGMenu implements InventoryHolder {
     /** The set of sticky slots (that should remain when the page is changed). */
     private final HashSet<Integer> stickiedSlots;
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof SGMenu) {
+            SGMenu menu = (SGMenu) obj;
+            for (int i : items.keySet()) {
+                if (!menu.items.containsKey(i))return false;
+                if (!items.get(i).equals(menu.items.get(i))) {
+                    return false;
+                }
+            }
+            return true;
+
+        }
+        return false;
+    }
+
     /** The currently selected page of the inventory. */
     private int currentPage;
     /**

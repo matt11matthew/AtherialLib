@@ -24,6 +24,7 @@ import me.matthewedevelopment.atheriallib.item.AtherialItemAPI;
 import me.matthewedevelopment.atheriallib.item.AtherialItemBuilder;
 import me.matthewedevelopment.atheriallib.menu.HotBarListener;
 import me.matthewedevelopment.atheriallib.menu.gui.AtherialMenuRegistry;
+import me.matthewedevelopment.atheriallib.menu.gui.speed.FastAtherialMenuRegistry;
 import me.matthewedevelopment.atheriallib.message.message.ActionBarMessage;
 import me.matthewedevelopment.atheriallib.message.message.ChatMessage;
 import me.matthewedevelopment.atheriallib.message.message.MessageTitle;
@@ -71,8 +72,13 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
 
     private static AtherialLib instance;
     private AtherialMenuRegistry atherialMenuRegistry;
+    private FastAtherialMenuRegistry fastAtherialMenuRegistry;
     private SpiGUI menu;
     public abstract void initDependencies();
+
+    public FastAtherialMenuRegistry getFastAtherialMenuRegistry() {
+        return fastAtherialMenuRegistry;
+    }
 
     private MySqlHandler sqlHandler;
 
@@ -187,6 +193,9 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         registerListener(new PlayerJumpListener());
         atherialMenuRegistry = new AtherialMenuRegistry();
         atherialMenuRegistry.start();
+
+        fastAtherialMenuRegistry=new FastAtherialMenuRegistry();
+        fastAtherialMenuRegistry.start();
 
         this.chatPromptHandler= new ChatPromptHandler();
         registerListener(chatPromptHandler);
