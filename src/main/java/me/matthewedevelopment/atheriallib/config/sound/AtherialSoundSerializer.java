@@ -12,8 +12,8 @@ public class AtherialSoundSerializer implements ConfigSerializable<AtherialSound
     public AtherialSound deserializeComplex(Map<String, Object> map) {
 
         String sound = (String) map.get("sound");
-        float volume = (float) map.get("volume");
-        float pitch = (float) map.get("pitch");
+        float pitch = Float.parseFloat(String.valueOf((double) map.get("pitch")));
+        float volume = Float.parseFloat(String.valueOf((double) map.get("volume")));
         return new AtherialSound(sound, volume,pitch);
     }
 
