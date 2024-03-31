@@ -20,7 +20,12 @@ public class AtherialMenuRegistry {
     }
 
     public  void start() {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(AtherialLib.getInstance(),() -> updateGUI(),15L,15L);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(AtherialLib.getInstance(),() -> {
+            updateGUI(true);
+        },40L,40L);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(AtherialLib.getInstance(),() -> {
+            updateGUI(false);
+        },15L,15L);
     }
 
     public Map<UUID, AtherialMenu> getMenuMap() {
@@ -28,7 +33,7 @@ public class AtherialMenuRegistry {
     }
 
 
-    private void updateGUI() {
+    private void updateGUI(boolean slow) {
         List<UUID> toRemove = new ArrayList<>();
 
         for (UUID uuid : menuHashMap.keySet()) {
@@ -40,7 +45,18 @@ public class AtherialMenuRegistry {
             if (player.getOpenInventory()!=null && player.getOpenInventory().getTopInventory().getHolder() instanceof SGMenu){
 
 
-                menuHashMap.get(player.getUniqueId()).firstUpdate();
+                AtherialMenu atherialMenu = menuHashMap.get(player.getUniqueId());
+                if (atherialMenu.isSlow()){
+
+                    if (slow) {
+                        atherialMenu.firstUpdate();
+                    }
+                } else {
+                    if (!slow) {
+                        atherialMenu.firstUpdate();
+
+                    }
+                }
 
             } else {
 

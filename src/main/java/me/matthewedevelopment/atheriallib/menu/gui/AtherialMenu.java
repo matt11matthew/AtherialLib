@@ -18,9 +18,16 @@ public abstract class AtherialMenu<C extends YamlConfig> {
     protected SGMenu menu;
     protected C c;
 
+    private boolean slow =false;
 
+    public boolean isSlow() {
 
+        return slow;
+    }
 
+    public void setSlow(boolean slow) {
+        this.slow = slow;
+    }
 
     public abstract void update();
 
@@ -88,7 +95,7 @@ public abstract class AtherialMenu<C extends YamlConfig> {
         menu.setButton(row * 9 + col, b);
     }
 
-    public abstract void onRealClose();
+    public  void onRealClose(){}
 
     public SGMenu getMenu() {
         return menu;

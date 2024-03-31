@@ -22,7 +22,7 @@ public abstract class FastAtherialMenu<C extends YamlConfig> {
 
 
 
-    public abstract void update();
+    public abstract boolean update();
 
     public boolean isOnline(){
         return player!=null&&player.isOnline();
@@ -129,8 +129,10 @@ public abstract class FastAtherialMenu<C extends YamlConfig> {
 
     public void firstUpdate() {
         updating = true;
-        update();
-        menu.refreshInventory(player);
+        if (update()){
+
+            menu.refreshInventory(player);
+        }
         updating = false;
     }
 

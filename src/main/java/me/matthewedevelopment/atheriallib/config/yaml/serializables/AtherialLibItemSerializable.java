@@ -3,6 +3,8 @@ package me.matthewedevelopment.atheriallib.config.yaml.serializables;
 import me.matthewedevelopment.atheriallib.config.yaml.AtherialLibItem;
 import me.matthewedevelopment.atheriallib.config.yaml.ConfigSerializable;
 import me.matthewedevelopment.atheriallib.config.yaml.SerializeType;
+import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.IntSimpleList;
+import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.serializer.IntSimpleListSerializer;
 import org.bukkit.Material;
 import org.bukkit.configuration.MemorySection;
 
@@ -28,6 +30,9 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
         if (item.getDisplayName()!=null){
             serializedData.put("displayName", item.getDisplayName());
 
+        }
+        if (item.getMultiSlots()!=null){
+            serializedData.put("multiSlots", new IntSimpleListSerializer().serializeSimple(item.getMultiSlots()));
         }
         if (item.getData()==-1){
 
@@ -80,6 +85,11 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
         List<String> lore = map.containsKey("lore") ? (List<String>) map.get("lore") : null;
         String skullOwner = map.containsKey("skullOwner") ? (String) map.get("skullOwner") : null;
         String displayName = map.containsKey("displayName") ? (String) map.get("displayName") : null;
+
+
+        IntSimpleList multiSlots = map.containsKey("multiSlots") ? new IntSimpleListSerializer().deserializeSimple( (String)map.get("multiSlots")) : null;
+
+
         int modelId = map.containsKey("modelId") ? (int) map.get("modelId") : 0;
 
         String headDatabaseHead = map.containsKey("headDatabaseHead") ? (String) map.get("headDatabaseHead") : null;
@@ -99,6 +109,9 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
         AtherialLibItem atherialLibItem = new AtherialLibItem(type, amount, displayName, lore, skullOwner, slot, enchantments);
         if (saveData){
             atherialLibItem=atherialLibItem.setData(dt);
+        }
+        if (multiSlots!=null) {
+            atherialLibItem.setMultiSlots(multiSlots);
         }
         if (headDatabaseHead!=null){
             atherialLibItem= atherialLibItem.setHeadDatabaseHead(headDatabaseHead);

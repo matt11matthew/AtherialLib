@@ -1,6 +1,7 @@
 package me.matthewedevelopment.atheriallib.config.yaml;
 
 import me.matthewedevelopment.atheriallib.config.yaml.serializables.AtherialLibItemSerializable;
+import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.IntSimpleList;
 import me.matthewedevelopment.atheriallib.dependency.headdatabase.HeadDatabaseDependency;
 import me.matthewedevelopment.atheriallib.io.StringReplacer;
 import me.matthewedevelopment.atheriallib.utilities.ChatUtils;
@@ -29,6 +30,7 @@ public class AtherialLibItem {
     private int modelId=0;
     private Map<String, Integer> enchantments;
     private String headDatabaseHead;
+    private IntSimpleList multiSlots = null;
 
     public int getModelId() {
         return modelId;
@@ -84,6 +86,11 @@ public class AtherialLibItem {
         return this;
     }
 
+    public AtherialLibItem setMultiSlots(IntSimpleList multiSlots) {
+        this.multiSlots = multiSlots;
+        return this;
+    }
+
     public AtherialLibItem addEnchantment(Enchantment enchantment, int level) {
        if (this.enchantments==null){
            this.enchantments=new HashMap<>();
@@ -114,6 +121,7 @@ public class AtherialLibItem {
         this.enchantments = clone.enchantments;
         this.headDatabaseHead = clone.headDatabaseHead;
         this.modelId = clone.modelId;
+        this.multiSlots = clone.multiSlots;
 
     }
     /*
@@ -256,6 +264,10 @@ public class AtherialLibItem {
 
     public List<String> getLore() {
         return lore;
+    }
+
+    public IntSimpleList getMultiSlots() {
+        return multiSlots;
     }
 
     public String getSkullOwner() {

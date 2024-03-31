@@ -20,7 +20,7 @@ public class FastAtherialMenuRegistry {
     }
 
     public  void start() {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(AtherialLib.getInstance(),() -> updateGUI(),5L, 5);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(AtherialLib.getInstance(),() -> updateGUI(),10L, 10L);
 
 
 
