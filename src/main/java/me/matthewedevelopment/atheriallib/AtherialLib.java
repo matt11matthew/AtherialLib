@@ -118,7 +118,6 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         AtherialTitle.setAtherialPlugin(this);
     }
 
-
     public ChatPromptHandler getChatPromptHandler() {
         return chatPromptHandler;
     }

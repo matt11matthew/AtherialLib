@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static me.matthewedevelopment.atheriallib.nms.Version.V1_8_R3;
 import static me.matthewedevelopment.atheriallib.utilities.ChatUtils.colorize;
 
 
@@ -162,5 +163,9 @@ public abstract class VersionProvider {
                 return true;
         }
 
+    }
+
+    public boolean is1_8() {
+        return getVersion()==V1_8_R3;
     }
 }

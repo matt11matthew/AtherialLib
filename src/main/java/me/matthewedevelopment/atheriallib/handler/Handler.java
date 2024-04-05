@@ -12,7 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * Created by Matthew E on 12/31/2023 at 12:29 AM for the project Extraction
  */
 public abstract class Handler<T extends JavaPlugin, C  extends YamlConfig> implements Listener {
-    protected C config;
+    protected C c;
     protected T core;
 
     private HandlerPriority unloadPriority;
@@ -28,7 +28,7 @@ public abstract class Handler<T extends JavaPlugin, C  extends YamlConfig> imple
         this.unloadPriority = unloadPriority;
         this.loadPriority = loadPriority;
         this.enabled = false;
-        this.config = config;
+        this.c = config;
     }
 
 //    public final <T extends AtherialRedisPacket> void registerListener(Class<T> msg, AtherialPacketListener<T> listener) {
@@ -48,6 +48,9 @@ public abstract class Handler<T extends JavaPlugin, C  extends YamlConfig> imple
         AtherialLib.getInstance().registerAtherialCommand(atherialCommand);
     }
 
+    public C getC() {
+        return c;
+    }
 
     public void registerListener(Listener listener) {
         Bukkit.getPluginManager().registerEvents(listener,core);

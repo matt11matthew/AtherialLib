@@ -1,5 +1,6 @@
 package me.matthewedevelopment.atheriallib.config.sound;
 
+import me.matthewedevelopment.atheriallib.AtherialLib;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -38,6 +39,19 @@ public class AtherialSound {
         }
         if (sound==null)return;
 
-        p.getWorld().playSound(p,sound, volume, pitch);
+        if (AtherialLib.getInstance().isNmsEnabled()) {
+
+            if (         AtherialLib.getInstance().getVersionProvider().is1_8()){
+
+                p.playSound(p.getLocation(),sound, volume,pitch);
+            } else {
+
+                p.getWorld().playSound(p, sound, volume, pitch);
+            }
+
+        } else {
+
+            p.getWorld().playSound(p, sound, volume, pitch);
+        }
     }
 }

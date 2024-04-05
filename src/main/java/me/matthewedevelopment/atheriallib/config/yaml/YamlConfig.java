@@ -29,13 +29,33 @@ public  class YamlConfig<A extends JavaPlugin> implements Config {
 
     private boolean newConfig = false;
     private boolean done = false;
+
+    protected boolean saveDefault = true;
+
     @Override
     public void loadConfig() {
         // Ensure the configuration file and its parent directories exist
         File configFile = this.getFile();
         if (!configFile.exists()) {
-            this.saveDefaultConfig();
-            newConfig=true;
+            if (saveDefault){
+                this.saveDefaultConfig();
+                newConfig=true;
+
+            } else {
+                //MAKE FILE
+                if (!configFile.getParentFile().exists()){
+                    configFile.getParentFile().mkdirs();
+                }
+                if (!configFile.exists()){
+                    try {
+                        configFile.createNewFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                newConfig=true;
+            }
         }
 
         YamlConfiguration yamlConfiguration = onLoad(YamlConfiguration.loadConfiguration(configFile));
