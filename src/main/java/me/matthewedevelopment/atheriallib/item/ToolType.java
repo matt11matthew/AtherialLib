@@ -7,7 +7,7 @@ import org.bukkit.Material;
  */
 public enum ToolType {
     PICKAXE, SHOVEL, HOE, SWORD, AXE, BOW, HELMET, CHESTPLATE, LEGGINGS, BOOTS, FISHING_ROD,
-    CROSSBOW, SHEARS,FLINT_AND_STEEL,ELYTRA,SHIELD,CARROT_ON_A_STICK;
+    CROSSBOW, SHEARS,FLINT_AND_STEEL,ELYTRA,SHIELD,CARROT_ON_A_STICK, ARMOR;
 
 
     ToolType() {
@@ -35,5 +35,16 @@ public enum ToolType {
             }
         }
         return null;
+    }
+
+    public boolean matches(Material type) {
+        ToolType byMaterial = getByMaterial(type);
+        if( byMaterial==null)return false;
+        if (this==ARMOR&&byMaterial.isArmor())return true;
+        return byMaterial==this;
+
+    }
+    public boolean isArmor() {
+        return this==HELMET||this==CHESTPLATE||this==LEGGINGS||this==BOOTS||this==ARMOR;
     }
 }
