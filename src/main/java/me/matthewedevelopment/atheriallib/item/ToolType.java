@@ -7,7 +7,7 @@ import org.bukkit.Material;
  */
 public enum ToolType {
     PICKAXE, SHOVEL, HOE, SWORD, AXE, BOW, HELMET, CHESTPLATE, LEGGINGS, BOOTS, FISHING_ROD,
-    CROSSBOW, SHEARS,FLINT_AND_STEEL,ELYTRA,SHIELD,CARROT_ON_A_STICK, ARMOR;
+    CROSSBOW, SHEARS,FLINT_AND_STEEL,ELYTRA,SHIELD,CARROT_ON_A_STICK, ARMOR, WEAPON;
 
 
     ToolType() {
@@ -17,6 +17,7 @@ public enum ToolType {
     public static ToolType getByMaterial(Material material) {
         String text = new String(material.toString())
                 .replace("WOODEN_","")
+                .replace("WOOD_","")
                 .replace("STONE_","")
                 .replace("GOLD_", "")
                 .replace("GOLDEN_","")
@@ -41,8 +42,13 @@ public enum ToolType {
         ToolType byMaterial = getByMaterial(type);
         if( byMaterial==null)return false;
         if (this==ARMOR&&byMaterial.isArmor())return true;
+        if (this==WEAPON&&byMaterial.isWeapon())return true;
         return byMaterial==this;
 
+    }
+
+    public boolean isWeapon() {
+        return this==SWORD||this==AXE||this==CROSSBOW||this==BOW||this==WEAPON;
     }
     public boolean isArmor() {
         return this==HELMET||this==CHESTPLATE||this==LEGGINGS||this==BOOTS||this==ARMOR;

@@ -95,6 +95,10 @@ public class LuckPermsDependency  extends Dependency {
         });
     }
 
+    public void removePermission() {
+
+    }
+
     public Rank getRank(Player player){
         PlayerAdapter<Player> playerAdapter = luckPerms.getPlayerAdapter(Player.class);
         if (playerAdapter!=null){
