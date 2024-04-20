@@ -123,7 +123,28 @@ public class ChatUtils {
 
         return result.toString();
     }
+    public static String applyBold(String input) {
+        // Regular expression to find the style sequence
+        String stylePattern = "(&[0-9a-fk-or]*[l-o])";
 
+        // Insert the underline code &n after the style sequence
+        return input.replaceAll(stylePattern, "$1&l");
+    }
+
+    public static String applyStrikeThrough(String input) {
+        // Regular expression to find the style sequence
+        String stylePattern = "(&[0-9a-fk-or]*[l-o])";
+
+        // Insert the underline code &n after the style sequence
+        return input.replaceAll(stylePattern, "$1&m");
+    }
+    public static String applyUnderline(String input) {
+        // Regular expression to find the style sequence
+        String stylePattern = "(&[0-9a-fk-or]*[l-o])";
+
+        // Insert the underline code &n after the style sequence
+        return input.replaceAll(stylePattern, "$1&n");
+    }
 //    public static String splitSentence(String sentence, int maxLineLength) {
 //        if (maxLineLength < 2) {
 //            return sentence;
