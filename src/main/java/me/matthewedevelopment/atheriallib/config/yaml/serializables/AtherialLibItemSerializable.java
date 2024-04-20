@@ -8,6 +8,7 @@ import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.seriali
 import org.bukkit.Material;
 import org.bukkit.configuration.MemorySection;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,7 +83,17 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
             }
         }
 
-        List<String> lore = map.containsKey("lore") ? (List<String>) map.get("lore") : null;
+        List<String> lore =null;
+
+        if (map.containsKey("lore")){
+            lore=new ArrayList<>();
+            Object o = map.get("lore");
+            if (o instanceof String) {
+                lore.add((String) o);
+            } else {
+                lore=(List<String>) map.get("lore");
+            }
+        }
         String skullOwner = map.containsKey("skullOwner") ? (String) map.get("skullOwner") : null;
         String displayName = map.containsKey("displayName") ? (String) map.get("displayName") : null;
 

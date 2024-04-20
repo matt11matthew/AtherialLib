@@ -12,6 +12,8 @@ public class AtherialLibDefaultCommandConfig  extends YamlConfig {
 
     @SerializedName("correctUsage")
     public String CORRECT_USAGE_MESSAGE ="&c&lCorrect Usage: &7%command% &7%arguments%";
+    @SerializedName("correctUsageNoArgs")
+    public String CORRECT_USAGE_NO_ARGS_MESSAGE ="&c&lCorrect Usage: &7%command%";
 
     @SerializedName("playerOnly")
     public ChatMessage PLAYER_ONLY_MESSAGE = new ChatMessage("&cThis command is player-only.");
@@ -20,7 +22,8 @@ public class AtherialLibDefaultCommandConfig  extends YamlConfig {
 
     @SerializedName("consoleOnly")
     public ChatMessage CONSOLE_ONLY_MESSAGE = new ChatMessage("&cThis command is console-only.");
-
+    @SerializedName("pHasNotPlayedBefore")
+    public ChatMessage P_HAS_NOT_PLAYED_BEFORE = new ChatMessage("&c%player% is has not played before.");
     @SerializedName("pDoesntExist")
     public ChatMessage P_DOESNT_EXIST = new ChatMessage("&c%player% is &lOFFLINE&c.");
     @SerializedName("invalidNum")

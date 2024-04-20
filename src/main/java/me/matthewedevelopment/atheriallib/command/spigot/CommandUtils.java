@@ -19,7 +19,7 @@ public class CommandUtils {
 
     public static void sendCommandUsage(CommandSender sender, String command, String... arguments) {
         if (arguments == null || arguments.length == 0) {
-            message(sender, colorize(AtherialLib.getInstance().getCommandConfig().CORRECT_USAGE_MESSAGE).replaceAll("%command%", command));
+            message(sender, colorize(AtherialLib.getInstance().getCommandConfig().CORRECT_USAGE_NO_ARGS_MESSAGE).replaceAll("%command%", command));
             return;
         }
         StringBuilder argumentsString = new StringBuilder();
@@ -63,6 +63,9 @@ public class CommandUtils {
     }
     public static void sendPlayerOfflineMessage(CommandSender sender, String name) {
         AtherialLib.getInstance().getCommandConfig().P_DOESNT_EXIST.send(sender, s -> colorize(s).replace("%player%", name));
+    }
+    public static void sendPlayerHasNotPlayedBeforeMessage(CommandSender sender, String name) {
+        AtherialLib.getInstance().getCommandConfig().P_HAS_NOT_PLAYED_BEFORE.send(sender, s -> colorize(s).replace("%player%", name));
     }
 
     public static void sendNoPermissionMessage(CommandSender sender) {
