@@ -189,8 +189,6 @@ public class ChatUtils {
     }
     public static String colorize(String message){
         if (message==null)return null;
-
-//        return new String(message).replaceAll("&", "\u00A7");
         return translateHexColorCodes(message);
     }
 }
