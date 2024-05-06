@@ -13,10 +13,12 @@ import java.util.UUID;
 
 public class UUIDProfileRegistry  extends DataObjectRegistry<UUIDProfile> implements Listener {
     private Map<String, UUID> nameMap;
+    private Map<UUID, String> reverseNameMap;
 
     public UUIDProfileRegistry() {
         super(UUIDProfile.class);
         nameMap = new HashMap<>();
+        reverseNameMap = new HashMap<>();
         instance=this;
     }
 
@@ -24,6 +26,7 @@ public class UUIDProfileRegistry  extends DataObjectRegistry<UUIDProfile> implem
     public void onLoadAll(List<UUIDProfile> list) {
         for (UUIDProfile uuidProfile : list) {
             nameMap.put(uuidProfile.getUsername().toLowerCase(), uuidProfile.getUuid());
+            reverseNameMap.put( uuidProfile.getUuid(), uuidProfile.getUsername());
         }
         super.onLoadAll(list);
     }
@@ -37,6 +40,10 @@ public class UUIDProfileRegistry  extends DataObjectRegistry<UUIDProfile> implem
     public UUID getUUIDFromUsername(String username) {
         return nameMap.get(username.toLowerCase());
     }
+    public String getUsernameFromUUID(UUID id) {
+        return reverseNameMap.get(id);
+    }
+
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -56,6 +63,7 @@ public class UUIDProfileRegistry  extends DataObjectRegistry<UUIDProfile> implem
         UUIDProfile uuidProfile = new UUIDProfile(p.getUniqueId(), p.getName());
         insertAsync(uuidProfile,() -> {
             nameMap.put(uuidProfile.getUsername().toLowerCase(),uuidProfile.getUuid());
+            reverseNameMap.put(uuidProfile.getUuid(),uuidProfile.getUsername());
         });
     }
 

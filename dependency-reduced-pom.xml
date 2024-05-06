@@ -4,7 +4,7 @@
   <groupId>me.matthewedevelopment</groupId>
   <artifactId>atheriallib</artifactId>
   <name>AtherialLib</name>
-  <version>0.34</version>
+  <version>0.35</version>
   <build>
     <resources>
       <resource>
