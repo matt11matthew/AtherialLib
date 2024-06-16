@@ -26,10 +26,11 @@ import java.util.*;
 /**
  * Created by Matthew E on 12/30/2023 at 6:56 PM for the project Extraction
  */
-public  abstract class LoadedGameMap {
+public  abstract class LoadedGameMap<T extends LoadedGameMap<T>> {
     private LoadedGameMapState dungeonState;
     private World world;
     private String zipFileNameCache;
+    private Class<T> clazz;
 
     public abstract void onWorldLoad(World world);
     public abstract void onSessionEnd(Player player);
@@ -42,7 +43,7 @@ public  abstract class LoadedGameMap {
         return sessionId;
     }
 
-    public GameMapMode getDungeonMode() {
+    public GameMapMode getGameMapMode() {
         return gameMapMode;
     }
     public void sendMessage(String text){
@@ -78,22 +79,20 @@ public  abstract class LoadedGameMap {
     public String toString() {
         return dungeonState.toString()+": ("+zipFileNameCache+")";
     }
-    public LoadedGameMap(UUID dungeon, UUID sessionId, GameMapMode gameMapMode){
+    public LoadedGameMap(UUID dungeon, UUID sessionId, GameMapMode gameMapMode, Class<T> clazz){
         this.dungeon = dungeon;
 
+        this.clazz=clazz;
         this.sessionId =sessionId;
         this.gameMapMode = gameMapMode;
     }
 
 
-    public boolean hasFloor(Player player) {
-        return currentFloorMap.containsKey(player.getUniqueId());
-    }
-    public UUID getCurrentFloorId(Player player) {
-        return currentFloorMap.get(player.getUniqueId());
+    public Class<T> getClazz() {
+        return clazz;
     }
 
-    public LoadedGameMap setDungeonState(LoadedGameMapState dungeonState) {
+    public LoadedGameMap<T> setDungeonState(LoadedGameMapState dungeonState) {
         this.dungeonState = dungeonState;
         return this;
     }
@@ -103,14 +102,14 @@ public  abstract class LoadedGameMap {
     public abstract void onLoad();
 
 
-    public void loadAsync(Callback<LoadedGameMap> loadedDungeonCallback) {
+    public void loadAsync(Callback<T> loadedDungeonCallback) {
         AtherialTasks.runAsync(() -> {
 
             this.loadFile();
             AtherialTasks.runSync(() -> {
                 this.setupWorld();
                 this.setDungeonState(LoadedGameMapState.LOADED);
-                loadedDungeonCallback.call(this);
+                loadedDungeonCallback.call((T) this);
                 zipFileNameCache= getGameMap().getZipFileName();
                 onWorldLoad(world);
             });
@@ -277,25 +276,6 @@ public  abstract class LoadedGameMap {
     }
 
     public void selfUpdate() {
-        for (Player player : getPlayers()) {
 
-            Floor foundFloor = null;
-            for (UUID uuid : FloorRegistry.get().getFloorIdsByDungeon(getDungeonID())) {
-                Floor floor = FloorRegistry.get().getMap().get(uuid);
-                if (ExtractionPointLocation.isWithinBounds(player.getLocation(), floor.getPos1(), floor.getPos2())) {
-                    foundFloor = floor;
-                    currentFloorMap.put(player.getUniqueId(), foundFloor.getUuid());
-
-                    break;
-                }
-            }
-            if (foundFloor == null) {
-
-                if (currentFloorMap.containsKey(player.getUniqueId())) {
-                    currentFloorMap.remove(player.getUniqueId());
-                }
-
-            }
-        }
     }
 }

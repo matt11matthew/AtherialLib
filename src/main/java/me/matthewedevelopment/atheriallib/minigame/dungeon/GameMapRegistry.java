@@ -3,6 +3,10 @@ package me.matthewedevelopment.atheriallib.minigame.dungeon;
 import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.database.registry.DataObjectRegistry;
 import me.matthewedevelopment.atheriallib.minigame.dungeon.load.LoadedGameMap;
+import me.matthewedevelopment.atheriallib.minigame.dungeon.load.edit.EditLoadedGameMap;
+import me.matthewedevelopment.atheriallib.minigame.dungeon.load.game.GameLoadedGameMap;
+import me.matthewedevelopment.atheriallib.minigame.dungeon.load.game.GameState;
+import me.matthewedevelopment.atheriallib.minigame.dungeon.load.game.events.GameLobbyOpenEvent;
 import me.matthewedevelopment.atheriallib.utilities.AtherialTasks;
 import me.matthewedevelopment.atheriallib.utilities.file.FileUtils;
 import org.bukkit.Bukkit;
@@ -22,8 +26,11 @@ import static me.matthewedevelopment.atheriallib.utilities.ChatUtils.colorize;
 public class GameMapRegistry extends DataObjectRegistry<GameMap> {
 
     private Map<UUID, LoadedGameMap> loadedDungeonMap;
+    private GameMapConfig config;
     public GameMapRegistry( ) {
         super(GameMap.class);
+        config=GameMapConfig.get();
+
         this.loadedDungeonMap= new HashMap<>();
 
     }
@@ -91,7 +98,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
 
         AtherialTasks.runAsync( () -> {
             deleteSync(gameMap.getUUID());
-            File worldFile =new File(Extraction.getInstance().getDataFolder(), "worlds/"+ zipFileName);
+            File worldFile =new File(AtherialLib.getInstance().getDataFolder(), "worlds/"+ zipFileName);
 
             worldFile.delete();
             runnable.run();
@@ -107,9 +114,9 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
         gameMap.setEditing(true);
 
         String zipFileName = gameMap.getUUID().toString()+".zip";
-        File newFileName =new File(Extraction.getInstance().getDataFolder(), "worlds/"+zipFileName);
+        File newFileName =new File(AtherialLib.getInstance().getDataFolder(), "worlds/"+zipFileName);
         try {
-            Files.copy(new File(Extraction.getInstance().getDataFolder(),config.DEFAULT_WORLD_ZIP).toPath(),
+            Files.copy(new File(AtherialLib.getInstance().getDataFolder(),config.DEFAULT_WORLD_ZIP).toPath(),
                     newFileName.toPath(),
                     StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
@@ -119,12 +126,12 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
 
         gameMap.setZipFileName(zipFileName);
 
-        if (Extraction.getInstance().isDebug()){
+        if (AtherialLib.getInstance().isDebug()){
             player.sendMessage(zipFileName);
         }
         insertAsync(gameMap,() -> {
-            config.D_CREATE_MSG.send(player,s -> colorize(s).replace("%name%", gameMap.getName()));
-            EditLoadedDungeon editLoadedDungeon = new EditLoadedDungeon(gameMap.getUUID(), UUID.randomUUID());
+            config.GAME_MAP_CREATE_MSG.send(player,s -> colorize(s).replace("%name%", gameMap.getName()));
+            EditLoadedGameMap editLoadedDungeon = new EditLoadedGameMap(gameMap.getUUID(), UUID.randomUUID());
             gameMap.setEditSessionId(editLoadedDungeon.getSessionId());
             loadedDungeonMap.put(editLoadedDungeon.getSessionId(),editLoadedDungeon);
             editLoadedDungeon.loadAsync(loadedDungeon -> {
@@ -143,7 +150,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
             value.onSessionEnd(player);
             player.teleport(Extraction.getInstance().getMainSpawn(), PlayerTeleportEvent.TeleportCause.PLUGIN);
         }
-        Bukkit.unloadWorld(world, value.getDungeonMode() == DungeonMode.EDIT);
+        Bukkit.unloadWorld(world, value.getGameMapMode() == DungeonMode.EDIT);
         Bukkit.getWorlds().remove(world);
         String worldName = value.getWorldName();
 
@@ -151,7 +158,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
         AtherialTasks.runAsync(() -> {
             if (!delete) {
             }
-            if (value.getDungeonMode()==DungeonMode.EDIT) {
+            if (value.getGameMapMode()==DungeonMode.EDIT) {
 
                 map.get(value.getDungeonID()).setEditing(false);
                 map.get(value.getDungeonID()).setEditSessionId(null);
@@ -161,7 +168,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
             if (loadedDungeonMap.containsKey(value.getSessionId())){
                 loadedDungeonMap.remove(value.getSessionId());
             }
-            if (value.getDungeonMode() == DungeonMode.EDIT) {
+            if (value.getGameMapMode() == DungeonMode.EDIT) {
                 value.cleanupFileForZipping();
                 value.zipAndMove();
                 File file = new File(worldName);
@@ -201,10 +208,10 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
             }
 
             String worldName = value.getWorldName();
-            Bukkit.unloadWorld(world, value.getDungeonMode()== DungeonMode.EDIT);
+            Bukkit.unloadWorld(world, value.getGameMapMode()== DungeonMode.EDIT);
             Bukkit.getWorlds().remove(world);
 
-            if (value.getDungeonMode()== DungeonMode.EDIT){
+            if (value.getGameMapMode()== DungeonMode.EDIT){
 
                 value.cleanupFileForZipping();
                 value.zipAndMove();
@@ -231,7 +238,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
         }
     }
 
-    public EditLoadedDungeon getEditingDungeon(String name) {
+    public EditLoadedGameMap getEditingDungeon(String name) {
         UUID toSearch = null;
         for (LoadedGameMap value : loadedDungeonMap.values()) {
             if (value.getGameMap().getName().equalsIgnoreCase(name)){
@@ -243,23 +250,22 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
         if (toSearch!=null){
             if (loadedDungeonMap.containsKey(toSearch)){
 
-                return (EditLoadedDungeon)loadedDungeonMap.get(toSearch);
+                return (EditLoadedGameMap)loadedDungeonMap.get(toSearch);
             }
         }
         return null;
     }
-    public void startDungeon(Player player, String name) {
+    public void startGame(Player player, String name) {
         GameMap byName = getByName(name);
         if (byName!=null){
             GameMap gameMap = map.get(byName.getUUID());
-            List<UUID> floorIdsByDungeon = FloorRegistry.get().getFloorIdsByDungeon(gameMap.getUUID());
-            if (floorIdsByDungeon.isEmpty()){
+            if (gameMap.getLobbySpawn()==null){
                 if (player!=null) {
                     config.DUNGEON_NOT_READY.send(player);
                 }
                 return;
             }
-            GameLoadedDungeon gameLoadedDungeon = new GameLoadedDungeon(gameMap.getUUID(), UUID.randomUUID());
+            GameLoadedGameMap gameLoadedDungeon = new GameLoadedGameMap(gameMap.getUUID(), UUID.randomUUID());
             gameLoadedDungeon.setGameState(GameState.LOBBY);
             Bukkit.getServer().broadcastMessage(colorize(config.D_OPEN).replace("%name%", gameMap.getName()));
 
@@ -304,7 +310,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
 
         int count = 0;
         for (LoadedGameMap ld : loadedDungeonMap.values()) {
-            if (ld.getDungeonMode()==DungeonMode.EDIT){
+            if (ld.getGameMapMode()==DungeonMode.EDIT){
                 if (!p.hasPermission(config.D_EDIT_PERM)){
                     continue;
                 }

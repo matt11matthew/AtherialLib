@@ -1,16 +1,15 @@
 package me.matthewedevelopment.atheriallib.minigame.dungeon.load.game.events;
 
-import me.matthewe.extraction.dungeon.load.game.GameLoadedDungeon;
 import me.matthewedevelopment.atheriallib.minigame.dungeon.load.game.GameLoadedGameMap;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 public class GameStartEvent  extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private final GameLoadedGameMap dungeon;
+    private final GameLoadedGameMap map;
 
-    public GameStartEvent(GameLoadedDungeon dungeon) {
-        this.dungeon = dungeon;
+    public GameStartEvent(GameLoadedGameMap map) {
+        this.map = map;
     }
 
 
@@ -19,8 +18,8 @@ public class GameStartEvent  extends Event {
     }
 
 
-    public GameLoadedDungeon getDungeon() {
-        return dungeon;
+    public GameLoadedGameMap getMap() {
+        return map;
     }
 
     public static HandlerList getHandlerList() {

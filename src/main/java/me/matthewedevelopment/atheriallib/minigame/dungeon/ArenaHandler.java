@@ -10,7 +10,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.io.File;
 import java.io.IOException;
@@ -86,7 +85,7 @@ public abstract class ArenaHandler extends Handler<AtherialLib, GameMapConfig> i
             }
             for (String s : remove) {
                 delayMap.remove(s);
-                gameMapRegistry.startDungeon(null,s);
+                gameMapRegistry.startGame(null,s);
             }
         },1L,1L);
 
