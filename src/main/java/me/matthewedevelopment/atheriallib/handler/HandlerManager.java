@@ -30,6 +30,11 @@ public class HandlerManager<T extends JavaPlugin> {
         handlers.put(handler.getClass().getSimpleName(), handler);
     }
 
+    public void reload() {
+        this.handlers.values().stream().sorted((o1, o2) -> o2.getLoadPriority().getPriority()-o1.getLoadPriority().getPriority()).filter(Handler::isEnabled).forEach(Handler::reload);
+
+
+    }
     public void disableHandlers() {
         this.handlers.values().stream().sorted((o1, o2) -> o2.getUnloadPriority().getPriority()-o1.getUnloadPriority().getPriority()).forEach(Handler::unload);
     }
