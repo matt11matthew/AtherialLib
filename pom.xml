@@ -6,7 +6,7 @@
 
     <groupId>me.matthewedevelopment</groupId>
     <artifactId>atheriallib</artifactId>
-    <version>0.35</version>
+    <version>0.36</version>
 <!--    <packaging>jar</packaging>-->
 
     <name>AtherialLib</name>
@@ -212,6 +212,12 @@
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-legacy</artifactId>
             <version>4.15.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.lingala.zip4j</groupId>
+            <artifactId>zip4j</artifactId>
+            <version>2.11.5</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.arcaniax</groupId>
