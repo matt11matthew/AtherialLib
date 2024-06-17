@@ -12,8 +12,6 @@ public class GameMapConfig extends YamlConfig<AtherialLib> {
     @SerializedName("scoreboard.line")
 
     public String SCOREBOARD_LINE =  "&7&m-------------";
-    public ChatMessage NOT_IN_GAME_MSG =new ChatMessage(PREFIX +"&cYou'r not in a game.");
-
 
     public static GameMapConfig get() {
         return GameHandler.get().getConfig();
@@ -106,6 +104,8 @@ public class GameMapConfig extends YamlConfig<AtherialLib> {
     public ChatMessage GAME_MAP_SET_LOBBY_SPAWN_MSG = new ChatMessage(PREFIX + "set lobby spawn for gamemap &f%id%&e.");
 
 
+
+    public ChatMessage NOT_IN_GAME_MSG =new ChatMessage(PREFIX +"&cYou're not in a game.");
 
 
     @SerializedName("permissions.debug")

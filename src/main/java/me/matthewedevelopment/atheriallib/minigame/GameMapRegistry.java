@@ -258,7 +258,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
         }
     }
 
-    public EditLoadedGameMap getEditingDungeon(String name) {
+    public EditLoadedGameMap getEditingGame(String name) {
         UUID toSearch = null;
         for (LoadedGameMap value : loadedDungeonMap.values()) {
             if (value.getGameMap().getName().equalsIgnoreCase(name)){

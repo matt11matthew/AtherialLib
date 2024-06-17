@@ -10,30 +10,30 @@ import me.matthewedevelopment.atheriallib.minigame.commands.GameMapCommand;
 import me.matthewedevelopment.atheriallib.minigame.load.edit.EditLoadedGameMap;
 import me.matthewedevelopment.atheriallib.utilities.ListUtils;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ArenaEditSubCommand extends  AtherialLibSelfSubCommand<AtherialLib, GameMapConfig, GameMapCommand> {
-    public ArenaEditSubCommand(GameMapCommand parentCommand, AtherialLib main) {
-        super("edit", parentCommand, main);
+/**
+ * Created by Matthew E on 6/16/2024 at 2:00 PM for the project AtherialLib
+ */
+public class GameSaveSubCommand extends  AtherialLibSelfSubCommand<AtherialLib, GameMapConfig, GameMapCommand> {
+    public GameSaveSubCommand(GameMapCommand parentCommand, AtherialLib main) {
+        super("save", parentCommand, main);
         this.playerOnly =true;
-        this.permission=config.GAME_MAP_EDIT_PERM;
+        this.permission=config.GAME_MAP_SAVE_PERM;
     }
 
     @Override
     public void run(CommandSender sender, String[] args) {
-        Player player = (Player) sender;
         if (args.length!=1){
-            CommandUtils.sendCommandUsage(sender, "/"+parentCommand.label+" edit", "(name)");
+            CommandUtils.sendCommandUsage(sender, "/"+parentCommand.label+" save", "(name)");
             return;
         }
 
-        GameMapRegistry dungeonRegistry = GameMapRegistry.get();
+        GameMapRegistry  dungeonRegistry = GameMapRegistry.get();
         if (!dungeonRegistry.isDungeon(args[0])){
             config.GAME_MAP_DOESNT_EXISTS.send(sender,s -> colorize(s).replace("%name%", args[0]));
             return;
@@ -41,20 +41,19 @@ public class ArenaEditSubCommand extends  AtherialLibSelfSubCommand<AtherialLib,
         }
 
 
-        if (dungeonRegistry.isEditing(args[0])){
-            EditLoadedGameMap editLoadedDungeon = dungeonRegistry.getEditingDungeon(args[0]);
-            ((Player) sender).teleport(editLoadedDungeon.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+        if (!dungeonRegistry.isEditing(args[0])) {
+            config.GAME_MAP_NOT_EDITING_MSG.send(sender,s -> colorize(s).replace("%name%", args[0]));
             return;
         }
-        config.GAME_MAP_EDIT_MSG.send(sender,s -> colorize(s).replace("%name%", args[0]));
+        EditLoadedGameMap editLoadedDungeon = dungeonRegistry.getEditingGame(args[0]);
 
-        dungeonRegistry.editDungeon(player,args[0]);
-
+        dungeonRegistry.unloadAsync(editLoadedDungeon,() -> {
+            config.GAME_MAP_SAVE_MSG.send(sender,s -> colorize(s).replace("%name%", args[0]));
+        }, false);
     }
-
     @Override
     public List<String> getTabCompleter(CommandSender sender, String[] args) {
-        ArrayList<String> strings = new ArrayList<>(DungeonRegistry.get().getMap().values().stream().map(loadedDungeon -> loadedDungeon.getName()).collect(Collectors.toList()));
+        ArrayList<String> strings = new ArrayList<>(GameMapRegistry.get().getMap().values().stream().map(loadedDungeon -> loadedDungeon.getName()).collect(Collectors.toList()));
         if (args.length==0){
             return strings;
         }
@@ -68,8 +67,8 @@ public class ArenaEditSubCommand extends  AtherialLibSelfSubCommand<AtherialLib,
     public List<HelpSubCommand> getHelp(String[] args) {
         return Arrays.asList(HelpSubCommand.builder()
 
-                        .permission(config.D_EDIT_PERM)
+                        .permission(config.GAME_MAP_SAVE_PERM)
                         .arguments("(name)")
-                .command(parentCommand.label + " edit").build());
+                .command(parentCommand.label + " save").build());
     }
 }

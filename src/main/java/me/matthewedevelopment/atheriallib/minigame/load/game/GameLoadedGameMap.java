@@ -41,13 +41,13 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
     }
 
 
-    public static <T extends LoadedGameMap<T>> Optional<T> getCurrentGameDungeon(Player player, Class<T > clazz) {
-       return (Optional<T>) GameMapRegistry.get().getLoadedDungeonMap().values()
-                .stream()
-               .filter(loadedGameMap -> loadedGameMap.getClazz().getSimpleName().equals(clazz.getSimpleName()))
-                .filter(loadedDungeon -> loadedDungeon.getGameMapMode() == GameMapMode.EDIT)
-                .filter(loadedDungeon -> loadedDungeon.getPlayers().contains(player)).findFirst();
-    }
+//    public static <T extends LoadedGameMap<T>> Optional<T> getCurrentGameDungeon(Player player, Class<T > clazz) {
+//       return (Optional<T>) GameMapRegistry.get().getLoadedDungeonMap().values()
+//                .stream()
+//               .filter(loadedGameMap -> loadedGameMap.getClazz().getSimpleName().equals(clazz.getSimpleName()))
+//                .filter(loadedDungeon -> loadedDungeon.getGameMapMode() == GameMapMode.EDIT)
+//                .filter(loadedDungeon -> loadedDungeon.getPlayers().contains(player)).findFirst();
+//    }
   public static Optional<LoadedGameMap> getCurrentGameDungeon(Player player) {
        return  GameMapRegistry.get().getLoadedDungeonMap().values()
                 .stream()

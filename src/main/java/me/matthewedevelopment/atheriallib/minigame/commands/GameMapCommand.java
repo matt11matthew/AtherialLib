@@ -16,10 +16,10 @@ public class GameMapCommand extends AtherialLibSpigotCommand<GameMapConfig, Athe
         super("gamemap", config, main, "game", "map");
         this.playerOnly = true;
         addSubCommand(new ArenaCreateSubCommand(this,main));
-        addSubCommand(new ArenaEditSubCommand(this,main));
-        addSubCommand(new DSaveSubCommand(this,main));
-        addSubCommand(new DSetSpawnCommand(this,main));
-        addSubCommand(new ArenaDeleteSubCommand(this,main));
+        addSubCommand(new GameEditSubCommand(this,main));
+        addSubCommand(new GameSaveSubCommand(this,main));
+//        addSubCommand(new DSetSpawnCommand(this,main));
+        addSubCommand(new GameDeleteSubCommand(this,main));
         addSubCommand(new GameStartSubCommand(this,main));
         addSubCommand(new GameEndSubCommand(this,main));
 //        addSubCommand(new DSetTopFloorCommand(this,main));
