@@ -1,29 +1,23 @@
-package me.matthewedevelopment.atheriallib.minigame.dungeon.load.edit;
+package me.matthewedevelopment.atheriallib.minigame.load.edit;
 
-import me.matthewedevelopment.atheriallib.config.yaml.AtherialLibItem;
-import me.matthewedevelopment.atheriallib.menu.HotBarClickType;
 import me.matthewedevelopment.atheriallib.menu.HotBarMenu;
 import me.matthewedevelopment.atheriallib.message.message.ActionBarMessage;
-import me.matthewedevelopment.atheriallib.minigame.dungeon.GameMapConfig;
-import me.matthewedevelopment.atheriallib.minigame.dungeon.GameMapRegistry;
-import me.matthewedevelopment.atheriallib.minigame.dungeon.load.GameMapMode;
-import me.matthewedevelopment.atheriallib.minigame.dungeon.load.LoadedGameMap;
-import org.bukkit.Bukkit;
+import me.matthewedevelopment.atheriallib.minigame.GameMapConfig;
+import me.matthewedevelopment.atheriallib.minigame.GameMapRegistry;
+import me.matthewedevelopment.atheriallib.minigame.load.GameMapMode;
+import me.matthewedevelopment.atheriallib.minigame.load.LoadedGameMap;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static me.matthewedevelopment.atheriallib.utilities.ChatUtils.colorize;
 
-public  class EditLoadedGameMap extends LoadedGameMap {
+public  abstract class EditLoadedGameMap<T extends LoadedGameMap<T>> extends LoadedGameMap<T> {
 
-    public EditLoadedGameMap(UUID dungeon, UUID sessionId) {
-        super(dungeon, sessionId, GameMapMode.EDIT);
+    public EditLoadedGameMap(UUID dungeon, UUID sessionId, Class<T> clazz) {
+        super(dungeon, sessionId, GameMapMode.EDIT, clazz);
     }
 
 

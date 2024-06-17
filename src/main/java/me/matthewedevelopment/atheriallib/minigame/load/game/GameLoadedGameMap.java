@@ -1,37 +1,20 @@
-package me.matthewedevelopment.atheriallib.minigame.dungeon.load.game;
+package me.matthewedevelopment.atheriallib.minigame.load.game;
 
-import me.matthewe.extraction.Extraction;
-import me.matthewe.extraction.ExtractionConfig;
-import me.matthewe.extraction.dungeon.DungeonRegistry;
-import me.matthewe.extraction.dungeon.floor.Floor;
-import me.matthewe.extraction.dungeon.floor.FloorRegistry;
-import me.matthewe.extraction.dungeon.load.DungeonMode;
-import me.matthewe.extraction.dungeon.load.LoadedDungeon;
-import me.matthewe.extraction.dungeon.load.game.enemies.GameEnemies;
-import me.matthewe.extraction.dungeon.load.game.events.GameStartEvent;
-import me.matthewe.extraction.dungeon.load.game.events.GameStopEvent;
-import me.matthewe.extraction.dungeon.load.game.extraction.GameExtractionPoints;
-import me.matthewe.extraction.dungeon.load.game.floor.GameFloor;
-import me.matthewe.extraction.dungeon.load.game.floor.GameFloorManager;
-import me.matthewe.extraction.lobby.LobbyHandler;
-import me.matthewedevelopment.atheriallib.message.message.ActionBarMessage;
-import me.matthewedevelopment.atheriallib.minigame.dungeon.GameMapRegistry;
-import me.matthewedevelopment.atheriallib.minigame.dungeon.load.GameMapMode;
-import me.matthewedevelopment.atheriallib.minigame.dungeon.load.LoadedGameMap;
-import me.matthewedevelopment.atheriallib.minigame.dungeon.load.game.events.GameStartEvent;
+import me.matthewedevelopment.atheriallib.minigame.GameMapConfig;
+import me.matthewedevelopment.atheriallib.minigame.GameMapRegistry;
+import me.matthewedevelopment.atheriallib.minigame.load.GameMapMode;
+import me.matthewedevelopment.atheriallib.minigame.load.LoadedGameMap;
+import me.matthewedevelopment.atheriallib.minigame.load.game.events.GameStartEvent;
+import me.matthewedevelopment.atheriallib.minigame.load.game.events.GameStopEvent;
 import me.matthewedevelopment.atheriallib.playerdata.io.NameInfo;
-import me.matthewedevelopment.atheriallib.utilities.number.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static me.matthewedevelopment.atheriallib.utilities.ChatUtils.colorize;
-
-public class GameLoadedGameMap<T extends LoadedGameMap<T>> extends LoadedGameMap<T> {
+public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends LoadedGameMap<T> {
     private GameState gameState;
     private HashSet<NameInfo> players;
 
@@ -109,27 +92,29 @@ public class GameLoadedGameMap<T extends LoadedGameMap<T>> extends LoadedGameMap
         if (System.currentTimeMillis()> timeLeft && timeLeft!=0) {
 //            Bukkit.getServer().broadcastMessage("out of time");
             end = true;
-        if (end) {
+            if (end) {
 //            Bukkit.getServer().broadcastMessage("Ended");
-            this.gameState=GameState.DONE;
-            GameStopEvent event= new GameStopEvent(this);
-            Bukkit.getPluginManager().callEvent(event);
+                this.gameState = GameState.DONE;
+                GameStopEvent event = new GameStopEvent(this);
+                Bukkit.getPluginManager().callEvent(event);
 
-            for (NameInfo player : players) {
-                Player player1 = player.toPlayer();
-                if (player1 != null) {
-                    gameDungeonScoreboard.end(player1);
-                }
+//                for (NameInfo player : players) {
+//                    Player player1 = player.toPlayer();
+//                    if (player1 != null) {
+//                        gameDungeonScoreboard.end(player1);
+//                    }
+//                }
+                GameMapRegistry.get().unloadAsync(this, () -> {
+                }, false);
+                return true;
             }
-            DungeonRegistry.get().unloadAsync(this,() -> {}, false);
-            return true;
         }
         return false;
     }
 
     @Override
     public void fastUpdate() {
-        sendActionBars();
+//        sendActionBars();
     }
 
 
@@ -143,39 +128,37 @@ public class GameLoadedGameMap<T extends LoadedGameMap<T>> extends LoadedGameMap
     }
 
     public void removePlayer(Player player, boolean death) {
-        ExtractionConfig config =  ExtractionConfig.get();
+        GameMapConfig config =  GameMapConfig.get();
        onSessionEnd(player);
         if (players.contains(NameInfo.of(player))){
 
             players.remove(NameInfo.of(player));
             if (!death) {
 
-                sendMessage(colorize(config.D_GAME_P_LEAVE).replace("%player%", player.getName()));
+                onLeave(NameInfo.of(player), false);
+//                sendMessage(colorize(config.D_GAME_P_LEAVE).replace("%player%", player.getName()));
             } else {
-                sendMessage(colorize(config.D_GAME_P_LEAVE_DEATH).replace("%player%", player.getName()));
+                onLeave(NameInfo.of(player), true);
+//                sendMessage(colorize(config.D_GAME_P_LEAVE_DEATH).replace("%player%", player.getName()));
 
             }
 
         }
     }
 
-
+    public abstract void onLeave(NameInfo player, boolean death);
 
 
     private long timeStarted = 0;
-
     private void onStart() {
         GameStartEvent event = new GameStartEvent(this);
         Bukkit.getPluginManager().callEvent(event);
 
-        this.timeLeft = TimeUnit.SECONDS.toMillis((floorManager.getTIME()*floorManager.getCount())+(floorManager.getTIME()/2))+System.currentTimeMillis();
+        this.timeLeft = TimeUnit.MINUTES.toMinutes(10)+System.currentTimeMillis();
 //        this.timeLeft = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1);
-        enemies.start();
 
         timeStarted = System.currentTimeMillis()+1000L;
 
-        loot.spawn();
-        floorManager.start();
 
 
 
@@ -183,11 +166,11 @@ public class GameLoadedGameMap<T extends LoadedGameMap<T>> extends LoadedGameMap
 
     }
 
+    private long timeLeft = 0;
 
 
-    public GameExtractionPoints getExtractionPts() {
-        return extractionPts;
-    }
+
+
 
     @Override
     public void onWorldLoad(World world) {
@@ -215,15 +198,15 @@ public class GameLoadedGameMap<T extends LoadedGameMap<T>> extends LoadedGameMap
         }
 
 
-        for (Player player : getPlayers()) {
-            gameDungeonScoreboard.checkBoard(player);
-        }
+//        for (Player player : getPlayers()) {
+//            gameDungeonScoreboard.checkBoard(player);
+//        }
 
         for (NameInfo nameInfo : otherRemoveList) {
             if (players.contains(nameInfo)){
 
                 players.remove(nameInfo);
-                sendMessage(colorize(ExtractionConfig.get().D_GAME_P_LEAVE).replace("%player%", nameInfo.getUsername()));
+                onLeave(nameInfo,false);
 
             }
         }

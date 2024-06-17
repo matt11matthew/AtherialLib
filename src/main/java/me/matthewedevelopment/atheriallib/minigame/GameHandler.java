@@ -1,9 +1,9 @@
-package me.matthewedevelopment.atheriallib.minigame.dungeon;
+package me.matthewedevelopment.atheriallib.minigame;
 
 import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.handler.Handler;
 import me.matthewedevelopment.atheriallib.handler.HandlerPriority;
-import me.matthewedevelopment.atheriallib.minigame.dungeon.load.LoadedGameMap;
+import me.matthewedevelopment.atheriallib.minigame.load.LoadedGameMap;
 import me.matthewedevelopment.atheriallib.utilities.file.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -21,11 +21,11 @@ import java.util.Map;
 /**
  * Created by Matthew E on 12/31/2023 at 12:32 AM for the project Extraction
  */
-public abstract class ArenaHandler extends Handler<AtherialLib, GameMapConfig> implements Listener {
+public abstract class GameHandler extends Handler<AtherialLib, GameMapConfig> implements Listener {
     private GameMapRegistry gameMapRegistry;
     private GameMapConfig config;
 
-    public ArenaHandler(AtherialLib atherialLib, GameMapConfig config) {
+    public GameHandler(AtherialLib atherialLib, GameMapConfig config) {
         super(atherialLib, config, HandlerPriority.NORMAL,HandlerPriority.NORMAL);
 
     }
@@ -44,15 +44,15 @@ public abstract class ArenaHandler extends Handler<AtherialLib, GameMapConfig> i
     private Map<String, Long> delayMap = new HashMap<>();
     private boolean editMode;
 
-    public static GameMapConfig get() {
-        return null;
+    public static GameHandler get() {
+        return AtherialLib.getInstance().getArenaHandler();
     }
 
 
     public abstract void teleportToSpawn(Player player);
     @Override
     public void onLoad() {
-        config=new GameMapConfig(this);
+        config=new GameMapConfig();
         config.loadConfig();
 
         cleanupWorlds();
@@ -70,7 +70,7 @@ public abstract class ArenaHandler extends Handler<AtherialLib, GameMapConfig> i
             }
         },5L,5L);
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this.core,() -> {
-            for (LoadedGameMap value : gameMapRegistry.getLoadedDungeonMap().values()) {
+            for (LoadedGameMap<? > value : gameMapRegistry.getLoadedDungeonMap().values()) {
                 value.fastUpdate();
             }
         },1L,1L);

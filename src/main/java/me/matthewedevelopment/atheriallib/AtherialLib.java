@@ -33,7 +33,7 @@ import me.matthewedevelopment.atheriallib.message.message.json.ActionBarMessageS
 import me.matthewedevelopment.atheriallib.message.message.json.ChatMessageSerializer;
 import me.matthewedevelopment.atheriallib.message.message.json.TitleJsonSerializer;
 import me.matthewedevelopment.atheriallib.message.title.AtherialTitle;
-import me.matthewedevelopment.atheriallib.minigame.dungeon.ArenaHandler;
+import me.matthewedevelopment.atheriallib.minigame.GameHandler;
 import me.matthewedevelopment.atheriallib.newcommand.AtherialLibDefaultCommandConfig;
 import me.matthewedevelopment.atheriallib.nms.Version;
 import me.matthewedevelopment.atheriallib.nms.VersionProvider;
@@ -85,7 +85,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     private MySqlHandler sqlHandler;
 
     private boolean disableSQLLogin = false;
-    private ArenaHandler arenaHandler;
+    private GameHandler gameHandler;
 
 //    public HandlerManager getHandlerManager() {
 //        return handlerManager;
@@ -428,8 +428,8 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
 
     public abstract List<Class<? extends AtherialProfile>> getProfileClazzes();
 
-    public ArenaHandler getArenaHandler() {
-        return arenaHandler;
+    public GameHandler getArenaHandler() {
+        return gameHandler;
     }
 
     public static final class ReflectCommand extends Command {

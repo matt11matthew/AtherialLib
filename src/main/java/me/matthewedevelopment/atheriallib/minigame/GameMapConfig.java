@@ -1,15 +1,9 @@
-package me.matthewedevelopment.atheriallib.minigame.dungeon;
+package me.matthewedevelopment.atheriallib.minigame;
 
 import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.config.SerializedName;
-import me.matthewedevelopment.atheriallib.config.yaml.AtherialLibItem;
 import me.matthewedevelopment.atheriallib.config.yaml.YamlConfig;
-import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.IntSimpleList;
 import me.matthewedevelopment.atheriallib.message.message.ChatMessage;
-import org.bukkit.Material;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by Matthew E on 6/16/2024 at 2:24 PM for the project AtherialLib
@@ -22,7 +16,7 @@ public class GameMapConfig extends YamlConfig<AtherialLib> {
 
 
     public static GameMapConfig get() {
-        return ArenaHandler.get().get
+        return GameHandler.get().getConfig();
     }
 
 

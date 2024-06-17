@@ -1,4 +1,4 @@
-package me.matthewedevelopment.atheriallib.minigame.dungeon;
+package me.matthewedevelopment.atheriallib.minigame;
 
 import me.matthewedevelopment.atheriallib.database.registry.DataColumn;
 import me.matthewedevelopment.atheriallib.database.registry.DataColumnType;
@@ -28,12 +28,24 @@ public class GameMap extends DataObject<GameMap> {
         return lobbySpawn;
     }
 
-    private AtherialLocation lobbySpawn;
+    public Class getGameClass() {
+        return gameClass;
+    }
 
-    public GameMap(UUID uuid, String name) {
+    public Class getEditClass() {
+        return editClass;
+    }
+
+    private AtherialLocation lobbySpawn;
+    private Class gameClass;
+    private Class editClass;
+
+    public GameMap(UUID uuid, String name, Class gameClass, Class editClass) {
         super(uuid);
         this.name = name;
         this.lobbySpawn = null;
+        this.editClass=editClass;
+        this.gameClass = gameClass;
 
         this.zipFileName="TBD";
     }

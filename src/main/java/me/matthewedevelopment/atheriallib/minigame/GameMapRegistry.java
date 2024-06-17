@@ -1,12 +1,13 @@
-package me.matthewedevelopment.atheriallib.minigame.dungeon;
+package me.matthewedevelopment.atheriallib.minigame;
 
 import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.database.registry.DataObjectRegistry;
-import me.matthewedevelopment.atheriallib.minigame.dungeon.load.LoadedGameMap;
-import me.matthewedevelopment.atheriallib.minigame.dungeon.load.edit.EditLoadedGameMap;
-import me.matthewedevelopment.atheriallib.minigame.dungeon.load.game.GameLoadedGameMap;
-import me.matthewedevelopment.atheriallib.minigame.dungeon.load.game.GameState;
-import me.matthewedevelopment.atheriallib.minigame.dungeon.load.game.events.GameLobbyOpenEvent;
+import me.matthewedevelopment.atheriallib.minigame.load.GameMapMode;
+import me.matthewedevelopment.atheriallib.minigame.load.LoadedGameMap;
+import me.matthewedevelopment.atheriallib.minigame.load.edit.EditLoadedGameMap;
+import me.matthewedevelopment.atheriallib.minigame.load.game.GameLoadedGameMap;
+import me.matthewedevelopment.atheriallib.minigame.load.game.GameState;
+import me.matthewedevelopment.atheriallib.minigame.load.game.events.GameLobbyOpenEvent;
 import me.matthewedevelopment.atheriallib.utilities.AtherialTasks;
 import me.matthewedevelopment.atheriallib.utilities.file.FileUtils;
 import org.bukkit.Bukkit;
@@ -17,6 +18,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
@@ -131,11 +133,27 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
         }
         insertAsync(gameMap,() -> {
             config.GAME_MAP_CREATE_MSG.send(player,s -> colorize(s).replace("%name%", gameMap.getName()));
-            EditLoadedGameMap editLoadedDungeon = new EditLoadedGameMap(gameMap.getUUID(), UUID.randomUUID());
+
+//UUID dungeon, UUID sessionId
+            EditLoadedGameMap editLoadedDungeon = null;
+            try {
+                editLoadedDungeon = (EditLoadedGameMap) gameMap.getEditClass().getConstructor(UUID.class, UUID.class).newInstance(gameMap.getUUID(), UUID.randomUUID());
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException e) {
+                e.printStackTrace();
+
+            }
+
+            if (editLoadedDungeon==null){
+                System.err.println("NOT LOADED PROPERLY");
+                return;
+            }
+//            .EditLoadedGameMap(gameMap.getUUID(), UUID.randomUUID());
             gameMap.setEditSessionId(editLoadedDungeon.getSessionId());
             loadedDungeonMap.put(editLoadedDungeon.getSessionId(),editLoadedDungeon);
             editLoadedDungeon.loadAsync(loadedDungeon -> {
-                Location spawnLocation = loadedDungeon.getSpawnLocation();
+//                EditLoadedGameMap editLoadedGameMap = (EditLoadedGameMap) loadedDungeon;;
+                Location spawnLocation = gameMap.getLobbySpawn().toLocation();
                 player.teleport(spawnLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
             });
 
@@ -144,13 +162,14 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
 
 
     public void unloadAsync(LoadedGameMap value, Runnable runnable, boolean delete) {
-        FloorRegistry.get().saveAllFloorsByDungeonIdAsync(value.getDungeonID(), ()->{});
+//        FloorRegistry.get().saveAllFloorsByDungeonIdAsync(value.getDungeonID(), ()->{});
         World world = value.getWorld();
         for (Player player : world.getPlayers()) {
             value.onSessionEnd(player);
-            player.teleport(Extraction.getInstance().getMainSpawn(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+            GameHandler.get().teleportToSpawn(player);
+//            player.teleport(Extraction.getInstance().getMainSpawn(), PlayerTeleportEvent.TeleportCause.PLUGIN);
         }
-        Bukkit.unloadWorld(world, value.getGameMapMode() == DungeonMode.EDIT);
+        Bukkit.unloadWorld(world, value.getGameMapMode() == GameMapMode.EDIT);
         Bukkit.getWorlds().remove(world);
         String worldName = value.getWorldName();
 
@@ -158,17 +177,17 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
         AtherialTasks.runAsync(() -> {
             if (!delete) {
             }
-            if (value.getGameMapMode()==DungeonMode.EDIT) {
+            if (value.getGameMapMode()==GameMapMode.EDIT) {
 
                 map.get(value.getDungeonID()).setEditing(false);
                 map.get(value.getDungeonID()).setEditSessionId(null);
             } else {
-                Bukkit.getServer().broadcastMessage(colorize(  config.DUNGEON_END).replace("%name%",map.get(value.getDungeonID()).getName()));
+//                Bukkit.getServer().broadcastMessage(colorize(  config.GAME_MAP_END_CMD_MSG).replace("%name%",map.get(value.getDungeonID()).getName()));
             }
             if (loadedDungeonMap.containsKey(value.getSessionId())){
                 loadedDungeonMap.remove(value.getSessionId());
             }
-            if (value.getGameMapMode() == DungeonMode.EDIT) {
+            if (value.getGameMapMode() == GameMapMode.EDIT) {
                 value.cleanupFileForZipping();
                 value.zipAndMove();
                 File file = new File(worldName);
@@ -203,15 +222,16 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
         for (LoadedGameMap value : loadedDungeonMap.values()) {
             World world = value.getWorld();
             for (Player player : world.getPlayers()) {
-                player.teleport(Extraction.getInstance().getMainSpawn(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                LobbyHandler.get().onTeleportToSpawn(player);
+                GameHandler.get().teleportToSpawn(player);
+//                player.teleport(Ath.getInstance().getMainSpawn(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+//                LobbyHandler.get().onTeleportToSpawn(player);
             }
 
             String worldName = value.getWorldName();
-            Bukkit.unloadWorld(world, value.getGameMapMode()== DungeonMode.EDIT);
+            Bukkit.unloadWorld(world, value.getGameMapMode()== GameMapMode.EDIT);
             Bukkit.getWorlds().remove(world);
 
-            if (value.getGameMapMode()== DungeonMode.EDIT){
+            if (value.getGameMapMode()== GameMapMode.EDIT){
 
                 value.cleanupFileForZipping();
                 value.zipAndMove();
@@ -265,17 +285,28 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
                 }
                 return;
             }
-            GameLoadedGameMap gameLoadedDungeon = new GameLoadedGameMap(gameMap.getUUID(), UUID.randomUUID());
+
+
+            GameLoadedGameMap gameLoadedDungeon=null;
+            try {
+
+                gameLoadedDungeon = (GameLoadedGameMap) gameMap.getGameClass().getConstructor(UUID.class, UUID.class).newInstance(gameMap.getUUID(), UUID.randomUUID());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (gameLoadedDungeon==null)return;
+
+//            GameLoadedGameMap gameLoadedDungeon = new GameLoadedGameMap(gameMap.getUUID(), UUID.randomUUID());
             gameLoadedDungeon.setGameState(GameState.LOBBY);
-            Bukkit.getServer().broadcastMessage(colorize(config.D_OPEN).replace("%name%", gameMap.getName()));
+//            Bukkit.getServer().broadcastMessage(colorize(config.OPEN).replace("%name%", gameMap.getName()));
 
             loadedDungeonMap.put(gameLoadedDungeon.getSessionId(),gameLoadedDungeon);
             GameLobbyOpenEvent gameLobbyOpenEvent =new GameLobbyOpenEvent(gameLoadedDungeon);
             Bukkit.getPluginManager().callEvent(gameLobbyOpenEvent);
             gameLoadedDungeon.loadAsync(loadedDungeon -> {
                 if (player!=null){
-
-                    player.teleport(loadedDungeon.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                    GameLoadedGameMap editLoadedGameMap = (GameLoadedGameMap) loadedDungeon;
+                    player.teleport(editLoadedGameMap.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
                 }
 
             });
@@ -286,32 +317,33 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
         if (byName!=null){
             GameMap gameMap = map.get(byName.getUUID());
             gameMap.setEditing(true);
-            EditLoadedDungeon editLoadedDungeon = new EditLoadedDungeon(gameMap.getUUID(), UUID.randomUUID());
-            gameMap.setEditSessionId(editLoadedDungeon.getSessionId());
-            map.put(byName.getUUID(), gameMap);
-            loadedDungeonMap.put(editLoadedDungeon.getSessionId(),editLoadedDungeon);
-            editLoadedDungeon.loadAsync(loadedDungeon -> {
 
-                player.teleport(loadedDungeon.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-            });
+         try {
+             EditLoadedGameMap editLoadedDungeon = (EditLoadedGameMap) gameMap.getEditClass().getConstructor(UUID.class, UUID.class).newInstance(gameMap.getUUID(), UUID.randomUUID());
+
+//            EditLoadedGameMap editLoadedDungeon = new EditLoadedDungeon(gameMap.getUUID(), UUID.randomUUID());
+             gameMap.setEditSessionId(editLoadedDungeon.getSessionId());
+             map.put(byName.getUUID(), gameMap);
+             loadedDungeonMap.put(editLoadedDungeon.getSessionId(),editLoadedDungeon);
+             editLoadedDungeon.loadAsync(loadedDungeon -> {
+
+                 EditLoadedGameMap editLoadedGameMap = (EditLoadedGameMap) loadedDungeon;
+                 player.teleport(editLoadedGameMap.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+             });
+         } catch (Exception e) {
+             e.printStackTrace();
+         }
         }
     }
 
-    public void setDungeonLobby(UUID dungeonID, Location location) {
-        if (map.containsKey(dungeonID)) {
 
-            GameMap gameMap = map.get(dungeonID);
-            gameMap.setLobbySpawn(ExtractionLocation.fromLocation(location));
-            updateAsync(dungeonID,() -> {});
-        }
-    }
 
     public int getActiveCount(Player p) {
 
         int count = 0;
         for (LoadedGameMap ld : loadedDungeonMap.values()) {
-            if (ld.getGameMapMode()==DungeonMode.EDIT){
-                if (!p.hasPermission(config.D_EDIT_PERM)){
+            if (ld.getGameMapMode()==GameMapMode.EDIT){
+                if (!p.hasPermission(config.GAME_MAP_EDIT_PERM)){
                     continue;
                 }
             }

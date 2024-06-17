@@ -9,7 +9,7 @@ import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.command.spigot.AtherialLibSelfSubCommand;
 import me.matthewedevelopment.atheriallib.command.spigot.CommandUtils;
 import me.matthewedevelopment.atheriallib.command.spigot.HelpSubCommand;
-import me.matthewedevelopment.atheriallib.minigame.dungeon.GameMapConfig;
+import me.matthewedevelopment.atheriallib.minigame.GameMapConfig;
 import me.matthewedevelopment.atheriallib.utilities.ListUtils;
 import org.bukkit.command.CommandSender;
 

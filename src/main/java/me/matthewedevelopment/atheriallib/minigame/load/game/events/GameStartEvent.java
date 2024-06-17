@@ -1,6 +1,6 @@
-package me.matthewedevelopment.atheriallib.minigame.dungeon.load.game.events;
+package me.matthewedevelopment.atheriallib.minigame.load.game.events;
 
-import me.matthewedevelopment.atheriallib.minigame.dungeon.load.game.GameLoadedGameMap;
+import me.matthewedevelopment.atheriallib.minigame.load.game.GameLoadedGameMap;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 

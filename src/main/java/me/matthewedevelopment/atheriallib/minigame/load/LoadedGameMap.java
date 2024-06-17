@@ -1,10 +1,10 @@
-package me.matthewedevelopment.atheriallib.minigame.dungeon.load;
+package me.matthewedevelopment.atheriallib.minigame.load;
 
 import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.io.Callback;
-import me.matthewedevelopment.atheriallib.minigame.dungeon.GameMap;
-import me.matthewedevelopment.atheriallib.minigame.dungeon.GameMapConfig;
-import me.matthewedevelopment.atheriallib.minigame.dungeon.GameMapRegistry;
+import me.matthewedevelopment.atheriallib.minigame.GameMap;
+import me.matthewedevelopment.atheriallib.minigame.GameMapConfig;
+import me.matthewedevelopment.atheriallib.minigame.GameMapRegistry;
 import me.matthewedevelopment.atheriallib.utilities.AtherialTasks;
 import me.matthewedevelopment.atheriallib.utilities.ChatUtils;
 import me.matthewedevelopment.atheriallib.utilities.file.FileUtils;
@@ -36,7 +36,7 @@ public  abstract class LoadedGameMap<T extends LoadedGameMap<T>> {
     public abstract void onSessionEnd(Player player);
     private UUID sessionId;
 
-    protected UUID dungeon;
+    protected UUID game;
     private GameMapMode gameMapMode;
 
     public UUID getSessionId() {
@@ -67,11 +67,11 @@ public  abstract class LoadedGameMap<T extends LoadedGameMap<T>> {
 
 
     public GameMap getGameMap() {
-        return GameMapRegistry.get().getMap().get(dungeon);
+        return GameMapRegistry.get().getMap().get(game);
     }
 
     public UUID getDungeonID(){
-        return dungeon;
+        return game;
     }
     public abstract void update();
     public abstract void fastUpdate();
@@ -79,8 +79,8 @@ public  abstract class LoadedGameMap<T extends LoadedGameMap<T>> {
     public String toString() {
         return dungeonState.toString()+": ("+zipFileNameCache+")";
     }
-    public LoadedGameMap(UUID dungeon, UUID sessionId, GameMapMode gameMapMode, Class<T> clazz){
-        this.dungeon = dungeon;
+    public LoadedGameMap(UUID game, UUID sessionId, GameMapMode gameMapMode, Class<T> clazz){
+        this.game = game;
 
         this.clazz=clazz;
         this.sessionId =sessionId;
@@ -119,6 +119,10 @@ public  abstract class LoadedGameMap<T extends LoadedGameMap<T>> {
         });
         onLoad();
 
+    }
+
+    public UUID getGame() {
+        return game;
     }
 
     public String getZipFileNameCache() {

@@ -1,13 +1,13 @@
-package me.matthewedevelopment.atheriallib.minigame.dungeon.commands.sub.edit;
+package me.matthewedevelopment.atheriallib.minigame.commands.sub.edit;
 
-import me.matthewe.extraction.Extraction;
-import me.matthewe.extraction.ExtractionConfig;
-import me.matthewe.extraction.dungeon.Dungeon;
-import me.matthewe.extraction.dungeon.DungeonRegistry;
-import me.matthewe.extraction.dungeon.commands.DungeonCommand;
+import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.command.spigot.AtherialLibSelfSubCommand;
 import me.matthewedevelopment.atheriallib.command.spigot.CommandUtils;
 import me.matthewedevelopment.atheriallib.command.spigot.HelpSubCommand;
+import me.matthewedevelopment.atheriallib.minigame.GameMap;
+import me.matthewedevelopment.atheriallib.minigame.GameMapConfig;
+import me.matthewedevelopment.atheriallib.minigame.GameMapRegistry;
+import me.matthewedevelopment.atheriallib.minigame.commands.GameMapCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -15,11 +15,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-public class ArenaCreateSubCommand extends AtherialLibSelfSubCommand<Extraction, ExtractionConfig, DungeonCommand> {
-    public ArenaCreateSubCommand(DungeonCommand parentCommand, Extraction main) {
+public class ArenaCreateSubCommand extends AtherialLibSelfSubCommand<AtherialLib, GameMapConfig, GameMapCommand> {
+    public ArenaCreateSubCommand(GameMapCommand parentCommand,AtherialLib main) {
         super("create", parentCommand, main);
         this.playerOnly =true;
-        this.permission=config.D_CREATE_PERM;
+        this.permission=config.GAME_MAP_CREATE_PERM;
     }
 
     @Override
@@ -30,16 +30,16 @@ public class ArenaCreateSubCommand extends AtherialLibSelfSubCommand<Extraction,
             return;
         }
 
-        DungeonRegistry  dungeonRegistry = DungeonRegistry.get();
+        GameMapRegistry dungeonRegistry = GameMapRegistry.get();
         if (dungeonRegistry.isDungeon(args[0])){
-            config.D_ALREADY_EXISTS.send(sender,s -> colorize(s).replace("%name%", args[0]));
+            config.GAME_MAP_ALREADY_EXISTS.send(sender,s -> colorize(s).replace("%name%", args[0]));
             return;
 
         }
 
 
 
-        dungeonRegistry.createDungeon(player,new Dungeon(UUID.randomUUID(),
+        dungeonRegistry.createDungeon(player,new GameMap(UUID.randomUUID(),
                 args[0]));
 
         return;
@@ -48,7 +48,7 @@ public class ArenaCreateSubCommand extends AtherialLibSelfSubCommand<Extraction,
     @Override
     public List<HelpSubCommand> getHelp(String[] args) {
         return Arrays.asList(HelpSubCommand.builder()
-                        .permission(config.D_CREATE_PERM)
+                        .permission(permission)
                         .arguments("(name)")
                 .command(parentCommand.label + " create").build());
     }

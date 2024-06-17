@@ -1,8 +1,8 @@
-package me.matthewedevelopment.atheriallib.minigame.dungeon.commands;
+package me.matthewedevelopment.atheriallib.minigame.commands;
 
 import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.command.spigot.AtherialLibSpigotCommand;
-import me.matthewedevelopment.atheriallib.minigame.dungeon.GameMapConfig;
+import me.matthewedevelopment.atheriallib.minigame.GameMapConfig;
 import me.matthewedevelopment.atheriallib.minigame.dungeon.commands.sub.edit.*;
 import me.matthewedevelopment.atheriallib.minigame.dungeon.commands.sub.game.DEndSubCommand;
 import me.matthewedevelopment.atheriallib.minigame.dungeon.commands.sub.game.DStartSubCommand;
