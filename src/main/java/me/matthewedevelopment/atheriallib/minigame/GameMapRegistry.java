@@ -111,7 +111,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
         //TODO
     }
 
-    public void createDungeon(Player player, GameMap gameMap){
+    public void createMap(Player player, GameMap gameMap){
 
         gameMap.setEditing(true);
 

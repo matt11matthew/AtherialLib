@@ -1,18 +1,13 @@
-package me.matthewedevelopment.atheriallib.minigame.dungeon.commands.sub.edit;
+package me.matthewedevelopment.atheriallib.minigame.commands.sub.edit;
 
-import me.matthewe.extraction.Extraction;
-import me.matthewe.extraction.ExtractionConfig;
-import me.matthewe.extraction.dungeon.DungeonRegistry;
-import me.matthewe.extraction.dungeon.commands.DungeonCommand;
-import me.matthewe.extraction.dungeon.load.edit.EditLoadedDungeon;
 import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.command.spigot.AtherialLibSelfSubCommand;
 import me.matthewedevelopment.atheriallib.command.spigot.CommandUtils;
 import me.matthewedevelopment.atheriallib.command.spigot.HelpSubCommand;
 import me.matthewedevelopment.atheriallib.minigame.GameMapConfig;
 import me.matthewedevelopment.atheriallib.minigame.GameMapRegistry;
-import me.matthewedevelopment.atheriallib.minigame.dungeon.commands.GameMapCommand;
-import me.matthewedevelopment.atheriallib.minigame.dungeon.load.edit.EditLoadedGameMap;
+import me.matthewedevelopment.atheriallib.minigame.commands.GameMapCommand;
+import me.matthewedevelopment.atheriallib.minigame.load.edit.EditLoadedGameMap;
 import me.matthewedevelopment.atheriallib.utilities.ListUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -23,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ArenaEditSubCommand extends AtherialLibSelfSubCommand<AtherialLib, GameMapConfig, GameMapCommand> {
+public class ArenaEditSubCommand extends  AtherialLibSelfSubCommand<AtherialLib, GameMapConfig, GameMapCommand> {
     public ArenaEditSubCommand(GameMapCommand parentCommand, AtherialLib main) {
         super("edit", parentCommand, main);
         this.playerOnly =true;

@@ -39,7 +39,7 @@ public class ArenaCreateSubCommand extends AtherialLibSelfSubCommand<AtherialLib
 
 
 
-        dungeonRegistry.createDungeon(player,new GameMap(UUID.randomUUID(),
+        dungeonRegistry.createMap(player,new GameMap(UUID.randomUUID(),
                 args[0]));
 
         return;

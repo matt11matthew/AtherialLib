@@ -1,4 +1,4 @@
-package me.matthewedevelopment.atheriallib.minigame.dungeon.commands.sub.edit;
+package me.matthewedevelopment.atheriallib.minigame.commands.sub.edit;
 
 import me.matthewe.extraction.Extraction;
 import me.matthewe.extraction.ExtractionConfig;

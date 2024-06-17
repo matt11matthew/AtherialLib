@@ -1,12 +1,12 @@
-package me.matthewedevelopment.atheriallib.minigame.dungeon.commands.sub.game;
+package me.matthewedevelopment.atheriallib.minigame.commands.sub.game;
 
-import me.matthewe.extraction.Extraction;
-import me.matthewe.extraction.ExtractionConfig;
-import me.matthewe.extraction.dungeon.DungeonRegistry;
-import me.matthewe.extraction.dungeon.commands.DungeonCommand;
+import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.command.spigot.AtherialLibSelfSubCommand;
 import me.matthewedevelopment.atheriallib.command.spigot.CommandUtils;
 import me.matthewedevelopment.atheriallib.command.spigot.HelpSubCommand;
+import me.matthewedevelopment.atheriallib.minigame.GameMapConfig;
+import me.matthewedevelopment.atheriallib.minigame.GameMapRegistry;
+import me.matthewedevelopment.atheriallib.minigame.commands.GameMapCommand;
 import me.matthewedevelopment.atheriallib.utilities.ListUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -19,11 +19,11 @@ import java.util.stream.Collectors;
 /**
  * Created by Matthew E on 6/16/2024 at 2:00 PM for the project AtherialLib
  */
-public class DStartSubCommand extends AtherialLibSelfSubCommand<Extraction, ExtractionConfig, DungeonCommand> {
-    public DStartSubCommand(DungeonCommand parentCommand, Extraction main) {
+public class GameStartSubCommand extends  AtherialLibSelfSubCommand<AtherialLib, GameMapConfig, GameMapCommand> {
+    public GameStartSubCommand(GameMapCommand parentCommand, AtherialLib main) {
         super("start", parentCommand, main);
         this.playerOnly =true;
-        this.permission=config.D_START_PERM;
+        this.permission=config.GAME_MAP_START_PERM;
     }
 
     @Override
@@ -33,9 +33,9 @@ public class DStartSubCommand extends AtherialLibSelfSubCommand<Extraction, Extr
             return;
         }
 
-        DungeonRegistry  dungeonRegistry = DungeonRegistry.get();
+        GameMapRegistry dungeonRegistry = GameMapRegistry.get();
         if (!dungeonRegistry.isDungeon(args[0])){
-            config.D_DOESNT_EXISTS.send(sender,s -> colorize(s).replace("%name%", args[0]));
+            config.GAME_MAP_DOESNT_EXISTS.send(sender,s -> colorize(s).replace("%name%", args[0]));
             return;
 
         }
@@ -46,12 +46,12 @@ public class DStartSubCommand extends AtherialLibSelfSubCommand<Extraction, Extr
             return;
         }
 
-        dungeonRegistry.startDungeon((Player) sender,args[0]);
+        dungeonRegistry.startGame((Player) sender,args[0]);
 
     }
     @Override
     public List<String> getTabCompleter(CommandSender sender, String[] args) {
-        ArrayList<String> strings = new ArrayList<>(DungeonRegistry.get().getMap().values().stream().map(loadedDungeon -> loadedDungeon.getName()).collect(Collectors.toList()));
+        ArrayList<String> strings = new ArrayList<>(GameMapRegistry.get().getMap().values().stream().map(loadedDungeon -> loadedDungeon.getName()).collect(Collectors.toList()));
         if (args.length==0){
             return strings;
         }

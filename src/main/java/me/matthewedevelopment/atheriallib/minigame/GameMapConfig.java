@@ -12,7 +12,7 @@ public class GameMapConfig extends YamlConfig<AtherialLib> {
     @SerializedName("scoreboard.line")
 
     public String SCOREBOARD_LINE =  "&7&m-------------";
-   
+    public ChatMessage NOT_IN_GAME_MSG =new ChatMessage(PREFIX +"&cYou'r not in a game.");
 
 
     public static GameMapConfig get() {
