@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Created by Matthew E on 12/31/2023 at 12:32 AM for the project Extraction
  */
-public abstract class GameHandler extends Handler<AtherialLib, GameMapConfig> implements Listener {
+public  class GameHandler extends Handler<AtherialLib, GameMapConfig> implements Listener {
     private GameMapRegistry gameMapRegistry;
     private GameMapConfig config;
 
