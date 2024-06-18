@@ -14,7 +14,7 @@ public class GameListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        for (LoadedGameMap value : GameMapRegistry.get().getLoadedDungeonMap().values()) {
+        for (LoadedGameMap value : GameMapRegistry.get().getUuidLoadedGameMapMap().values()) {
             if (value instanceof GameLoadedGameMap) {
                 GameLoadedGameMap gameLoadedDungeon = (GameLoadedGameMap) value;
                 if (gameLoadedDungeon.isStarted()){

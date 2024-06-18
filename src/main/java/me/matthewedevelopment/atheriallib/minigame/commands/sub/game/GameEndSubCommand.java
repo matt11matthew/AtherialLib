@@ -38,7 +38,7 @@ public class GameEndSubCommand extends  AtherialLibSelfSubCommand<AtherialLib, G
         GameMapRegistry dungeonRegistry = GameMapRegistry.get();
 
 
-        Optional<LoadedGameMap> currentGameDungeon = GameLoadedGameMap.getCurrentGameDungeon((Player) sender);
+        Optional<LoadedGameMap> currentGameDungeon = GameLoadedGameMap.getCurrentGameMap((Player) sender);
         if (!currentGameDungeon.isPresent()) {
             config.NOT_IN_GAME_MSG.send(sender);
             return;

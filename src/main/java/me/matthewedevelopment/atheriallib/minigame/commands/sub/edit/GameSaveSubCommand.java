@@ -34,7 +34,7 @@ public class GameSaveSubCommand extends  AtherialLibSelfSubCommand<AtherialLib, 
         }
 
         GameMapRegistry  dungeonRegistry = GameMapRegistry.get();
-        if (!dungeonRegistry.isDungeon(args[0])){
+        if (!dungeonRegistry.isGameMap(args[0])){
             config.GAME_MAP_DOESNT_EXISTS.send(sender,s -> colorize(s).replace("%name%", args[0]));
             return;
 

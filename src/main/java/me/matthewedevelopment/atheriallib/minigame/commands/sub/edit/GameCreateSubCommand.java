@@ -16,8 +16,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-public class ArenaCreateSubCommand extends AtherialLibSelfSubCommand<AtherialLib, GameMapConfig, GameMapCommand> {
-    public ArenaCreateSubCommand(GameMapCommand parentCommand,AtherialLib main) {
+public class GameCreateSubCommand extends AtherialLibSelfSubCommand<AtherialLib, GameMapConfig, GameMapCommand> {
+    public GameCreateSubCommand(GameMapCommand parentCommand, AtherialLib main) {
         super("create", parentCommand, main);
         this.playerOnly =true;
         this.permission=config.GAME_MAP_CREATE_PERM;
@@ -32,7 +32,7 @@ public class ArenaCreateSubCommand extends AtherialLibSelfSubCommand<AtherialLib
         }
 
         GameMapRegistry dungeonRegistry = GameMapRegistry.get();
-        if (dungeonRegistry.isDungeon(args[0])){
+        if (dungeonRegistry.isGameMap(args[0])){
             config.GAME_MAP_ALREADY_EXISTS.send(sender,s -> colorize(s).replace("%name%", args[0]));
             return;
 

@@ -23,7 +23,7 @@ public  abstract class EditLoadedGameMap<T extends LoadedGameMap<T>> extends Loa
 
 
     public static Optional<LoadedGameMap> getCurrentEditMap(Player player) {
-       return GameMapRegistry.get().getLoadedDungeonMap().values()
+       return GameMapRegistry.get().getUuidLoadedGameMapMap().values()
                 .stream()
                 .filter(loadedDungeon -> loadedDungeon.getGameMapMode() == GameMapMode.EDIT)
                 .filter(loadedDungeon -> loadedDungeon.getPlayers().contains(player)).findFirst();

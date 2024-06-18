@@ -77,7 +77,7 @@ public class GameMap extends DataObject<GameMap> {
 
     @Override
     public String getTableName() {
-        return "dungeons";
+        return "games";
     }
 
     @Override

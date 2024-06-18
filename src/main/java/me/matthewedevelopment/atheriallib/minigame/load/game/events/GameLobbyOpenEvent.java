@@ -6,10 +6,10 @@ import org.bukkit.event.HandlerList;
 
 public class GameLobbyOpenEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private final GameLoadedGameMap dungeon;
+    private final GameLoadedGameMap gameMap;
 
-    public GameLobbyOpenEvent(GameLoadedGameMap dungeon) {
-        this.dungeon = dungeon;
+    public GameLobbyOpenEvent(GameLoadedGameMap gameMap) {
+        this.gameMap = gameMap;
     }
 
 
@@ -19,7 +19,7 @@ public class GameLobbyOpenEvent extends Event {
 
 
     public GameLoadedGameMap getGame() {
-        return dungeon;
+        return gameMap;
     }
 
     public static HandlerList getHandlerList() {

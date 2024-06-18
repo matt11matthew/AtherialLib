@@ -34,7 +34,7 @@ public class GameEditSubCommand extends  AtherialLibSelfSubCommand<AtherialLib, 
         }
 
         GameMapRegistry dungeonRegistry = GameMapRegistry.get();
-        if (!dungeonRegistry.isDungeon(args[0])){
+        if (!dungeonRegistry.isGameMap(args[0])){
             config.GAME_MAP_DOESNT_EXISTS.send(sender,s -> colorize(s).replace("%name%", args[0]));
             return;
 
@@ -48,7 +48,7 @@ public class GameEditSubCommand extends  AtherialLibSelfSubCommand<AtherialLib, 
         }
         config.GAME_MAP_EDIT_MSG.send(sender,s -> colorize(s).replace("%name%", args[0]));
 
-        dungeonRegistry.editDungeon(player,args[0]);
+        dungeonRegistry.editGameMap(player,args[0]);
 
     }
 

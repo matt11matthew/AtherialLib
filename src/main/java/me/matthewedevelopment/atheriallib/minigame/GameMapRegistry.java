@@ -27,13 +27,13 @@ import static me.matthewedevelopment.atheriallib.utilities.ChatUtils.colorize;
 
 public class GameMapRegistry extends DataObjectRegistry<GameMap> {
 
-    private Map<UUID, LoadedGameMap> loadedDungeonMap;
+    private Map<UUID, LoadedGameMap> uuidLoadedGameMapMap;
     private GameMapConfig config;
     public GameMapRegistry( ) {
         super(GameMap.class);
         config=GameMapConfig.get();
 
-        this.loadedDungeonMap= new HashMap<>();
+        this.uuidLoadedGameMapMap = new HashMap<>();
 
     }
 
@@ -49,13 +49,13 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
 
     }
 
-    public Map<UUID, LoadedGameMap> getLoadedDungeonMap() {
-        return loadedDungeonMap;
+    public Map<UUID, LoadedGameMap> getUuidLoadedGameMapMap() {
+        return uuidLoadedGameMapMap;
     }
 
-    public boolean isEditing(String dungeonName) {
-        for (LoadedGameMap value : loadedDungeonMap.values()) {
-            if (value.getGameMap().getName().equalsIgnoreCase(dungeonName)){
+    public boolean isEditing(String gameName) {
+        for (LoadedGameMap value : uuidLoadedGameMapMap.values()) {
+            if (value.getGameMap().getName().equalsIgnoreCase(gameName)){
 
                 if (value.getGameMap().isEditing()) {
                     return true;
@@ -73,16 +73,16 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
     }
 
 
-    public boolean isDungeon(String name) {
+    public boolean isGameMap(String name) {
        return map.values().stream().anyMatch(gameMap -> gameMap.getName().equalsIgnoreCase(name));
     }
 
-    public void deleteDungeon(GameMap gameMap, Runnable runnable) {
+    public void deleteGameMap(GameMap gameMap, Runnable runnable) {
         List<LoadedGameMap> toUnload  = new ArrayList<>();
         final String zipFileName = gameMap.getZipFileName();
         try {
-            for (LoadedGameMap value : loadedDungeonMap.values()) {
-                if (value.getDungeonID().equals(gameMap.getUUID())){
+            for (LoadedGameMap value : uuidLoadedGameMapMap.values()) {
+                if (value.getGameID().equals(gameMap.getUUID())){
                     toUnload.add(value);
                 }
             }
@@ -134,7 +134,6 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
         insertAsync(gameMap,() -> {
             config.GAME_MAP_CREATE_MSG.send(player,s -> colorize(s).replace("%name%", gameMap.getName()));
 
-//UUID dungeon, UUID sessionId
             EditLoadedGameMap editLoadedDungeon = null;
             try {
                 editLoadedDungeon = (EditLoadedGameMap) gameMap.getEditClass().getConstructor(UUID.class, UUID.class).newInstance(gameMap.getUUID(), UUID.randomUUID());
@@ -150,7 +149,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
             }
 //            .EditLoadedGameMap(gameMap.getUUID(), UUID.randomUUID());
             gameMap.setEditSessionId(editLoadedDungeon.getSessionId());
-            loadedDungeonMap.put(editLoadedDungeon.getSessionId(),editLoadedDungeon);
+            uuidLoadedGameMapMap.put(editLoadedDungeon.getSessionId(),editLoadedDungeon);
             editLoadedDungeon.loadAsync(loadedDungeon -> {
 //                EditLoadedGameMap editLoadedGameMap = (EditLoadedGameMap) loadedDungeon;;
                 Location spawnLocation = gameMap.getLobbySpawn().toLocation();
@@ -179,13 +178,13 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
             }
             if (value.getGameMapMode()==GameMapMode.EDIT) {
 
-                map.get(value.getDungeonID()).setEditing(false);
-                map.get(value.getDungeonID()).setEditSessionId(null);
+                map.get(value.getGameID()).setEditing(false);
+                map.get(value.getGameID()).setEditSessionId(null);
             } else {
 //                Bukkit.getServer().broadcastMessage(colorize(  config.GAME_MAP_END_CMD_MSG).replace("%name%",map.get(value.getDungeonID()).getName()));
             }
-            if (loadedDungeonMap.containsKey(value.getSessionId())){
-                loadedDungeonMap.remove(value.getSessionId());
+            if (uuidLoadedGameMapMap.containsKey(value.getSessionId())){
+                uuidLoadedGameMapMap.remove(value.getSessionId());
             }
             if (value.getGameMapMode() == GameMapMode.EDIT) {
                 value.cleanupFileForZipping();
@@ -219,7 +218,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
     }
 
     public void unloadAll() {
-        for (LoadedGameMap value : loadedDungeonMap.values()) {
+        for (LoadedGameMap value : uuidLoadedGameMapMap.values()) {
             World world = value.getWorld();
             for (Player player : world.getPlayers()) {
                 GameMapHandler.get().teleportToSpawn(player);
@@ -260,7 +259,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
 
     public EditLoadedGameMap getEditingGame(String name) {
         UUID toSearch = null;
-        for (LoadedGameMap value : loadedDungeonMap.values()) {
+        for (LoadedGameMap value : uuidLoadedGameMapMap.values()) {
             if (value.getGameMap().getName().equalsIgnoreCase(name)){
                 toSearch = value.getGameMap().getEditSessionId();
                 break;
@@ -268,9 +267,9 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
 
         }
         if (toSearch!=null){
-            if (loadedDungeonMap.containsKey(toSearch)){
+            if (uuidLoadedGameMapMap.containsKey(toSearch)){
 
-                return (EditLoadedGameMap)loadedDungeonMap.get(toSearch);
+                return (EditLoadedGameMap) uuidLoadedGameMapMap.get(toSearch);
             }
         }
         return null;
@@ -281,7 +280,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
             GameMap gameMap = map.get(byName.getUUID());
             if (gameMap.getLobbySpawn()==null){
                 if (player!=null) {
-                    config.DUNGEON_NOT_READY.send(player);
+                    config.GAME_MAP_NOT_READY.send(player);
                 }
                 return;
             }
@@ -300,7 +299,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
             gameLoadedDungeon.setGameState(GameState.LOBBY);
 //            Bukkit.getServer().broadcastMessage(colorize(config.OPEN).replace("%name%", gameMap.getName()));
 
-            loadedDungeonMap.put(gameLoadedDungeon.getSessionId(),gameLoadedDungeon);
+            uuidLoadedGameMapMap.put(gameLoadedDungeon.getSessionId(),gameLoadedDungeon);
             GameLobbyOpenEvent gameLobbyOpenEvent =new GameLobbyOpenEvent(gameLoadedDungeon);
             Bukkit.getPluginManager().callEvent(gameLobbyOpenEvent);
             gameLoadedDungeon.loadAsync(loadedDungeon -> {
@@ -312,7 +311,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
             });
         }
     }
-    public void editDungeon(Player player, String name) {
+    public void editGameMap(Player player, String name) {
         GameMap byName = getByName(name);
         if (byName!=null){
             GameMap gameMap = map.get(byName.getUUID());
@@ -324,7 +323,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
 //            EditLoadedGameMap editLoadedDungeon = new EditLoadedDungeon(gameMap.getUUID(), UUID.randomUUID());
              gameMap.setEditSessionId(editLoadedDungeon.getSessionId());
              map.put(byName.getUUID(), gameMap);
-             loadedDungeonMap.put(editLoadedDungeon.getSessionId(),editLoadedDungeon);
+             uuidLoadedGameMapMap.put(editLoadedDungeon.getSessionId(),editLoadedDungeon);
              editLoadedDungeon.loadAsync(loadedDungeon -> {
 
                  EditLoadedGameMap editLoadedGameMap = (EditLoadedGameMap) loadedDungeon;
@@ -341,7 +340,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
     public int getActiveCount(Player p) {
 
         int count = 0;
-        for (LoadedGameMap ld : loadedDungeonMap.values()) {
+        for (LoadedGameMap ld : uuidLoadedGameMapMap.values()) {
             if (ld.getGameMapMode()==GameMapMode.EDIT){
                 if (!p.hasPermission(config.GAME_MAP_EDIT_PERM)){
                     continue;

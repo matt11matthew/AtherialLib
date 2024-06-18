@@ -27,7 +27,7 @@ import java.util.*;
  * Created by Matthew E on 12/30/2023 at 6:56 PM for the project Extraction
  */
 public  abstract class LoadedGameMap<T extends LoadedGameMap<T>> {
-    private LoadedGameMapState dungeonState;
+    private LoadedGameMapState gameMapState;
     private World world;
     private String zipFileNameCache;
     private Class<T> clazz;
@@ -70,14 +70,14 @@ public  abstract class LoadedGameMap<T extends LoadedGameMap<T>> {
         return GameMapRegistry.get().getMap().get(game);
     }
 
-    public UUID getDungeonID(){
+    public UUID getGameID(){
         return game;
     }
     public abstract void update();
     public abstract void fastUpdate();
     @Override
     public String toString() {
-        return dungeonState.toString()+": ("+zipFileNameCache+")";
+        return gameMapState.toString()+": ("+zipFileNameCache+")";
     }
     public LoadedGameMap(UUID game, UUID sessionId, GameMapMode gameMapMode, Class<T> clazz){
         this.game = game;
@@ -92,8 +92,8 @@ public  abstract class LoadedGameMap<T extends LoadedGameMap<T>> {
         return clazz;
     }
 
-    public LoadedGameMap<T> setDungeonState(LoadedGameMapState dungeonState) {
-        this.dungeonState = dungeonState;
+    public LoadedGameMap<T> setGameMapState(LoadedGameMapState gameMapState) {
+        this.gameMapState = gameMapState;
         return this;
     }
 
@@ -108,7 +108,7 @@ public  abstract class LoadedGameMap<T extends LoadedGameMap<T>> {
             this.loadFile();
             AtherialTasks.runSync(() -> {
                 this.setupWorld();
-                this.setDungeonState(LoadedGameMapState.LOADED);
+                this.setGameMapState(LoadedGameMapState.LOADED);
                 loadedDungeonCallback.call((T) this);
                 zipFileNameCache= getGameMap().getZipFileName();
                 onWorldLoad(world);
@@ -253,7 +253,7 @@ public  abstract class LoadedGameMap<T extends LoadedGameMap<T>> {
 
     }
 
-    public boolean isPlayerInDungeon(UUID uniqueId) {
+    public boolean isPlayerInGameMap(UUID uniqueId) {
         List<Player> players = getPlayers();
         if (players!=null&&!players.isEmpty()){
             for (Player player : players) {

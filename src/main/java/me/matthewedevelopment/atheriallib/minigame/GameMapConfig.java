@@ -112,7 +112,7 @@ public class GameMapConfig extends YamlConfig<AtherialLib> {
     public String DEBUG_PERM = "permissions.debug";
 
     @SerializedName("messages.gamemapNotReady")
-    public ChatMessage DUNGEON_NOT_READY=new ChatMessage("&cThe gamemap is not fully setup!");
+    public ChatMessage GAME_MAP_NOT_READY =new ChatMessage("&cThe gamemap is not fully setup!");
 
 
 

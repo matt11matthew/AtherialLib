@@ -6,7 +6,6 @@ import me.matthewedevelopment.atheriallib.handler.HandlerPriority;
 import me.matthewedevelopment.atheriallib.minigame.load.LoadedGameMap;
 import me.matthewedevelopment.atheriallib.utilities.file.FileUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -91,13 +90,13 @@ public  class GameMapHandler extends Handler<AtherialLib, GameMapConfig> impleme
 
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this.core,() -> {
-            for (LoadedGameMap value : gameMapRegistry.getLoadedDungeonMap().values()) {
+            for (LoadedGameMap value : gameMapRegistry.getUuidLoadedGameMapMap().values()) {
                 value.selfUpdate();
                 value.update();
             }
         },5L,5L);
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this.core,() -> {
-            for (LoadedGameMap<? > value : gameMapRegistry.getLoadedDungeonMap().values()) {
+            for (LoadedGameMap<? > value : gameMapRegistry.getUuidLoadedGameMapMap().values()) {
                 value.fastUpdate();
             }
         },1L,1L);

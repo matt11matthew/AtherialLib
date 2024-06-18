@@ -48,8 +48,8 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
 //                .filter(loadedDungeon -> loadedDungeon.getGameMapMode() == GameMapMode.EDIT)
 //                .filter(loadedDungeon -> loadedDungeon.getPlayers().contains(player)).findFirst();
 //    }
-  public static Optional<LoadedGameMap> getCurrentGameDungeon(Player player) {
-       return  GameMapRegistry.get().getLoadedDungeonMap().values()
+  public static Optional<LoadedGameMap> getCurrentGameMap(Player player) {
+       return  GameMapRegistry.get().getUuidLoadedGameMapMap().values()
                 .stream()
                 .filter(loadedDungeon -> loadedDungeon.getGameMapMode() == GameMapMode.EDIT)
                 .filter(loadedDungeon -> loadedDungeon.getPlayers().contains(player)).findFirst();

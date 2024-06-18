@@ -31,14 +31,14 @@ public class GameDeleteSubCommand extends AtherialLibSelfSubCommand<AtherialLib,
         }
 
         GameMapRegistry  dungeonRegistry = GameMapRegistry.get();
-        if (!dungeonRegistry.isDungeon(args[0])){
+        if (!dungeonRegistry.isGameMap(args[0])){
             config.GAME_MAP_DOESNT_EXISTS.send(sender,s -> colorize(s).replace("%name%", args[0]));
             return;
         }
         GameMap byName = dungeonRegistry.getByName(args[0]);
 
         final String name = byName.getName();
-        dungeonRegistry.deleteDungeon(byName, () -> {
+        dungeonRegistry.deleteGameMap(byName, () -> {
             config.GAME_MAP_DELETED.send(sender,s -> colorize(s).replace("%name%", name));
         });
     }
