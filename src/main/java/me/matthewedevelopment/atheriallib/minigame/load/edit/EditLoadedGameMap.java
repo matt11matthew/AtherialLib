@@ -29,20 +29,10 @@ public  abstract class EditLoadedGameMap<T extends LoadedGameMap<T>> extends Loa
                 .filter(loadedDungeon -> loadedDungeon.getPlayers().contains(player)).findFirst();
     }
 
-    @Override
-    public void onWorldLoad(World world) {
 
-    }
 
-    @Override
-    public void onSessionEnd(Player player) {
-        if (  HotBarMenu.hasHotBar(player)) {
-            HotBarMenu.destroy(player);
-        }
-    }
 
-    @Override
-    public void update() {
+    public void sendAllEditingActionBar() {
         GameMapConfig config = GameMapConfig.get();
         for (Player player : getPlayers()) {
 
@@ -51,14 +41,6 @@ public  abstract class EditLoadedGameMap<T extends LoadedGameMap<T>> extends Loa
         }
     }
 
-    @Override
-    public void fastUpdate() {
 
 
-    }
-
-
-    @Override
-    public void onLoad() {
-    }
 }
