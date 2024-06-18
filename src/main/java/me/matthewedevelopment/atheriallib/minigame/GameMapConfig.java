@@ -14,7 +14,7 @@ public class GameMapConfig extends YamlConfig<AtherialLib> {
     public String SCOREBOARD_LINE =  "&7&m-------------";
 
     public static GameMapConfig get() {
-        return GameHandler.get().getConfig();
+        return GameMapHandler.get().getConfig();
     }
 
 

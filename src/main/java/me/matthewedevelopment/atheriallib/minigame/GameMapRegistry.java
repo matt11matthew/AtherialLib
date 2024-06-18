@@ -38,7 +38,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
     }
 
     public static GameMapRegistry get() {
-        return AtherialLib.getInstance().getArenaHandler().getDungeonRegistry();
+        return AtherialLib.getInstance().getGameMapHandler().getDungeonRegistry();
     }
 
     @Override

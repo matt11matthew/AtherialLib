@@ -33,7 +33,9 @@ import me.matthewedevelopment.atheriallib.message.message.json.ActionBarMessageS
 import me.matthewedevelopment.atheriallib.message.message.json.ChatMessageSerializer;
 import me.matthewedevelopment.atheriallib.message.message.json.TitleJsonSerializer;
 import me.matthewedevelopment.atheriallib.message.title.AtherialTitle;
-import me.matthewedevelopment.atheriallib.minigame.GameHandler;
+import me.matthewedevelopment.atheriallib.minigame.GameMapHandler;
+import me.matthewedevelopment.atheriallib.minigame.load.edit.EditLoadedGameMap;
+import me.matthewedevelopment.atheriallib.minigame.load.game.GameLoadedGameMap;
 import me.matthewedevelopment.atheriallib.newcommand.AtherialLibDefaultCommandConfig;
 import me.matthewedevelopment.atheriallib.nms.Version;
 import me.matthewedevelopment.atheriallib.nms.VersionProvider;
@@ -85,12 +87,22 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     private MySqlHandler sqlHandler;
 
     private boolean disableSQLLogin = false;
-    private GameHandler gameHandler;
+    private GameMapHandler gameHandler;
 
-//    public HandlerManager getHandlerManager() {
-//        return handlerManager;
-//    }
 
+
+    public void setupGame(String gameName, Class<? extends GameLoadedGameMap<?>> liveClass, Class<? extends
+            EditLoadedGameMap<?>> editClass) {
+        gameHandler =new GameMapHandler(this);
+        gameHandler.setGameName(gameName);
+        gameHandler.setEditClass(editClass);
+        gameHandler.setLiveClass(liveClass);
+
+        getLogger().info("=====================================");
+        getLogger().info("Setup game " + gameName);
+        getLogger().info("=====================================");
+
+    }
     public void setDisableSQLLogin(boolean disableSQLLogin) {
         this.disableSQLLogin = disableSQLLogin;
     }
@@ -195,6 +207,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
 //        registerListener(new PlayerJumpListener());
         atherialMenuRegistry = new AtherialMenuRegistry();
         atherialMenuRegistry.start();
+
 
         fastAtherialMenuRegistry=new FastAtherialMenuRegistry();
         fastAtherialMenuRegistry.start();
@@ -428,7 +441,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
 
     public abstract List<Class<? extends AtherialProfile>> getProfileClazzes();
 
-    public GameHandler getArenaHandler() {
+    public GameMapHandler getGameMapHandler() {
         return gameHandler;
     }
 

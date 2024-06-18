@@ -30,8 +30,9 @@ public abstract class DataObjectRegistry<T extends DataObject<T>> {
         T temp=null;
         try {
              temp = clazz.newInstance();
+
             tableName=temp.getTableName();
-            System.err.println("TABLE NAME: ("+tableName+")");
+            AtherialLib.getInstance().getLogger().info("TABLE NAME: ("+tableName+")");
             databaseTableManager.createOrUpdateTable(getConnection(),tableName,temp.getColumns());
         } catch (InstantiationException | IllegalAccessException | SQLException e) {
           e.printStackTrace();
@@ -97,7 +98,7 @@ public abstract class DataObjectRegistry<T extends DataObject<T>> {
     public void updateSyncBatch(Connection connection, List<T> dataObjects) {
         if (tableName==null){
             if (AtherialLib.getInstance().isDebug()){
-                System.err.println("Failed to update sync batch due to table name being null");
+                AtherialLib.getInstance().getLogger().severe("Failed to update sync batch due to table name being null");
 
             }
             return;
@@ -278,7 +279,7 @@ public abstract class DataObjectRegistry<T extends DataObject<T>> {
                 query.append(placeholders).append(";");
 
                 if (AtherialLib.getInstance().isDebug()) {
-                    System.err.println(query);
+                    AtherialLib.getInstance().getLogger().info(query.toString());
                 }
 
 
@@ -315,7 +316,7 @@ public abstract class DataObjectRegistry<T extends DataObject<T>> {
             }
             if (statement != null) {
                 if (AtherialLib.getInstance().isDebug()) {
-                    System.err.println(statement.toString());
+                    AtherialLib.getInstance().getLogger().info(statement.toString());
                 }
                 // Execute the query to save or update the data
                 statement.executeUpdate();
@@ -351,12 +352,12 @@ public abstract class DataObjectRegistry<T extends DataObject<T>> {
                 boolean c = count > 0;
 
                 if (AtherialLib.getInstance().isDebug()){
-                    if (c){
-                        System.err.println("EXISTS " + uuid.toString());
-                    } else {
-                        System.err.println("DOESNT EXISTS " + uuid.toString());
-
-                    }
+//                    if (c){
+//                        System.err.println("EXISTS " + uuid.toString());
+//                    } else {
+//                        System.err.println("DOESNT EXISTS " + uuid.toString());
+//
+//                    }
                 }
                 return c; // Return true if a profile with the given UUID exists
             }

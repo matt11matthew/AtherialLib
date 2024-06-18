@@ -33,9 +33,9 @@ public class MySQLDatabaseTableManagerCustom implements DatabaseTableManagerCust
         if (AtherialLib.getInstance().isDebug()){
             if (next){
 
-                System.err.println("TABLE " + tableName + " EXISTS");
+                AtherialLib.getInstance().getLogger().info("TABLE " + tableName + " EXISTS");
             } else {
-                System.err.println("TABLE " + tableName + " DOESNT EXISTS");
+                AtherialLib.getInstance().getLogger().info("TABLE " + tableName + " DOESNT EXISTS");
 
             }
         }
@@ -54,7 +54,7 @@ public class MySQLDatabaseTableManagerCustom implements DatabaseTableManagerCust
         query.append(");");
         if (AtherialLib.getInstance().isDebug()){
 
-            System.err.println(query);
+            AtherialLib.getInstance().getLogger().info(query.toString());
         }
 
         statement.execute(query.toString());
@@ -75,7 +75,7 @@ public class MySQLDatabaseTableManagerCustom implements DatabaseTableManagerCust
         String query = "SHOW COLUMNS FROM " + tableName + " LIKE '" + columnName + "'";
         if (AtherialLib.getInstance().isDebug()){
 
-            System.err.println(query);
+            AtherialLib.getInstance().getLogger().info(query);
         }
         java.sql.ResultSet resultSet = statement.executeQuery(query);
         return resultSet.next();
@@ -86,8 +86,7 @@ public class MySQLDatabaseTableManagerCustom implements DatabaseTableManagerCust
         // Use MySQL-specific SQL syntax to add a new column to the table
         String query = "ALTER TABLE " + tableName + " ADD COLUMN " + column.getName() + " " + column.getTypeToString();
         if (AtherialLib.getInstance().isDebug()){
-
-            System.err.println(query);
+            AtherialLib.getInstance().getLogger().info(query);
         }
         statement.execute(query);
     }

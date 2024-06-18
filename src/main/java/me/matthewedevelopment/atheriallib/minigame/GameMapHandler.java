@@ -21,12 +21,38 @@ import java.util.Map;
 /**
  * Created by Matthew E on 12/31/2023 at 12:32 AM for the project Extraction
  */
-public  class GameHandler extends Handler<AtherialLib, GameMapConfig> implements Listener {
+public  class GameMapHandler extends Handler<AtherialLib, GameMapConfig> implements Listener {
     private GameMapRegistry gameMapRegistry;
     private GameMapConfig config;
+    private String gameName;
+    private Class liveClass;
+    private Class editClass;
 
-    public GameHandler(AtherialLib atherialLib, GameMapConfig config) {
-        super(atherialLib, config, HandlerPriority.NORMAL,HandlerPriority.NORMAL);
+
+    public void setEditClass(Class editClass) {
+        this.editClass = editClass;
+    }
+
+    public Class getLiveClass() {
+        return liveClass;
+    }
+
+    public Class getEditClass() {
+        return editClass;
+    }
+
+    public void setLiveClass(Class liveClass) {
+        this.liveClass = liveClass;
+    }
+
+    public void setGameName(String gameName) {
+        this.gameName = gameName;
+    }
+
+    public GameMapHandler(AtherialLib atherialLib) {
+        super(atherialLib, new GameMapConfig(), HandlerPriority.NORMAL,HandlerPriority.NORMAL);
+        config.loadConfig();
+
 
     }
 
@@ -44,16 +70,17 @@ public  class GameHandler extends Handler<AtherialLib, GameMapConfig> implements
     private Map<String, Long> delayMap = new HashMap<>();
     private boolean editMode;
 
-    public static GameHandler get() {
-        return AtherialLib.getInstance().getArenaHandler();
+    public static GameMapHandler get() {
+        return AtherialLib.getInstance().getGameMapHandler();
     }
 
 
-    public abstract void teleportToSpawn(Player player);
+    public  void teleportToSpawn(Player player) {
+        //TODO
+
+    }
     @Override
     public void onLoad() {
-        config=new GameMapConfig();
-        config.loadConfig();
 
         cleanupWorlds();
 
@@ -92,9 +119,10 @@ public  class GameHandler extends Handler<AtherialLib, GameMapConfig> implements
 
     }
 
+    @Override
+    public void reload() {
 
-
-
+    }
 
 
     @Override
@@ -128,7 +156,7 @@ public  class GameHandler extends Handler<AtherialLib, GameMapConfig> implements
         return true;
     }
 
-    public abstract Location getMainSpawn();
+//    public abstract Location getMainSpawn();
 
     private void cleanupWorlds() {
         List<World> list = new ArrayList<>();

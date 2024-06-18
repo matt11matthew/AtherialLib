@@ -126,17 +126,17 @@ public class MySqlHandler {
             connection = DriverManager.getConnection(url);
 
             if (connection != null) {
-                System.out.println("SQLite database created: " + url);
+                AtherialLib.getInstance().getLogger().info("SQLite database created: " + url);
 
                 // You can execute SQL statements or create tables here if needed
 
                 // Close the connection when done
 //                connection.close();
             } else {
-                System.err.println("Failed to create the SQLite database.");
+                AtherialLib.getInstance().getLogger().severe("Failed to create the SQLite database.");
             }
         } catch (SQLException e) {
-            System.err.println("SQL Exception: " + e.getMessage());
+            AtherialLib.getInstance().getLogger().severe("SQL Exception: " + e.getMessage());
         }
     }
     public Connection getConnection() {
