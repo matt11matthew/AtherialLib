@@ -166,7 +166,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
         World world = value.getWorld();
         for (Player player : world.getPlayers()) {
             value.onSessionEnd(player);
-            GameHandler.get().teleportToSpawn(player);
+            GameMapHandler.get().teleportToSpawn(player);
 //            player.teleport(Extraction.getInstance().getMainSpawn(), PlayerTeleportEvent.TeleportCause.PLUGIN);
         }
         Bukkit.unloadWorld(world, value.getGameMapMode() == GameMapMode.EDIT);
@@ -222,7 +222,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
         for (LoadedGameMap value : loadedDungeonMap.values()) {
             World world = value.getWorld();
             for (Player player : world.getPlayers()) {
-                GameHandler.get().teleportToSpawn(player);
+                GameMapHandler.get().teleportToSpawn(player);
 //                player.teleport(Ath.getInstance().getMainSpawn(), PlayerTeleportEvent.TeleportCause.PLUGIN);
 //                LobbyHandler.get().onTeleportToSpawn(player);
             }
