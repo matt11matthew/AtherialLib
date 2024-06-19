@@ -152,7 +152,7 @@ public  abstract class LoadedGameMap<T extends LoadedGameMap<T>> {
 
 
     public String getWorldName() {
-       return "DUNGEON_"+sessionId.toString().replaceAll("-","").trim();
+       return "MAP_"+sessionId.toString().replaceAll("-","").trim();
     }
 
     public void save() {

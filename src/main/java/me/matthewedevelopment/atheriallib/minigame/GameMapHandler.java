@@ -22,7 +22,6 @@ import java.util.Map;
  */
 public  class GameMapHandler extends Handler<AtherialLib, GameMapConfig> implements Listener {
     private GameMapRegistry gameMapRegistry;
-    private GameMapConfig config;
     private String gameName;
     private Class liveClass;
     private Class editClass;
@@ -58,13 +57,12 @@ public  class GameMapHandler extends Handler<AtherialLib, GameMapConfig> impleme
 
     public GameMapHandler(AtherialLib atherialLib) {
         super(atherialLib, new GameMapConfig(), HandlerPriority.NORMAL,HandlerPriority.NORMAL);
-        config.loadConfig();
 
 
     }
 
     public GameMapConfig getConfig() {
-        return config;
+        return c;
     }
 
     /*
@@ -84,6 +82,7 @@ public  class GameMapHandler extends Handler<AtherialLib, GameMapConfig> impleme
 
     public  void teleportToSpawn(Player player) {
         //TODO
+        player.teleport(        Bukkit.getWorld("world").getSpawnLocation());
 
     }
     @Override
