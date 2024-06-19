@@ -7,6 +7,7 @@ import me.matthewedevelopment.atheriallib.utilities.location.AtherialLocation;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -17,6 +18,7 @@ import java.util.UUID;
  */
 public class GameMap extends DataObject<GameMap> {
     private String name;
+    private GameMapData gameMapData;
 
     private String zipFileName;
 
@@ -40,7 +42,7 @@ public class GameMap extends DataObject<GameMap> {
     private Class gameClass;
     private Class editClass;
 
-    public GameMap(UUID uuid, String name, Class gameClass, Class editClass) {
+    public GameMap(UUID uuid, String name, Class gameClass, Class editClass, Class gameClassData) {
         super(uuid);
         this.name = name;
         this.lobbySpawn = null;
@@ -48,6 +50,18 @@ public class GameMap extends DataObject<GameMap> {
         this.gameClass = gameClass;
 
         this.zipFileName="TBD";
+
+
+        try {
+            gameMapData= (GameMapData) gameClassData.getConstructor(GameMap.class).newInstance(this);
+        } catch (Exception e) {
+            e.printStackTrace();;
+
+        }
+    }
+
+    public GameMapData getGameMapData() {
+        return gameMapData;
     }
 
     public boolean hasSpawn() {
@@ -82,11 +96,14 @@ public class GameMap extends DataObject<GameMap> {
 
     @Override
     public List<DataColumn> getDefaultColumns() {
-        return Arrays.asList(
+        List<DataColumn> columns =new ArrayList<>();
+        columns.addAll(Arrays.asList(
                 new DataColumn("name", DataColumnType.VARCHAR,name),
                 new DataColumn("zipFileName", DataColumnType.VARCHAR,zipFileName),
-                new DataColumn("spawn", DataColumnType.VARCHAR, lobbySpawn)
-        );
+                new DataColumn("spawn", DataColumnType.VARCHAR, lobbySpawn)));
+
+        columns.addAll(gameMapData.getColumns());
+        return columns;
     }
 
     public String getName() {
@@ -99,8 +116,10 @@ public class GameMap extends DataObject<GameMap> {
             this.name = resultSet.getString("name");
             this.zipFileName = resultSet.getString("zipFileName");
             this.lobbySpawn = AtherialLocation.fromString(resultSet.getString("spawn"));
+
+            gameMapData.load(resultSet);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         return this;
     }

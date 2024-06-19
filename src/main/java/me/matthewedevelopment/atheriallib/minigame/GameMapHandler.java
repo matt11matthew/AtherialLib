@@ -26,7 +26,15 @@ public  class GameMapHandler extends Handler<AtherialLib, GameMapConfig> impleme
     private String gameName;
     private Class liveClass;
     private Class editClass;
+    private Class gameDataClass;
 
+    public void setGameDataClass(Class gameDataClass) {
+        this.gameDataClass = gameDataClass;
+    }
+
+    public Class getGameDataClass() {
+        return gameDataClass;
+    }
 
     public void setEditClass(Class editClass) {
         this.editClass = editClass;

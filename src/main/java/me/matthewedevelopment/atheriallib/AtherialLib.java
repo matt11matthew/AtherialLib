@@ -92,11 +92,12 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
 
 
     public void setupGame(String gameName, Class<? extends GameLoadedGameMap<?>> liveClass, Class<? extends
-            EditLoadedGameMap<?>> editClass) {
+            EditLoadedGameMap<?>> editClass, Class<?> gameMapDataClass) {
         gameHandler =new GameMapHandler(this);
         gameHandler.setGameName(gameName);
         gameHandler.setEditClass(editClass);
         gameHandler.setLiveClass(liveClass);
+        gameHandler.setGameDataClass(gameMapDataClass);
 
         getLogger().info("=====================================");
         getLogger().info("Setup game " + gameName);
