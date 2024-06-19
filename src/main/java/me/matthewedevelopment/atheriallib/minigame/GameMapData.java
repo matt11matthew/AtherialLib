@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.util.List;
 
 public abstract class GameMapData {
-    private GameMap gameMap;
+    protected GameMap gameMap;
 
     public GameMapData(GameMap gameMap) {
         this.gameMap = gameMap;
