@@ -41,7 +41,7 @@ public class GameCreateSubCommand extends AtherialLibSelfSubCommand<AtherialLib,
 
 
         dungeonRegistry.createMap(player,new GameMap(UUID.randomUUID(),
-                args[0], GameMapHandler.get().getLiveClass(), GameMapHandler.get().getEditClass()));
+                args[0], GameMapHandler.get().getLiveClass(), GameMapHandler.get().getEditClass(),GameMapHandler.get().getGameDataClass()));
 
         return;
     }
