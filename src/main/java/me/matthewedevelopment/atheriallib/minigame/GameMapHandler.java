@@ -156,7 +156,7 @@ public  class GameMapHandler extends Handler<AtherialLib, GameMapConfig> impleme
 
         List<String> deletingList = new ArrayList<>();
 
-        Bukkit.getWorlds().stream().filter(world -> world.getName().startsWith("MAPS_")).forEach(world -> {
+        Bukkit.getWorlds().stream().filter(world -> world.getName().startsWith("MAP_")).forEach(world -> {
             list.add(world);
         });
         for (World world : list) {
@@ -172,7 +172,7 @@ public  class GameMapHandler extends Handler<AtherialLib, GameMapConfig> impleme
         List<File> toDelete = new ArrayList<>();
 
         for (File file : path.listFiles()) {
-            if (file.isDirectory() && file.getName().startsWith("MAPS_") && !deletingList.contains(file.getName())) {
+            if (file.isDirectory() && file.getName().startsWith("MAP_") && !deletingList.contains(file.getName())) {
                 System.out.println(file.getName());
                 toDelete.add(file);
 

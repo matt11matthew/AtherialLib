@@ -135,6 +135,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
         insertAsync(gameMap,() -> {
             config.GAME_MAP_CREATE_MSG.send(player,s -> colorize(s).replace("%name%", gameMap.getName()));
 
+
             EditLoadedGameMap editLoadedDungeon = null;
             try {
                 editLoadedDungeon = (EditLoadedGameMap) GameMapHandler.get().getEditClass().getConstructor(UUID.class, UUID.class).newInstance(gameMap.getUUID(), UUID.randomUUID());
@@ -152,8 +153,14 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
             gameMap.setEditSessionId(editLoadedDungeon.getSessionId());
             uuidLoadedGameMapMap.put(editLoadedDungeon.getSessionId(),editLoadedDungeon);
             editLoadedDungeon.loadAsync(loadedDungeon -> {
-//                EditLoadedGameMap editLoadedGameMap = (EditLoadedGameMap) loadedDungeon;;
-                Location spawnLocation = gameMap.getLobbySpawn().toLocation();
+                EditLoadedGameMap editLoadedGameMap = (EditLoadedGameMap) loadedDungeon;;
+//                if (gameMap.getLobbySpawn()==null){
+//                    gameMap.setLobbySpawn(editLoadedGameMap.getSpawnLocation());
+//                }
+                GameEnterEvent gameEnterEvent = new GameEnterEvent(player, editLoadedGameMap);
+                Bukkit.getPluginManager().callEvent(gameEnterEvent);
+
+                Location spawnLocation =editLoadedGameMap.getSpawnLocation();
                 player.teleport(spawnLocation, PlayerTeleportEvent.TeleportCause.PLUGIN);
             });
 
