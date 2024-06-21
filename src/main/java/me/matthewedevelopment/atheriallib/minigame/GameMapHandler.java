@@ -192,6 +192,8 @@ public  class GameMapHandler extends Handler<AtherialLib, GameMapConfig> impleme
     }
 
     public void start() {
+        onLoad();
+       enabled=true;
 
     }
 
@@ -201,5 +203,7 @@ public  class GameMapHandler extends Handler<AtherialLib, GameMapConfig> impleme
 
     public void stop() {
 
+        onUnload();
+        enabled=false;
     }
 }
