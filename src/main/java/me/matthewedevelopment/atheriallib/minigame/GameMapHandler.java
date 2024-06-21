@@ -4,6 +4,7 @@ import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.handler.Handler;
 import me.matthewedevelopment.atheriallib.handler.HandlerPriority;
 import me.matthewedevelopment.atheriallib.minigame.commands.GameMapCommand;
+import me.matthewedevelopment.atheriallib.minigame.events.MainLobbyEnterEvent;
 import me.matthewedevelopment.atheriallib.minigame.load.LoadedGameMap;
 import me.matthewedevelopment.atheriallib.utilities.file.FileUtils;
 import org.bukkit.Bukkit;
@@ -79,6 +80,8 @@ public  class GameMapHandler extends Handler<AtherialLib, GameMapConfig> impleme
 
     public  void teleportToSpawn(Player player) {
         //TODO
+        MainLobbyEnterEvent mainLobbyEnterEvent =new MainLobbyEnterEvent(player);
+        Bukkit.getPluginManager().callEvent(mainLobbyEnterEvent);
         player.teleport(        Bukkit.getWorld("world").getSpawnLocation());
 
     }
