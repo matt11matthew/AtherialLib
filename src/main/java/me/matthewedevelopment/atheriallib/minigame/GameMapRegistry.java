@@ -2,12 +2,13 @@ package me.matthewedevelopment.atheriallib.minigame;
 
 import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.database.registry.DataObjectRegistry;
+import me.matthewedevelopment.atheriallib.minigame.events.GameEnterEvent;
 import me.matthewedevelopment.atheriallib.minigame.load.GameMapMode;
 import me.matthewedevelopment.atheriallib.minigame.load.LoadedGameMap;
 import me.matthewedevelopment.atheriallib.minigame.load.edit.EditLoadedGameMap;
 import me.matthewedevelopment.atheriallib.minigame.load.game.GameLoadedGameMap;
 import me.matthewedevelopment.atheriallib.minigame.load.game.GameState;
-import me.matthewedevelopment.atheriallib.minigame.load.game.events.GameLobbyOpenEvent;
+import me.matthewedevelopment.atheriallib.minigame.events.GameLobbyOpenEvent;
 import me.matthewedevelopment.atheriallib.utilities.AtherialTasks;
 import me.matthewedevelopment.atheriallib.utilities.file.FileUtils;
 import org.bukkit.Bukkit;
@@ -29,9 +30,9 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
 
     private Map<UUID, LoadedGameMap> uuidLoadedGameMapMap;
     private GameMapConfig config;
-    public GameMapRegistry( ) {
+    public GameMapRegistry(GameMapConfig config) {
         super(GameMap.class);
-        config=GameMapConfig.get();
+        this.config = config;
 
         this.uuidLoadedGameMapMap = new HashMap<>();
 
@@ -136,7 +137,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
 
             EditLoadedGameMap editLoadedDungeon = null;
             try {
-                editLoadedDungeon = (EditLoadedGameMap) gameMap.getEditClass().getConstructor(UUID.class, UUID.class).newInstance(gameMap.getUUID(), UUID.randomUUID());
+                editLoadedDungeon = (EditLoadedGameMap) GameMapHandler.get().getEditClass().getConstructor(UUID.class, UUID.class).newInstance(gameMap.getUUID(), UUID.randomUUID());
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                      NoSuchMethodException e) {
                 e.printStackTrace();
@@ -289,7 +290,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
             GameLoadedGameMap gameLoadedDungeon=null;
             try {
 
-                gameLoadedDungeon = (GameLoadedGameMap) gameMap.getGameClass().getConstructor(UUID.class, UUID.class).newInstance(gameMap.getUUID(), UUID.randomUUID());
+                gameLoadedDungeon = (GameLoadedGameMap)GameMapHandler.get().getGameDataClass().getConstructor(UUID.class, UUID.class).newInstance(gameMap.getUUID(), UUID.randomUUID());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -302,6 +303,9 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
             uuidLoadedGameMapMap.put(gameLoadedDungeon.getSessionId(),gameLoadedDungeon);
             GameLobbyOpenEvent gameLobbyOpenEvent =new GameLobbyOpenEvent(gameLoadedDungeon);
             Bukkit.getPluginManager().callEvent(gameLobbyOpenEvent);
+
+            GameEnterEvent gameEnterEvent =new GameEnterEvent(player, gameLoadedDungeon);
+            Bukkit.getPluginManager().callEvent(gameEnterEvent);
             gameLoadedDungeon.loadAsync(loadedDungeon -> {
                 if (player!=null){
                     GameLoadedGameMap editLoadedGameMap = (GameLoadedGameMap) loadedDungeon;
@@ -318,7 +322,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
             gameMap.setEditing(true);
 
          try {
-             EditLoadedGameMap editLoadedDungeon = (EditLoadedGameMap) gameMap.getEditClass().getConstructor(UUID.class, UUID.class).newInstance(gameMap.getUUID(), UUID.randomUUID());
+             EditLoadedGameMap editLoadedDungeon = (EditLoadedGameMap)GameMapHandler.get().getEditClass().getConstructor(UUID.class, UUID.class).newInstance(gameMap.getUUID(), UUID.randomUUID());
 
 //            EditLoadedGameMap editLoadedDungeon = new EditLoadedDungeon(gameMap.getUUID(), UUID.randomUUID());
              gameMap.setEditSessionId(editLoadedDungeon.getSessionId());
@@ -329,6 +333,8 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
                  EditLoadedGameMap editLoadedGameMap = (EditLoadedGameMap) loadedDungeon;
                  player.teleport(editLoadedGameMap.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
              });
+             GameEnterEvent gameEnterEvent =new GameEnterEvent(player, editLoadedDungeon);
+             Bukkit.getPluginManager().callEvent(gameEnterEvent);
          } catch (Exception e) {
              e.printStackTrace();
          }

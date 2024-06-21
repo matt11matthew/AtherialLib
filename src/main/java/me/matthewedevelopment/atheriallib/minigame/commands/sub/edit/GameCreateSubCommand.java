@@ -6,7 +6,6 @@ import me.matthewedevelopment.atheriallib.command.spigot.CommandUtils;
 import me.matthewedevelopment.atheriallib.command.spigot.HelpSubCommand;
 import me.matthewedevelopment.atheriallib.minigame.GameMap;
 import me.matthewedevelopment.atheriallib.minigame.GameMapConfig;
-import me.matthewedevelopment.atheriallib.minigame.GameMapHandler;
 import me.matthewedevelopment.atheriallib.minigame.GameMapRegistry;
 import me.matthewedevelopment.atheriallib.minigame.commands.GameMapCommand;
 import org.bukkit.command.CommandSender;
@@ -41,7 +40,7 @@ public class GameCreateSubCommand extends AtherialLibSelfSubCommand<AtherialLib,
 
 
         dungeonRegistry.createMap(player,new GameMap(UUID.randomUUID(),
-                args[0], GameMapHandler.get().getLiveClass(), GameMapHandler.get().getEditClass(),GameMapHandler.get().getGameDataClass()));
+                args[0]));
 
         return;
     }

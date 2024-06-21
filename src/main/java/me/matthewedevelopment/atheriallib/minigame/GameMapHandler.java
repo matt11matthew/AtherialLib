@@ -3,6 +3,7 @@ package me.matthewedevelopment.atheriallib.minigame;
 import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.handler.Handler;
 import me.matthewedevelopment.atheriallib.handler.HandlerPriority;
+import me.matthewedevelopment.atheriallib.minigame.commands.GameMapCommand;
 import me.matthewedevelopment.atheriallib.minigame.load.LoadedGameMap;
 import me.matthewedevelopment.atheriallib.utilities.file.FileUtils;
 import org.bukkit.Bukkit;
@@ -83,12 +84,14 @@ public  class GameMapHandler extends Handler<AtherialLib, GameMapConfig> impleme
     }
     @Override
     public void onLoad() {
+        c.loadConfig();
 
         cleanupWorlds();
 
+        registerCommand(new GameMapCommand(this.c,AtherialLib.getInstance()));
         registerListener(this);
 
-        gameMapRegistry = new GameMapRegistry();
+        gameMapRegistry = new GameMapRegistry(c);
         gameMapRegistry.register();
 
 

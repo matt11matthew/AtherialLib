@@ -30,30 +30,31 @@ public class GameMap extends DataObject<GameMap> {
         return lobbySpawn;
     }
 
-    public Class getGameClass() {
-        return gameClass;
-    }
-
-    public Class getEditClass() {
-        return editClass;
-    }
+//    public Class getGameClass() {
+//        return gameClass;
+//    }
+//
+//    public Class getEditClass() {
+//        return editClass;
+//    }
 
     private AtherialLocation lobbySpawn;
-    private Class gameClass;
-    private Class editClass;
+//    private Class gameClass;
+//    private Class editClass;
 
-    public GameMap(UUID uuid, String name, Class gameClass, Class editClass, Class gameClassData) {
+    public GameMap(UUID uuid, String name) {
         super(uuid);
         this.name = name;
         this.lobbySpawn = null;
-        this.editClass=editClass;
-        this.gameClass = gameClass;
+//        this.editClass=editClass;
+//        this.gameClass = gameClass;
 
         this.zipFileName="TBD";
 
 
+
         try {
-            gameMapData= (GameMapData) gameClassData.getConstructor(GameMap.class).newInstance(this);
+            gameMapData= (GameMapData) GameMapHandler.get().getGameDataClass().getConstructor(GameMap.class).newInstance(this);
         } catch (Exception e) {
             e.printStackTrace();;
 
@@ -75,6 +76,12 @@ public class GameMap extends DataObject<GameMap> {
 
 
     public GameMap() {
+        try {
+            gameMapData= (GameMapData) GameMapHandler.get().getGameDataClass().getConstructor(GameMap.class).newInstance(this);
+        } catch (Exception e) {
+            e.printStackTrace();;
+
+        }
     }
 
     public UUID getUUID() {

@@ -1,4 +1,4 @@
-package me.matthewedevelopment.atheriallib.minigame.load.game.events;
+package me.matthewedevelopment.atheriallib.minigame.events;
 
 import me.matthewedevelopment.atheriallib.minigame.load.game.GameLoadedGameMap;
 import org.bukkit.event.Event;

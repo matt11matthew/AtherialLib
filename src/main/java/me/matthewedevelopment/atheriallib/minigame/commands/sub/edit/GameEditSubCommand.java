@@ -7,8 +7,10 @@ import me.matthewedevelopment.atheriallib.command.spigot.HelpSubCommand;
 import me.matthewedevelopment.atheriallib.minigame.GameMapConfig;
 import me.matthewedevelopment.atheriallib.minigame.GameMapRegistry;
 import me.matthewedevelopment.atheriallib.minigame.commands.GameMapCommand;
+import me.matthewedevelopment.atheriallib.minigame.events.GameEnterEvent;
 import me.matthewedevelopment.atheriallib.minigame.load.edit.EditLoadedGameMap;
 import me.matthewedevelopment.atheriallib.utilities.ListUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -43,6 +45,8 @@ public class GameEditSubCommand extends  AtherialLibSelfSubCommand<AtherialLib, 
 
         if (dungeonRegistry.isEditing(args[0])){
             EditLoadedGameMap editLoadedDungeon = dungeonRegistry.getEditingGame(args[0]);
+            GameEnterEvent gameEnterEvent =new GameEnterEvent(player, editLoadedDungeon);
+            Bukkit.getPluginManager().callEvent(gameEnterEvent);
             ((Player) sender).teleport(editLoadedDungeon.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
             return;
         }
