@@ -118,5 +118,6 @@ public class GameMapConfig extends YamlConfig<AtherialLib> {
 
     public GameMapConfig() {
         super("game_settings.yml", AtherialLib.getInstance());
+        loadConfig();
     }
 }

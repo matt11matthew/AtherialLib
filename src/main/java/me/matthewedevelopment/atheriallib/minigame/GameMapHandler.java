@@ -13,9 +13,7 @@ import org.bukkit.event.Listener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Matthew E on 12/31/2023 at 12:32 AM for the project Extraction
@@ -72,8 +70,6 @@ public  class GameMapHandler extends Handler<AtherialLib, GameMapConfig> impleme
         timeBetween: 60
         autoStart: true
          */
-    private Map<String, Long> delayMap = new HashMap<>();
-    private boolean editMode;
 
     public static GameMapHandler get() {
         return AtherialLib.getInstance().getGameMapHandler();
@@ -108,19 +104,7 @@ public  class GameMapHandler extends Handler<AtherialLib, GameMapConfig> impleme
             }
         },1L,1L);
 
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this.core,() -> {
-            List<String> remove= new ArrayList<>();
-            for (String n : delayMap.keySet()) {
-                Long l = delayMap.get(n);
-                if (System.currentTimeMillis()>l){
-                    remove.add(n);
-                }
-            }
-            for (String s : remove) {
-                delayMap.remove(s);
-                gameMapRegistry.startGame(null,s);
-            }
-        },1L,1L);
+
 
 
     }
@@ -205,5 +189,17 @@ public  class GameMapHandler extends Handler<AtherialLib, GameMapConfig> impleme
 
     public GameMapRegistry getDungeonRegistry() {
         return gameMapRegistry;
+    }
+
+    public void start() {
+
+    }
+
+    public boolean isSetup() {
+        return gameDataClass!=null&&liveClass!=null&&editClass!=null;
+    }
+
+    public void stop() {
+
     }
 }

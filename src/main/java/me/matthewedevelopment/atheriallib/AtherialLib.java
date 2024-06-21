@@ -221,7 +221,9 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
 
 
         this.profileManager.load();
-
+        if (gameHandler.isSetup()) {
+            gameHandler.start();
+        }
 
 
         if (debug) {
@@ -353,7 +355,11 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     public void onDisable() {
         profileManager.stop();
 //        handlerManager.disableHandlers();
+        if (gameHandler.isSetup()) {
+            gameHandler.stop();
+        }
         this.onStop();
+        gameHandler.start();
         if (sqlHandler.isEnabled()) {
             sqlHandler.stop();
         }
