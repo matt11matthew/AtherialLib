@@ -197,9 +197,12 @@ public  class GameMapHandler extends Handler<AtherialLib, GameMapConfig> impleme
         return gameMapRegistry;
     }
 
+    private boolean started = false;
     public void start() {
+        if (started)return;
         onLoad();
        enabled=true;
+       started=true;
 
     }
 

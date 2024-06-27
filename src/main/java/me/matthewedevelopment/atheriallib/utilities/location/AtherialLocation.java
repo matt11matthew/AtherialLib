@@ -206,6 +206,7 @@ public class AtherialLocation {
         this.x = x;
         this.y = y;
         this.z = z;
+        this.world = null;
         this.yaw = yaw;
         this.pitch = pitch;
     }

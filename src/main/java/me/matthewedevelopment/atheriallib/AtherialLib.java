@@ -103,6 +103,9 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         getLogger().info("Setup game " + gameName);
         getLogger().info("=====================================");
 
+        if (started){
+        gameHandler.start();
+        }
     }
     public void setDisableSQLLogin(boolean disableSQLLogin) {
         this.disableSQLLogin = disableSQLLogin;
@@ -172,6 +175,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     public void registerHandlers() {
 
     }
+    private boolean started = false;
     @Override
     public void onEnable() {
         initDependencies();
@@ -226,6 +230,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         }
 
 
+        started=true;
         if (debug) {
             Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
                 @Override
