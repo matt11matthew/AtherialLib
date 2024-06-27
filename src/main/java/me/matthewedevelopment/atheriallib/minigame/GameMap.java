@@ -84,6 +84,9 @@ public class GameMap extends DataObject<GameMap> {
         }
     }
 
+    public void save() {
+        GameMapRegistry.get().updateAsync(this, () -> {});
+    }
     public UUID getUUID() {
         return getUuid();
     }
