@@ -150,6 +150,21 @@ public class AtherialLocation {
         return output.toString();
     }
 
+    public AtherialLocation increaseY(double amt) {
+        y+= amt;
+        return this;
+
+    }
+    public AtherialLocation increaseX(double amt) {
+        x+= amt;
+        return this;
+
+    }
+    public AtherialLocation increaseZ(double amt) {
+        z+= amt;
+        return this;
+
+    }
     public static AtherialLocation fromLocation(Location location, boolean block,  boolean includeWorld) {
         if (block){
             if (includeWorld){
