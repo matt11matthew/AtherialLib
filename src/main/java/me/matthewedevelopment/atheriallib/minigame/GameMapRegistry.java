@@ -297,7 +297,7 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
             GameLoadedGameMap gameLoadedDungeon=null;
             try {
 
-                gameLoadedDungeon = (GameLoadedGameMap)GameMapHandler.get().getGameDataClass().getConstructor(UUID.class, UUID.class).newInstance(gameMap.getUUID(), UUID.randomUUID());
+                gameLoadedDungeon = (GameLoadedGameMap)GameMapHandler.get().getLiveClass().getConstructor(UUID.class, UUID.class).newInstance(gameMap.getUUID(), UUID.randomUUID());
             } catch (Exception e) {
                 e.printStackTrace();
             }
