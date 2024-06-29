@@ -1,10 +1,14 @@
 package me.matthewedevelopment.atheriallib.utilities;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Created by Matthew E on 11/16/2023 at 1:11 PM for the project AtherialLib
@@ -187,8 +191,23 @@ public class ChatUtils {
             return input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase().trim();
         }
     }
-    public static String colorize(String message){
+    public static String colorize( String message){
+        return colorize(null, message);
+
+    }
+    public static String colorize(Player p, String message){
+        String colorizedMessage;
         if (message==null)return null;
-        return translateHexColorCodes(message);
+        colorizedMessage =  translateHexColorCodes(message);
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            if (p==null){
+                List<? extends Player> collect = Bukkit.getOnlinePlayers().stream().collect(Collectors.toList());
+                if (collect.isEmpty())return colorizedMessage;
+                return PlaceholderApplyUtils.applyPapi(colorizedMessage,collect.get(0));
+            }
+            return PlaceholderApplyUtils.applyPapi(colorizedMessage,p);
+        }
+        return colorizedMessage;
+
     }
 }

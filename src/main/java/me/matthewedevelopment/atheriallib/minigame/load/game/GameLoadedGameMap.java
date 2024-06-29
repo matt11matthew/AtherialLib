@@ -99,9 +99,11 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
             return false;
         }
 
+
         if (System.currentTimeMillis()> timeLeft && timeLeft!=0) {
             end = true;
         }
+        if (forceEnd) end = true;
         if (end) {
             this.gameState = GameState.DONE;
             GameStopEvent event = new GameStopEvent(this);
