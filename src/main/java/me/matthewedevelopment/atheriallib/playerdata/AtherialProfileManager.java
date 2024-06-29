@@ -77,6 +77,16 @@ public class AtherialProfileManager  implements Listener {
             loadDataSync(clazz, onlinePlayer);
         }
     }
+    private boolean intervalSave = true;
+
+    public void setIntervalSave(boolean intervalSave) {
+        this.intervalSave = intervalSave;
+    }
+
+    public boolean isIntervalSave() {
+        return intervalSave;
+    }
+
     public void load() {
 //        if (!profiles.isEmpty()){
 //            this.bukkitConfig = new BukkitConfig("players.yml", this.atherialLib);
@@ -107,6 +117,7 @@ public class AtherialProfileManager  implements Listener {
 //        }
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(atherialLib, () -> {
+            if (!intervalSave)return;
             if (profiles.isEmpty())return;
             for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
                 for (Class<? extends AtherialProfile> value : profiles.values()) {
