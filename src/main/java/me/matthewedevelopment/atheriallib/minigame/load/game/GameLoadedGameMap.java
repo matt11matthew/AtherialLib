@@ -55,11 +55,6 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
                 .filter(loadedDungeon -> loadedDungeon.getPlayers().contains(player)).findFirst();
     }
 
-    @Override
-    public void onSessionEnd(Player player) {
-
-
-    }
 
 
     @Override
@@ -94,6 +89,15 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
 //
 //        }
         boolean end = false;
+
+        if (countdown){
+            if (isCountdownOver()) {
+                countdown=false;
+                onStart();
+                return false;
+            }
+            return false;
+        }
 
         if (System.currentTimeMillis()> timeLeft && timeLeft!=0) {
 //            Bukkit.getServer().broadcastMessage("out of time");
@@ -155,12 +159,13 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
     public abstract void onLeave(NameInfo player, boolean death);
 
 
+    public abstract long getGameTimeMinutes();
     private long timeStarted = 0;
     private void onStart() {
         GameStartEvent event = new GameStartEvent(this);
         Bukkit.getPluginManager().callEvent(event);
 
-        this.timeLeft = TimeUnit.MINUTES.toMinutes(10)+System.currentTimeMillis();
+        this.timeLeft = TimeUnit.MINUTES.toMinutes(getGameTimeMinutes())+System.currentTimeMillis();
 //        this.timeLeft = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1);
 
         timeStarted = System.currentTimeMillis()+1000L;
@@ -234,4 +239,16 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
     }
 
 
+    public abstract void onLobbyOpen();
+
+    public abstract void onCountDownStart();
+
+    private boolean countdown;
+
+    public abstract boolean isCountdownOver();
+    public void startCountDown() {
+        countdown=true;
+        onCountDownStart();
+
+    }
 }

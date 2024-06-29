@@ -316,6 +316,8 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
             gameLoadedDungeon.loadAsync(loadedDungeon -> {
                 if (player!=null){
                     GameLoadedGameMap editLoadedGameMap = (GameLoadedGameMap) loadedDungeon;
+                    editLoadedGameMap.onLobbyOpen();
+                    editLoadedGameMap.startCountDown();
                     player.teleport(editLoadedGameMap.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
                 }
 
