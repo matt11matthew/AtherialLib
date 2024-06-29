@@ -148,6 +148,7 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
     }
 
     public abstract void onLeave(NameInfo player, boolean death);
+    public abstract void onJoin(NameInfo player);
 
 
     public abstract long getGameTimeMinutes();
@@ -176,7 +177,9 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
 
     @Override
     public void onWorldLoad(World world) {
-        getPlayers().forEach(player -> players.add(NameInfo.of(player))); //Important
+        getPlayers().forEach(player -> {
+            addPlayer(player);
+        }); //Important
     }
 
 
@@ -226,7 +229,9 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
 
 
     public void addPlayer(Player player) {
-        players.add(NameInfo.of(player));
+        NameInfo of = NameInfo.of(player);
+        players.add(of);
+        onJoin(of);
     }
 
 
