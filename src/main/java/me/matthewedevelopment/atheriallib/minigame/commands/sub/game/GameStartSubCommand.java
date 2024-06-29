@@ -7,6 +7,8 @@ import me.matthewedevelopment.atheriallib.command.spigot.HelpSubCommand;
 import me.matthewedevelopment.atheriallib.minigame.GameMapConfig;
 import me.matthewedevelopment.atheriallib.minigame.GameMapRegistry;
 import me.matthewedevelopment.atheriallib.minigame.commands.GameMapCommand;
+import me.matthewedevelopment.atheriallib.minigame.load.LoadedGameMap;
+import me.matthewedevelopment.atheriallib.minigame.load.game.GameLoadedGameMap;
 import me.matthewedevelopment.atheriallib.utilities.ListUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -14,6 +16,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -45,6 +48,13 @@ public class GameStartSubCommand extends  AtherialLibSelfSubCommand<AtherialLib,
             config.CANT_START_EDITING.send(sender,s -> colorize(s).replace("%name%", args[0]));
             return;
         }
+        Optional<LoadedGameMap> currentGameMap = GameLoadedGameMap.getCurrentGameMap((Player) sender
+        );
+        if (currentGameMap.isPresent()){
+            config.CANT_START_EDITING.send(sender,s -> colorize(s).replace("%name%", args[0]));
+            return;
+        }
+
 
         dungeonRegistry.startGame((Player) sender,args[0]);
 

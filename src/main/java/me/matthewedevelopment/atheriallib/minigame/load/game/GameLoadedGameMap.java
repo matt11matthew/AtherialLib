@@ -51,7 +51,7 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
   public static Optional<LoadedGameMap> getCurrentGameMap(Player player) {
        return  GameMapRegistry.get().getUuidLoadedGameMapMap().values()
                 .stream()
-                .filter(loadedDungeon -> loadedDungeon.getGameMapMode() == GameMapMode.EDIT)
+//                .filter(loadedDungeon -> loadedDungeon.getGameMapMode() == GameMapMode.EDIT)
                 .filter(loadedDungeon -> loadedDungeon.getPlayers().contains(player)).findFirst();
     }
 
