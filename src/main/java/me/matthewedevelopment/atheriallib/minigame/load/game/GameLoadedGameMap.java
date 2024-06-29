@@ -100,24 +100,16 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
         }
 
         if (System.currentTimeMillis()> timeLeft && timeLeft!=0) {
-//            Bukkit.getServer().broadcastMessage("out of time");
+            Bukkit.getServer().broadcastMessage("out of time");
             end = true;
-            if (end) {
-//            Bukkit.getServer().broadcastMessage("Ended");
-                this.gameState = GameState.DONE;
-                GameStopEvent event = new GameStopEvent(this);
-                Bukkit.getPluginManager().callEvent(event);
-
-//                for (NameInfo player : players) {
-//                    Player player1 = player.toPlayer();
-//                    if (player1 != null) {
-//                        gameDungeonScoreboard.end(player1);
-//                    }
-//                }
-                GameMapRegistry.get().unloadAsync(this, () -> {
-                }, false);
-                return true;
-            }
+        }
+        if (end) {
+            this.gameState = GameState.DONE;
+            GameStopEvent event = new GameStopEvent(this);
+            Bukkit.getPluginManager().callEvent(event);
+            GameMapRegistry.get().unloadAsync(this, () -> {
+            }, false);
+            return true;
         }
         return false;
     }
