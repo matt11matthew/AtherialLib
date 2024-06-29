@@ -100,7 +100,6 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
         }
 
         if (System.currentTimeMillis()> timeLeft && timeLeft!=0) {
-            Bukkit.getServer().broadcastMessage("out of time");
             end = true;
         }
         if (end) {
@@ -157,7 +156,7 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
         GameStartEvent event = new GameStartEvent(this);
         Bukkit.getPluginManager().callEvent(event);
 
-        this.timeLeft = TimeUnit.MINUTES.toMinutes(getGameTimeMinutes())+System.currentTimeMillis();
+        this.timeLeft = TimeUnit.MINUTES.toMillis(getGameTimeMinutes())+System.currentTimeMillis();
 //        this.timeLeft = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1);
 
         timeStarted = System.currentTimeMillis()+1000L;
