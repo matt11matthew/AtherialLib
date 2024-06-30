@@ -373,6 +373,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
 
 
         this.dependencyManager.disableDependencies();
+        AtherialTasks.shutdown();
     }
 
 
