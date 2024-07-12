@@ -163,7 +163,7 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
 //        this.timeLeft = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1);
 
         timeStarted = System.currentTimeMillis()+1000L;
-
+        gameState=GameState.STARTED;
 
 
 
@@ -247,6 +247,7 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
     public void startCountDown() {
         countdown=true;
         onCountDownStart();
+
 
     }
 }
