@@ -32,7 +32,7 @@ public class SQLiteDatabaseTableManagerCustom implements DatabaseTableManagerCus
 
             if (tableExists) {
                 if (AtherialLib.getInstance().isDebug()){
-                    System.err.println("TABLE NOT EXISTS?");
+                    AtherialLib.getInstance().getLogger().info("TABLE NOT EXISTS?");
                 }
                 // Modify existing table (e.g., add new columns)
                 modifyExistingTable(statement, tableName, newCols);

@@ -177,7 +177,7 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
                     }
                 } else {
                     if (AtherialLib.getInstance().isDebug()){
-                        System.err.println("UPDATING " + username);
+                        AtherialLib.getInstance().getLogger().info("UPDATING " + username);
                     }
                     StringBuilder updateQuery = new StringBuilder("UPDATE ").append(getKey()).append(" SET ");
 
@@ -198,7 +198,7 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
                     updateQuery.append(" WHERE uuid = ?;");
 
                     if (AtherialLib.getInstance().isDebug()) {
-                        System.err.println(updateQuery);
+                        AtherialLib.getInstance().getLogger().info(updateQuery.toString());
                     }
 
 // Now you have the update query, and you can use it to update the existing row
@@ -260,7 +260,7 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
                     query.append(placeholders).append(";");
 
                     if (AtherialLib.getInstance().isDebug()){
-                        System.err.println(query);
+                        AtherialLib.getInstance().getLogger().info(query.toString());
                     }
 
 
@@ -297,7 +297,7 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
                     }
                 } else {
                     if (AtherialLib.getInstance().isDebug()){
-                        System.err.println("UPDATING " + username);
+                        AtherialLib.getInstance().getLogger().info("UPDATING " + username);
                     }
                     StringBuilder updateQuery = new StringBuilder("UPDATE ").append(getKey()).append(" SET ");
 
@@ -318,7 +318,7 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
                     updateQuery.append(" WHERE uuid = ?;");
 
                     if (AtherialLib.getInstance().isDebug()) {
-                        System.err.println(updateQuery);
+                        AtherialLib.getInstance().getLogger().info(updateQuery.toString());
                     }
 
 // Now you have the update query, and you can use it to update the existing row
@@ -363,7 +363,7 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
 
             if (statement!=null) {
                 if (AtherialLib.getInstance().isDebug()) {
-                    System.err.println(statement.toString());
+                    AtherialLib.getInstance().getLogger().info(statement.toString());
                 }
                 // Execute the query to save or update the data
                 statement.executeUpdate();
@@ -392,9 +392,9 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
 
                     if (AtherialLib.getInstance().isDebug()){
                         if (c){
-                            System.err.println("EXISTS " + uuid.toString());
+                            AtherialLib.getInstance().getLogger().info("EXISTS " + uuid.toString());
                         } else {
-                            System.err.println("DOESNT EXISTS " + uuid.toString());
+                            AtherialLib.getInstance().getLogger().info("DOESNT EXISTS " + uuid.toString());
 
                         }
                     }

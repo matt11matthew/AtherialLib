@@ -2,12 +2,15 @@ package me.matthewedevelopment.atheriallib.utilities;
 
 import org.bukkit.plugin.Plugin;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
 /**
  * Created by Matthew E on 12/6/2023 at 12:46 AM for the project AtherialLib
  */
 public class AtherialTasks {
     private static Plugin plugin;
-
+    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
     public static void setPlugin(Plugin plugin) {
         AtherialTasks.plugin = plugin;
     }
@@ -17,9 +20,14 @@ public class AtherialTasks {
         plugin.getServer().getScheduler().runTaskLater(plugin, task, time);
     }
 
+    public static void shutdown() {
+        scheduler.shutdown();
+    }
+
     public static void runAsync(Runnable task) {
         if (plugin == null) return;
-        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, task);
+//        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, task);
+        scheduler.execute(task);
     }
     public static void runSync(Runnable task) {
         if (plugin == null) return;

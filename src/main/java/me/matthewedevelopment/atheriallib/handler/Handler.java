@@ -19,7 +19,7 @@ public abstract class Handler<T extends JavaPlugin, C  extends YamlConfig> imple
     private HandlerPriority loadPriority;
 
     public abstract void onLoad();
-    private boolean enabled;
+    protected boolean enabled;
 
     public abstract void reload();
 

@@ -33,6 +33,9 @@ import me.matthewedevelopment.atheriallib.message.message.json.ActionBarMessageS
 import me.matthewedevelopment.atheriallib.message.message.json.ChatMessageSerializer;
 import me.matthewedevelopment.atheriallib.message.message.json.TitleJsonSerializer;
 import me.matthewedevelopment.atheriallib.message.title.AtherialTitle;
+import me.matthewedevelopment.atheriallib.minigame.GameMapHandler;
+import me.matthewedevelopment.atheriallib.minigame.load.edit.EditLoadedGameMap;
+import me.matthewedevelopment.atheriallib.minigame.load.game.GameLoadedGameMap;
 import me.matthewedevelopment.atheriallib.newcommand.AtherialLibDefaultCommandConfig;
 import me.matthewedevelopment.atheriallib.nms.Version;
 import me.matthewedevelopment.atheriallib.nms.VersionProvider;
@@ -41,6 +44,8 @@ import me.matthewedevelopment.atheriallib.playerdata.AtherialProfileManager;
 import me.matthewedevelopment.atheriallib.utilities.AtherialTasks;
 import me.matthewedevelopment.atheriallib.utilities.location.AtherialLocation;
 import me.matthewedevelopment.atheriallib.utilities.location.AtherialLocationSerializer;
+import me.matthewedevelopment.atheriallib.utilities.location.AtherialXYZLocation;
+import me.matthewedevelopment.atheriallib.utilities.location.AtherialXYZLocationSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.World;
@@ -84,11 +89,26 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     private MySqlHandler sqlHandler;
 
     private boolean disableSQLLogin = false;
+    private GameMapHandler gameHandler;
 
-//    public HandlerManager getHandlerManager() {
-//        return handlerManager;
-//    }
 
+
+    public void setupGame(String gameName, Class<? extends GameLoadedGameMap<?>> liveClass, Class<? extends
+            EditLoadedGameMap<?>> editClass, Class<?> gameMapDataClass) {
+        gameHandler =new GameMapHandler(this);
+        gameHandler.setGameName(gameName);
+        gameHandler.setEditClass(editClass);
+        gameHandler.setLiveClass(liveClass);
+        gameHandler.setGameDataClass(gameMapDataClass);
+
+        getLogger().info("=====================================");
+        getLogger().info("Setup game " + gameName);
+        getLogger().info("=====================================");
+
+        if (started){
+        gameHandler.start();
+        }
+    }
     public void setDisableSQLLogin(boolean disableSQLLogin) {
         this.disableSQLLogin = disableSQLLogin;
     }
@@ -157,6 +177,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     public void registerHandlers() {
 
     }
+    private boolean started = false;
     @Override
     public void onEnable() {
         initDependencies();
@@ -194,6 +215,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         atherialMenuRegistry = new AtherialMenuRegistry();
         atherialMenuRegistry.start();
 
+
         fastAtherialMenuRegistry=new FastAtherialMenuRegistry();
         fastAtherialMenuRegistry.start();
 
@@ -205,9 +227,12 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
 
 
         this.profileManager.load();
+        if (gameHandler!=null&&gameHandler.isSetup()) {
+            gameHandler.start();
+        }
 
 
-
+        started=true;
         if (debug) {
             Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
                 @Override
@@ -266,6 +291,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         CustomTypeRegistry.registerType(SelfCommandConfig.class, new SelfCommandConfigSerializer());
 
         CustomTypeRegistry.registerType(AtherialLocation.class, new AtherialLocationSerializer());
+        CustomTypeRegistry.registerType(AtherialXYZLocation.class, new AtherialXYZLocationSerializer());
 
         CustomTypeRegistry.registerType(AtherialSound.class, new AtherialSoundSerializer());
 
@@ -337,6 +363,9 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     public void onDisable() {
         profileManager.stop();
 //        handlerManager.disableHandlers();
+        if (gameHandler!=null&&gameHandler.isSetup()) {
+            gameHandler.stop();
+        }
         this.onStop();
         if (sqlHandler.isEnabled()) {
             sqlHandler.stop();
@@ -344,6 +373,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
 
 
         this.dependencyManager.disableDependencies();
+        AtherialTasks.shutdown();
     }
 
 
@@ -425,6 +455,10 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     }
 
     public abstract List<Class<? extends AtherialProfile>> getProfileClazzes();
+
+    public GameMapHandler getGameMapHandler() {
+        return gameHandler;
+    }
 
     public static final class ReflectCommand extends Command {
         public AtherialCommand spigotCommand;
