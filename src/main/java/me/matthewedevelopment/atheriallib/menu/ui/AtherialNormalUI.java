@@ -13,7 +13,6 @@ public class AtherialNormalUI <C extends YamlConfig>extends AtherialUI<C> {
     }
 
     public void display() {
-        Gui.gui(GuiType.CHEST)
-                .title(Com)
+     
     }
 }
