@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import spigui.buttons.SGButton;
 import spigui.menu.SGMenu;
 
+@Deprecated
 public abstract class FastAtherialMenu<C extends YamlConfig> {
     protected Player player;
     protected SGMenu menu;

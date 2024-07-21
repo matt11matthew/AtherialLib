@@ -77,8 +77,8 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     public abstract void onStop();
 
     private static AtherialLib instance;
-    private AtherialMenuRegistry atherialMenuRegistry;
-    private FastAtherialMenuRegistry fastAtherialMenuRegistry;
+    @Deprecated private AtherialMenuRegistry atherialMenuRegistry;
+    @Deprecated private FastAtherialMenuRegistry fastAtherialMenuRegistry;
     private SpiGUI menu;
     public abstract void initDependencies();
 

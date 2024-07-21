@@ -15,7 +15,7 @@ import spigui.menu.SGMenu;
 
 import java.util.Collections;
 import java.util.List;
-
+@Deprecated
 public abstract class AtherialMenu<C extends YamlConfig> {
     protected Player player;
     protected SGMenu menu;

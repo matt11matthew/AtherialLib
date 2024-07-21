@@ -13,7 +13,7 @@ package spigui.item;
  *
  * @author SamJakob
  * @version 2.0.0
- */
+ */@Deprecated
 public enum ItemDataColor {
 
     /** Value is 0. Use WHITE_WOOL for 1.13+ */

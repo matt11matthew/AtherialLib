@@ -6,7 +6,7 @@
 
     <groupId>me.matthewedevelopment</groupId>
     <artifactId>atheriallib</artifactId>
-    <version>0.36</version>
+    <version>1.0.0</version>
 <!--    <packaging>jar</packaging>-->
 
     <name>AtherialLib</name>
@@ -238,6 +238,12 @@
 <!--            <systemPath>${basedir}/lib/HeadDatabase-4.19.0.jar</systemPath>-->
         </dependency>
 
+        <dependency>
+            <groupId>dev.triumphteam</groupId>
+            <artifactId>triumph-gui</artifactId>
+            <version>3.1.10</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 </project>

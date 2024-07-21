@@ -3,7 +3,7 @@ package me.matthewedevelopment.atheriallib.menu.gui.events;
 import me.matthewedevelopment.atheriallib.menu.gui.AtherialMenu;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
+@Deprecated
 public class AtherialMenuCloseEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
 
