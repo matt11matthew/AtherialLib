@@ -37,6 +37,8 @@ public enum Version {
     public static Version getVersion() {
         String packageName = Bukkit.getServer().getClass().getPackage().getName();
         System.out.println(packageName);
+
+        System.err.println(VersionUtils.getVersionForLatest());
         for (Version minecraftVersion : Version.values()) {
             if (packageName.contains(minecraftVersion.toString().replaceAll("V", "").trim())) {
                 return minecraftVersion;
