@@ -353,7 +353,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
             } else {
                 this.nmsEnabled = true;
                 this.versionProvider = version.getVersionProviderClass().getConstructor(AtherialLib.class).newInstance(this);
-                this.getLogger().info("[NMSDependency] Loaded new NMS version " + this.versionProvider.getVersion().getVersionString());
+                this.getLogger().info("[NMSDependency] Loaded new NMS version " + this.versionProvider.getVersion().toString());
                 return true;
             }
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
