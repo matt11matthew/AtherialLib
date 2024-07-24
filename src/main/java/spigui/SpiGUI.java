@@ -3,6 +3,7 @@ package spigui;
 
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import spigui.*;
@@ -105,11 +106,14 @@ public class SpiGUI {
     public SpiGUI(JavaPlugin plugin) {
         this.plugin = plugin;
 
+        sgMenuListener= new SGMenuListener(plugin, this);
+
         plugin.getServer().getPluginManager().registerEvents(
-            new SGMenuListener(plugin, this), plugin
+           sgMenuListener, plugin
         );
     }
 
+    private SGMenuListener sgMenuListener;
     /**
      * An alias for {@link #create(String, int, String)} with the tag set to null.
      * Use this method if you don't need the tag, or you don't know what it's for.
@@ -269,4 +273,7 @@ public class SpiGUI {
 
     }
 
+    public void unregister() {
+        HandlerList.unregisterAll(sgMenuListener);
+    }
 }
