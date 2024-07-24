@@ -96,7 +96,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         menu.unregister();
 
     }
-    
+
     public void setupGame(String gameName, Class<? extends GameLoadedGameMap<?>> liveClass, Class<? extends
             EditLoadedGameMap<?>> editClass, Class<?> gameMapDataClass) {
         gameHandler =new GameMapHandler(this);
