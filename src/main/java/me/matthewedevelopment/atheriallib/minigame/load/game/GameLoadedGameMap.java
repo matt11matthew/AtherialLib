@@ -73,7 +73,9 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
 
     }
 
-    private boolean forceEnd = false;
+    public abstract boolean handleEndConditions();
+
+    protected boolean forceEnd = false;
 
     public boolean isForceEnd() {
         return forceEnd;
@@ -83,11 +85,8 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
         this.forceEnd = forceEnd;
     }
 
-    private boolean handleEndConditions() {
-//
-//        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-//
-//        }
+
+    public boolean defaultEndConditions() {
         boolean end = false;
 
         if (countdown){
@@ -105,14 +104,17 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
         }
         if (forceEnd) end = true;
         if (end) {
-            this.gameState = GameState.DONE;
-            GameStopEvent event = new GameStopEvent(this);
-            Bukkit.getPluginManager().callEvent(event);
-            GameMapRegistry.get().unloadAsync(this, () -> {
-            }, false);
+           stop();
             return true;
         }
         return false;
+    }
+    public void stop() {
+        this.gameState = GameState.DONE;
+        GameStopEvent event = new GameStopEvent(this);
+        Bukkit.getPluginManager().callEvent(event);
+        GameMapRegistry.get().unloadAsync(this, () -> {
+        }, false);
     }
 
     @Override
