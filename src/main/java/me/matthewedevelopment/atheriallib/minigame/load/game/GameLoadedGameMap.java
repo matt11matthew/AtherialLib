@@ -177,12 +177,18 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
 
 
 
+    public boolean isSpectator(UUID uuid){
+        return false;
+    }
 
 
     @Override
     public void onWorldLoad(World world) {
         getPlayers().forEach(player -> {
-            addPlayer(player);
+            if (!isSpectator(player.getUniqueId())) {
+                addPlayer(player);
+
+            }
         }); //Important
     }
 
