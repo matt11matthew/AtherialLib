@@ -88,7 +88,10 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
 
     public boolean defaultEndConditions() {
         boolean end = false;
-
+        if (forceEnd){
+            stop();
+            return true;
+        }
         if (countdown){
             if (isCountdownOver()) {
                 countdown=false;
@@ -102,7 +105,7 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
         if (System.currentTimeMillis()> timeLeft && timeLeft!=0) {
             end = true;
         }
-        if (forceEnd) end = true;
+
         if (end) {
            stop();
             return true;
