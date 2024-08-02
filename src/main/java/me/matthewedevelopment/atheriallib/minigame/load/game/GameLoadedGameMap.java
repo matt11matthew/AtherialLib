@@ -173,7 +173,7 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
 
     }
 
-    private long timeLeft = 0;
+    protected long timeLeft = 0;
 
 
 
