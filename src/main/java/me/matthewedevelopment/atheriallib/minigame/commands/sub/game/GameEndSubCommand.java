@@ -47,8 +47,8 @@ public class GameEndSubCommand extends  AtherialLibSelfSubCommand<AtherialLib, G
         final String name = loadedDungeon.getGameMap().getName();
         if (loadedDungeon instanceof GameLoadedGameMap) {
             ((GameLoadedGameMap) loadedDungeon).setForceEnd(true);
+            config.GAME_MAP_END_CMD_MSG.send(sender,s -> colorize(s).replace("%name%",name));
         }
-        config.GAME_MAP_END_CMD_MSG.send(sender,s -> colorize(s).replace("%name%",name));
 
     }
     @Override
