@@ -61,7 +61,7 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
     public void update() {
         if (getWorld()!=null) {
 
-            boolean b = handleEndConditions();
+            boolean b = defaultEndConditions();
             if (b) return;
         }
 
@@ -73,7 +73,7 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
 
     }
 
-    public abstract boolean handleEndConditions();
+//    public abstract boolean handleEndConditions();
 
     protected boolean forceEnd = false;
 
