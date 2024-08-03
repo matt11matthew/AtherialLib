@@ -171,10 +171,13 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
         gameState=GameState.STARTED;
 
 
+        handleStart();
 
 
 
     }
+
+    public abstract void handleStart();
 
     protected long timeLeft = 0;
 
