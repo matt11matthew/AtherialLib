@@ -141,7 +141,7 @@ public  abstract class LoadedGameMap<T extends LoadedGameMap<T>> {
         w.setStorm(false);
         w.setAutoSave(false);
         w.setKeepSpawnInMemory(false);
-        w.setPVP(false);
+//        w.setPVP(false);
         w.setGameRuleValue("randomTickSpeed", "0");
 
 

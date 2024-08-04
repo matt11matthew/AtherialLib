@@ -28,6 +28,7 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
     }
 
 
+    
 
     public GameLoadedGameMap(UUID dungeon, UUID sessionId, Class<T> clazz) {
         super(dungeon, sessionId, GameMapMode.LIVE, clazz);
@@ -116,9 +117,12 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
         this.gameState = GameState.DONE;
         GameStopEvent event = new GameStopEvent(this);
         Bukkit.getPluginManager().callEvent(event);
+        onEnd();
         GameMapRegistry.get().unloadAsync(this, () -> {
         }, false);
     }
+
+    public abstract void onEnd();
 
     @Override
     public void fastUpdate() {
@@ -136,7 +140,7 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
     }
 
     public void removePlayer(Player player, boolean death) {
-        GameMapConfig config =  GameMapConfig.get();
+//        GameMapConfig config =  GameMapConfig.get();
        onSessionEnd(player);
         if (players.contains(NameInfo.of(player))){
 
