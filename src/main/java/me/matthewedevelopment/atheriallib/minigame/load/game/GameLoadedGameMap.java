@@ -28,7 +28,7 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
     }
 
 
-    
+
 
     public GameLoadedGameMap(UUID dungeon, UUID sessionId, Class<T> clazz) {
         super(dungeon, sessionId, GameMapMode.LIVE, clazz);
