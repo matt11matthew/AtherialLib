@@ -15,8 +15,8 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends LoadedGameMap<T> {
-    private GameState gameState;
-    private HashSet<NameInfo> players;
+    protected GameState gameState;
+    protected HashSet<NameInfo> players;
 
     public  HashSet<NameInfo> getPlayerSet() {
         return players;
