@@ -46,7 +46,7 @@ public class GameSaveSubCommand extends  AtherialLibSelfSubCommand<AtherialLib, 
             return;
         }
         EditLoadedGameMap editLoadedDungeon = dungeonRegistry.getEditingGame(args[0]);
-
+        editLoadedDungeon.save();
         dungeonRegistry.unloadAsync(editLoadedDungeon,() -> {
             config.GAME_MAP_SAVE_MSG.send(sender,s -> colorize(s).replace("%name%", args[0]));
         }, false);

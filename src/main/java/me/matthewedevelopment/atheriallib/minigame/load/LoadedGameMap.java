@@ -157,6 +157,7 @@ public  abstract class LoadedGameMap<T extends LoadedGameMap<T>> {
 
     public void save() {
 
+        getGameMap().save();
     }
 
     public void unload() {
