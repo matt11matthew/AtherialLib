@@ -23,7 +23,7 @@ public class ArenaUtils {
         return xDifference == zDifference;
     }
 
-    public static boolean inBounds(AtherialXYZLocation pos1, AtherialXYZLocation pos2, AtherialXYZLocation location) {
+    public static boolean inBounds(AtherialXYZLocation pos1, AtherialXYZLocation pos2, Location location) {
         // Determine the min and max coordinates for each axis
         double minX = Math.min(pos1.getX(), pos2.getX());
         double maxX = Math.max(pos1.getX(), pos2.getX());

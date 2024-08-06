@@ -82,12 +82,19 @@ public class MySQLDatabaseTableManagerCustom implements DatabaseTableManagerCust
     }
 
 
-    public  void addColumnToTable(Statement statement, String tableName, DataColumn column) throws SQLException {
-        // Use MySQL-specific SQL syntax to add a new column to the table
+    public void addColumnToTable(Statement statement, String tableName, DataColumn column) throws SQLException {
+        // Use MySQL-specific SQL syntax to add a new column to the table with a default value
         String query = "ALTER TABLE " + tableName + " ADD COLUMN " + column.getName() + " " + column.getTypeToString();
-        if (AtherialLib.getInstance().isDebug()){
+
+        // Check if the column has a default value and add it to the query
+        if (column.getValue() != null) {
+            query += " DEFAULT " + column.getValue();
+        }
+
+        if (AtherialLib.getInstance().isDebug()) {
             AtherialLib.getInstance().getLogger().info(query);
         }
+
         statement.execute(query);
     }
 }
