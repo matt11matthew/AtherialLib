@@ -53,14 +53,15 @@ public class ArenaUtils {
 
         // Generate random coordinates within the bounds
         double x = minX + (maxX - minX) * random.nextDouble();
-        double y = maxY; // Start with the highest Y
+        double y = minY; // Start with the lowest Y
         double z = minZ + (maxZ - minZ) * random.nextDouble();
 
         // Ensure the random position is in a safe location (find the lowest block)
         World world = player.getWorld();
         Location randomLocation = new Location(world, x, y, z);
-        int highestY = world.getHighestBlockYAt(randomLocation);
-        for (int currentY = highestY; currentY > world.getMinHeight(); currentY--) {
+
+        // Check from the lowest point upwards for a safe block
+        for (int currentY = (int) minY; currentY <= maxY; currentY++) {
             Location checkLocation = new Location(world, x, currentY, z);
             if (!world.getBlockAt(checkLocation).isEmpty()) {
                 // Set Y to one block above the lowest non-air block
@@ -72,6 +73,7 @@ public class ArenaUtils {
         // Teleport the player
         player.teleport(randomLocation);
     }
+
 
     public static AtherialXYZLocation getCenter(AtherialXYZLocation pos1, AtherialXYZLocation pos2) {
         // Calculate the center point by averaging the coordinates
