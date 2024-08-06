@@ -149,7 +149,12 @@ public  abstract class LoadedGameMap<T extends LoadedGameMap<T>> {
         this.world = w;
 
     }
+    public void sendTitle(String text, String subTitle, int fadeIn, int stay, int fadeOut) {
+        for (Player player : getPlayers()) {
+            player.sendTitle(ChatUtils.colorize(player, text),ChatUtils.colorize(player, subTitle),fadeIn,stay,fadeOut);
 
+        }
+    }
 
     public String getWorldName() {
        return "MAP_"+sessionId.toString().replaceAll("-","").trim();
