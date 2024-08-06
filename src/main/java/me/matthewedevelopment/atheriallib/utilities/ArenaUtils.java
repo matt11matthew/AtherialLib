@@ -23,6 +23,23 @@ public class ArenaUtils {
         return xDifference == zDifference;
     }
 
+    public static boolean inBounds(AtherialXYZLocation pos1, AtherialXYZLocation pos2, AtherialXYZLocation location) {
+        // Determine the min and max coordinates for each axis
+        double minX = Math.min(pos1.getX(), pos2.getX());
+        double maxX = Math.max(pos1.getX(), pos2.getX());
+        double minY = Math.min(pos1.getY(), pos2.getY());
+        double maxY = Math.max(pos1.getY(), pos2.getY());
+        double minZ = Math.min(pos1.getZ(), pos2.getZ());
+        double maxZ = Math.max(pos1.getZ(), pos2.getZ());
+
+        // Check if the location is within the bounds
+        double x = location.getX();
+        double y = location.getY();
+        double z = location.getZ();
+
+        return x >= minX && x <= maxX && y >= minY && y <= maxY && z >= minZ && z <= maxZ;
+    }
+
     private static Random random = new Random();
 
     public static void randomTeleport(Player player, AtherialXYZLocation pos1, AtherialXYZLocation pos2) {
@@ -36,13 +53,21 @@ public class ArenaUtils {
 
         // Generate random coordinates within the bounds
         double x = minX + (maxX - minX) * random.nextDouble();
-        double y = minY + (maxY - minY) * random.nextDouble();
+        double y = maxY; // Start with the highest Y
         double z = minZ + (maxZ - minZ) * random.nextDouble();
 
-        // Ensure the random position is in a safe location (e.g., above ground)
+        // Ensure the random position is in a safe location (find the lowest block)
         World world = player.getWorld();
         Location randomLocation = new Location(world, x, y, z);
-        randomLocation.setY(world.getHighestBlockYAt(randomLocation) + 1); // Set Y to the top block's height + 1
+        int highestY = world.getHighestBlockYAt(randomLocation);
+        for (int currentY = highestY; currentY > world.getMinHeight(); currentY--) {
+            Location checkLocation = new Location(world, x, currentY, z);
+            if (!world.getBlockAt(checkLocation).isEmpty()) {
+                // Set Y to one block above the lowest non-air block
+                randomLocation.setY(currentY + 1);
+                break;
+            }
+        }
 
         // Teleport the player
         player.teleport(randomLocation);
