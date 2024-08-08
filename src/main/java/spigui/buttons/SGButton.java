@@ -14,7 +14,7 @@ import java.util.Objects;
  * This somewhat resembles the point-and-click nature of Graphical User Interfaces (GUIs)
  * popularized by Operating Systems developed in the late 80s and 90s which is where the
  * name of the concept in Spigot plugins was derived.
- */
+ */@Deprecated
 public class SGButton {
 
     /** The on-click handler for this button. */

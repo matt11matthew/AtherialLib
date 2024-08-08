@@ -11,6 +11,7 @@ import java.util.*;
 /**
  * Created by Matthew E on 1/11/2024 at 3:01 PM for the project MazeServer-Clans
  */
+@Deprecated
 public class AtherialMenuRegistry {
     private  Map<UUID, AtherialMenu> menuHashMap = new HashMap<>();
 

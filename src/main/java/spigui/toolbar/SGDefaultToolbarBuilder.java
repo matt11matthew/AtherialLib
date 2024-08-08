@@ -18,6 +18,7 @@ import org.bukkit.event.Event;
  * (or to use it for a specific menu, pass it to
  * {@link SGMenu#setToolbarBuilder(spigui.toolbar.SGToolbarBuilder)}).
  */
+@Deprecated
 public class SGDefaultToolbarBuilder implements SGToolbarBuilder {
 
     @Override

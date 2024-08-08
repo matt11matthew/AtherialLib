@@ -25,7 +25,7 @@ import java.util.Set;
  * You must register this class as an event listener in your plugin's
  * <code>onEnable</code> method by initializing SpiGUI there and passing
  * your plugin instance to SpiGUI's constructor.
- */
+ */@Deprecated
 public class SGMenuListener implements Listener {
 
     /**

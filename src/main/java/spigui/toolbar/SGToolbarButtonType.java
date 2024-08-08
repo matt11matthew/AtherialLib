@@ -10,6 +10,7 @@ import java.util.stream.Stream;
  * These can be used to easily re-define the buttons used in a toolbar, without
  * creating an entirely custom toolbar implementation.
  */
+@Deprecated
 public enum SGToolbarButtonType {
 
     /** The "previous page" pagination button. */

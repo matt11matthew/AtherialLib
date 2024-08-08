@@ -282,6 +282,52 @@ public class GameMapRegistry extends DataObjectRegistry<GameMap> {
         }
         return null;
     }
+
+
+    public boolean startAdminGame( String name) {
+        GameMap byName = getByName(name);
+        if (byName!=null){
+            GameMap gameMap = map.get(byName.getUUID());
+            if (gameMap.getLobbySpawn()==null){
+//                if (player!=null) {
+//                    config.GAME_MAP_NOT_READY.send(player);
+//                }
+                return false;
+            }
+
+
+            GameLoadedGameMap gameLoadedDungeon=null;
+            try {
+
+                gameLoadedDungeon = (GameLoadedGameMap)GameMapHandler.get().getLiveClass().getConstructor(UUID.class, UUID.class).newInstance(gameMap.getUUID(), UUID.randomUUID());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (gameLoadedDungeon==null)return false;
+
+//            GameLoadedGameMap gameLoadedDungeon = new GameLoadedGameMap(gameMap.getUUID(), UUID.randomUUID());
+            gameLoadedDungeon.setGameState(GameState.LOBBY);
+//            Bukkit.getServer().broadcastMessage(colorize(config.OPEN).replace("%name%", gameMap.getName()));
+
+            uuidLoadedGameMapMap.put(gameLoadedDungeon.getSessionId(),gameLoadedDungeon);
+            GameLobbyOpenEvent gameLobbyOpenEvent =new GameLobbyOpenEvent(gameLoadedDungeon);
+            Bukkit.getPluginManager().callEvent(gameLobbyOpenEvent);
+//
+//            GameEnterEvent gameEnterEvent =new GameEnterEvent(player, gameLoadedDungeon);
+//            Bukkit.getPluginManager().callEvent(gameEnterEvent);
+            gameLoadedDungeon.loadAsync(loadedDungeon -> {
+                GameLoadedGameMap editLoadedGameMap = (GameLoadedGameMap) loadedDungeon;
+                editLoadedGameMap.onLobbyOpen();
+                editLoadedGameMap.startCountDown();
+//                if (player!=null){
+//                    player.teleport(editLoadedGameMap.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+//                }
+
+            });
+        }
+        return true;
+    }
+
     public void startGame(Player player, String name) {
         GameMap byName = getByName(name);
         if (byName!=null){

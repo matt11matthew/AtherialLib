@@ -11,6 +11,7 @@ import spigui.toolbar.SGToolbarButtonType;
  * for an {@link SGMenu}. This can be customized to render different pagination
  * items, etc., for a GUI.
  */
+@Deprecated
 public interface SGToolbarBuilder {
 
     /**

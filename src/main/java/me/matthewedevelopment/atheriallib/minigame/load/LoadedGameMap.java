@@ -141,7 +141,7 @@ public  abstract class LoadedGameMap<T extends LoadedGameMap<T>> {
         w.setStorm(false);
         w.setAutoSave(false);
         w.setKeepSpawnInMemory(false);
-        w.setPVP(false);
+//        w.setPVP(false);
         w.setGameRuleValue("randomTickSpeed", "0");
 
 
@@ -149,7 +149,12 @@ public  abstract class LoadedGameMap<T extends LoadedGameMap<T>> {
         this.world = w;
 
     }
+    public void sendTitle(String text, String subTitle, int fadeIn, int stay, int fadeOut) {
+        for (Player player : getPlayers()) {
+            player.sendTitle(ChatUtils.colorize(player, text),ChatUtils.colorize(player, subTitle),fadeIn,stay,fadeOut);
 
+        }
+    }
 
     public String getWorldName() {
        return "MAP_"+sessionId.toString().replaceAll("-","").trim();
@@ -157,6 +162,7 @@ public  abstract class LoadedGameMap<T extends LoadedGameMap<T>> {
 
     public void save() {
 
+        getGameMap().save();
     }
 
     public void unload() {

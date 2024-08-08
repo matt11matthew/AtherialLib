@@ -4,7 +4,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 /**
  * Holds the event handler for an SGButton.
- */
+ */@Deprecated
 public interface SGButtonListener {
 
     /**

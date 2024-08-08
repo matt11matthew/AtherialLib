@@ -29,7 +29,7 @@ import java.util.function.Consumer;
  * This creates an inventory that is already associated with your plugin.
  * The reason for this is explained in the {@link SpiGUI#SpiGUI(JavaPlugin)}
  * class constructor implementation notes.
- */
+ */@Deprecated
 public class SGMenu implements InventoryHolder {
 
     /** The plugin (owner of the SpiGUI instance) that created this inventory. */

@@ -28,7 +28,7 @@ import java.util.function.Predicate;
  * @author SamJakob
  * @version 2.0.0
  * @see ItemStack
- */
+ */@Deprecated
 public class ItemBuilder {
 
     /** The internal ItemStack object that this class wraps. */

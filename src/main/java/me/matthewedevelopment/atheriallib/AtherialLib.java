@@ -77,8 +77,8 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     public abstract void onStop();
 
     private static AtherialLib instance;
-    private AtherialMenuRegistry atherialMenuRegistry;
-    private FastAtherialMenuRegistry fastAtherialMenuRegistry;
+    @Deprecated private AtherialMenuRegistry atherialMenuRegistry;
+    @Deprecated private FastAtherialMenuRegistry fastAtherialMenuRegistry;
     private SpiGUI menu;
     public abstract void initDependencies();
 
@@ -92,6 +92,10 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     private GameMapHandler gameHandler;
 
 
+    public void disableSpiGui() {
+        menu.unregister();
+
+    }
 
     public void setupGame(String gameName, Class<? extends GameLoadedGameMap<?>> liveClass, Class<? extends
             EditLoadedGameMap<?>> editClass, Class<?> gameMapDataClass) {
@@ -349,7 +353,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
             } else {
                 this.nmsEnabled = true;
                 this.versionProvider = version.getVersionProviderClass().getConstructor(AtherialLib.class).newInstance(this);
-                this.getLogger().info("[NMSDependency] Loaded new NMS version " + this.versionProvider.getVersion().getVersionString());
+                this.getLogger().info("[NMSDependency] Loaded new NMS version " + this.versionProvider.getVersion().toString());
                 return true;
             }
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {

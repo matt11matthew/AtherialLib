@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 
 /**
  * Used to refer to a player's "viewing session" of a given menu.
- */
+ */@Deprecated
 public class SGOpenMenu {
 
     /** The {@link spigui.menu.SGMenu} that is currently open. */
