@@ -1,11 +1,10 @@
 package me.matthewedevelopment.atheriallib.minigame.load.game;
 
-import me.matthewedevelopment.atheriallib.minigame.GameMapConfig;
 import me.matthewedevelopment.atheriallib.minigame.GameMapRegistry;
-import me.matthewedevelopment.atheriallib.minigame.load.GameMapMode;
-import me.matthewedevelopment.atheriallib.minigame.load.LoadedGameMap;
 import me.matthewedevelopment.atheriallib.minigame.events.GameStartEvent;
 import me.matthewedevelopment.atheriallib.minigame.events.GameStopEvent;
+import me.matthewedevelopment.atheriallib.minigame.load.GameMapMode;
+import me.matthewedevelopment.atheriallib.minigame.load.LoadedGameMap;
 import me.matthewedevelopment.atheriallib.playerdata.io.NameInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -42,13 +41,6 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
     }
 
 
-//    public static <T extends LoadedGameMap<T>> Optional<T> getCurrentGameDungeon(Player player, Class<T > clazz) {
-//       return (Optional<T>) GameMapRegistry.get().getLoadedDungeonMap().values()
-//                .stream()
-//               .filter(loadedGameMap -> loadedGameMap.getClazz().getSimpleName().equals(clazz.getSimpleName()))
-//                .filter(loadedDungeon -> loadedDungeon.getGameMapMode() == GameMapMode.EDIT)
-//                .filter(loadedDungeon -> loadedDungeon.getPlayers().contains(player)).findFirst();
-//    }
   public static Optional<LoadedGameMap> getCurrentGameMap(Player player) {
        return  GameMapRegistry.get().getUuidLoadedGameMapMap().values()
                 .stream()
@@ -73,8 +65,6 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
 
 
     }
-
-//    public abstract boolean handleEndConditions();
 
     protected boolean forceEnd = false;
 
@@ -113,6 +103,7 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
         }
         return false;
     }
+
     public void stop() {
         this.gameState = GameState.DONE;
         GameStopEvent event = new GameStopEvent(this);
@@ -124,10 +115,6 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
 
     public abstract void onEnd();
 
-    @Override
-    public void fastUpdate() {
-//        sendActionBars();
-    }
 
 
     public boolean isStarted() {
@@ -148,10 +135,8 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
             if (!death) {
 
                 onLeave(NameInfo.of(player), false);
-//                sendMessage(colorize(config.D_GAME_P_LEAVE).replace("%player%", player.getName()));
             } else {
                 onLeave(NameInfo.of(player), true);
-//                sendMessage(colorize(config.D_GAME_P_LEAVE_DEATH).replace("%player%", player.getName()));
 
             }
 
@@ -169,7 +154,6 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
         Bukkit.getPluginManager().callEvent(event);
 
         this.timeLeft = TimeUnit.MINUTES.toMillis(getGameTimeMinutes())+System.currentTimeMillis();
-//        this.timeLeft = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1);
 
         timeStarted = System.currentTimeMillis()+1000L;
         gameState=GameState.STARTED;
@@ -199,7 +183,7 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
                 addPlayer(player);
 
             }
-        }); //Important
+        });
     }
 
 
@@ -222,10 +206,6 @@ public abstract class GameLoadedGameMap<T extends LoadedGameMap<T>> extends Load
             removePlayer(p,false);
         }
 
-
-//        for (Player player : getPlayers()) {
-//            gameDungeonScoreboard.checkBoard(player);
-//        }
 
         for (NameInfo nameInfo : otherRemoveList) {
             if (players.contains(nameInfo)){
