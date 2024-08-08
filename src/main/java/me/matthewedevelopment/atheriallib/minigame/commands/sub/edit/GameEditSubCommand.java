@@ -37,10 +37,7 @@ public class GameEditSubCommand extends  AtherialLibSelfSubCommand<AtherialLib, 
 
         GameMapRegistry dungeonRegistry = GameMapRegistry.get();
 
-        if (dungeonRegistry.getUuidLoadedGameMapMap().keySet().size()>=config.MAX_GAMES) {
-            config.MAX_GAMES_RUNNING.send(sender,s -> colorize(s).replace("%name%", args[0]));
-            return;
-        }
+
 
         if (!dungeonRegistry.isGameMap(args[0])){
             config.GAME_MAP_DOESNT_EXISTS.send(sender,s -> colorize(s).replace("%name%", args[0]));
@@ -56,6 +53,11 @@ public class GameEditSubCommand extends  AtherialLibSelfSubCommand<AtherialLib, 
             ((Player) sender).teleport(editLoadedDungeon.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
             return;
         }
+        if (dungeonRegistry.getUuidLoadedGameMapMap().keySet().size()>=config.MAX_GAMES) {
+            config.MAX_GAMES_RUNNING.send(sender,s -> colorize(s).replace("%name%", args[0]));
+            return;
+        }
+
         config.GAME_MAP_EDIT_MSG.send(sender,s -> colorize(s).replace("%name%", args[0]));
 
         dungeonRegistry.editGameMap(player,args[0]);
