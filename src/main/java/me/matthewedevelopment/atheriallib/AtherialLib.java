@@ -28,9 +28,11 @@ import me.matthewedevelopment.atheriallib.menu.gui.AtherialMenuRegistry;
 import me.matthewedevelopment.atheriallib.menu.gui.speed.FastAtherialMenuRegistry;
 import me.matthewedevelopment.atheriallib.message.message.ActionBarMessage;
 import me.matthewedevelopment.atheriallib.message.message.ChatMessage;
+import me.matthewedevelopment.atheriallib.message.message.ChatMessages;
 import me.matthewedevelopment.atheriallib.message.message.MessageTitle;
 import me.matthewedevelopment.atheriallib.message.message.json.ActionBarMessageSerializer;
 import me.matthewedevelopment.atheriallib.message.message.json.ChatMessageSerializer;
+import me.matthewedevelopment.atheriallib.message.message.json.ChatMessagesSerializer;
 import me.matthewedevelopment.atheriallib.message.message.json.TitleJsonSerializer;
 import me.matthewedevelopment.atheriallib.message.title.AtherialTitle;
 import me.matthewedevelopment.atheriallib.minigame.GameMapHandler;
@@ -284,6 +286,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         CustomTypeRegistry.registerType(ActionBarMessage.class, new ActionBarMessageSerializer());
         CustomTypeRegistry.registerType(MessageTitle.class, new TitleJsonSerializer());
         CustomTypeRegistry.registerType(ChatMessage.class, new ChatMessageSerializer());
+        CustomTypeRegistry.registerType(ChatMessages.class, new ChatMessagesSerializer());
 
 
         CustomTypeRegistry.registerType(IntSimpleList.class, new IntSimpleListSerializer());
