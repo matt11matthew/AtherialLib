@@ -2,6 +2,7 @@ package me.matthewedevelopment.atheriallib.menu.ui;
 
 import dev.triumphteam.gui.guis.Gui;
 import me.matthewedevelopment.atheriallib.config.yaml.YamlConfig;
+import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.List;
@@ -9,10 +10,18 @@ import java.util.List;
 public abstract  class AtherialUI<C extends YamlConfig> {
     protected C c;
     protected Gui menu;
-
-    public AtherialUI(C c) {
+    protected UIInformation information;
+    public AtherialUI(C c, UIInformation information) {
         this.c = c;
+        this.information = information;
     }
+
+    public abstract void createGUI(Player p);
+
+    public abstract void open(Player p);
+
+    public abstract void update(Player p);
+
 
     public  <E> List<E> getPageItems(List<E> allItems, int amountPerPage, int currentPage) {
         if (amountPerPage <= 0) {

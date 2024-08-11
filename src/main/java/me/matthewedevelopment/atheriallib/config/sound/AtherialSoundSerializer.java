@@ -14,7 +14,8 @@ public class AtherialSoundSerializer implements ConfigSerializable<AtherialSound
         String sound = (String) map.get("sound");
         float pitch = Float.parseFloat(String.valueOf((double) map.get("pitch")));
         float volume = Float.parseFloat(String.valueOf((double) map.get("volume")));
-        return new AtherialSound(sound, volume,pitch);
+        boolean enabled = map.containsKey("enabled")? (boolean) map.get("enabled") :true;
+        return new AtherialSound(sound, volume,pitch, enabled);
     }
 
     @Override
@@ -22,8 +23,12 @@ public class AtherialSoundSerializer implements ConfigSerializable<AtherialSound
         Map<String, Object> map =new HashMap<>();
         map.put("sound", object.getSound());
         map.put("volume", object.getVolume());
+
         map.put("pitch", object.getPitch());
 
+        if (!object.isEnabled()){
+            map.put("enabled", false);
+        }
         return map;
     }
 
