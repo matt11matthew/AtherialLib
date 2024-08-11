@@ -1,7 +1,10 @@
 package me.matthewedevelopment.atheriallib.menu;
 
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import me.matthewedevelopment.atheriallib.AtherialLib;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -13,6 +16,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
@@ -65,7 +69,22 @@ public class HotBarListener  implements Listener {
 
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
-        if (HotBarMenu.hasHotBar(event.getPlayer()))event.setCancelled(true);
+        if (HotBarMenu.hasHotBar(event.getPlayer())) {
+            Item itemDrop = event.getItemDrop();
+            if (itemDrop==null)return;
+            ItemStack itemStack = itemDrop.getItemStack();
+            if (itemStack==null||itemStack.getType()== Material.AIR)return;
+
+            NBTItem nbtItem = new NBTItem(itemStack);
+            if (nbtItem==null)return;
+            if (!nbtItem.hasNBTData())return;
+
+            if (!nbtItem.hasTag("hot_bar_item"))return;
+
+            event.setCancelled(true);
+
+
+        }
     }
 
     @EventHandler
@@ -94,8 +113,8 @@ public class HotBarListener  implements Listener {
                 return;
             }
 
-            addDelay(event.getPlayer(), 500L);
-            Optional<Block> blockOptional =(event.getAction()== Action.RIGHT_CLICK_BLOCK||event.getAction()==Action.LEFT_CLICK_BLOCK)? Optional.ofNullable(event.getClickedBlock()) : Optional.empty();
+            addDelay(event.getPlayer(), 200L);
+            Optional<Block> blockOptional = (event.getAction()== Action.RIGHT_CLICK_BLOCK||event.getAction()==Action.LEFT_CLICK_BLOCK)? Optional.ofNullable(event.getClickedBlock()) : Optional.empty();
             boolean on = orDefault.on(event.getPlayer(), hotBarMenu, slotMap.get(event.getPlayer().getUniqueId()), clickType, blockOptional);
             if (!on){
                 event.setCancelled(false);

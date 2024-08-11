@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
-
+import de.tr7zw.changeme.nbtapi.NBTItem;
 public class HotBarMenu {
     private String name;
     private Map<Integer, ItemStack> itemMap;
@@ -25,8 +25,14 @@ public class HotBarMenu {
     public Map<Integer, OnHotBarAction> getActionMap() {
         return actionMap;
     }
+
+
     public HotBarMenu set(int slot, ItemStack itemStack, OnHotBarAction onHotBarAction) {
-        itemMap.put(slot,itemStack);
+
+        NBTItem nbtItem = new NBTItem(itemStack);
+
+        nbtItem.setBoolean("hot_bar_item", true);
+        itemMap.put(slot,nbtItem.getItem());
         actionMap.put(slot, onHotBarAction);
         return this;
     }
@@ -36,6 +42,7 @@ public class HotBarMenu {
             hiddenList.remove(slot);
         }
     }
+
     public void hide(Integer slot) {
         if (hiddenList.contains(slot))return;
         hiddenList.add(slot);

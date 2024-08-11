@@ -74,11 +74,20 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
-
+        <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
+            <layout>default</layout>
+        </repository>
     </repositories>
 
     <dependencies>
-
+        <dependency>
+        <groupId>de.tr7zw</groupId>
+        <artifactId>item-nbt-api</artifactId>
+        <version>2.12.2</version>
+        <scope>compile</scope>
+    </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
@@ -96,6 +105,7 @@
             <groupId>net.kyori</groupId>
             <artifactId>adventure-api</artifactId>
             <version>4.15.0</version>
+            <scope>compile</scope>
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>mysql</groupId>-->
@@ -135,13 +145,7 @@
             <systemPath>${basedir}/lib/Spigot-1.8.8.jar</systemPath>
             <version>1.8</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>spigot120</groupId>-->
-<!--            <artifactId>spigot120</artifactId>-->
-<!--            <scope>system</scope>-->
-<!--            <systemPath>${basedir}/lib/spigot-1.20.2-R0.1-SNAPSHOT.jar</systemPath>-->
-<!--            <version>spigot120</version>-->
-<!--        </dependency>-->
+
 
         <dependency>
             <groupId>spigot1.14</groupId>
@@ -244,6 +248,7 @@
             <version>3.1.10</version>
             <scope>compile</scope>
         </dependency>
+
 
     </dependencies>
 </project>
