@@ -21,6 +21,8 @@ import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.seriali
 import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.serializer.StringSimpleListSerializer;
 import me.matthewedevelopment.atheriallib.database.mysql.MySqlHandler;
 import me.matthewedevelopment.atheriallib.dependency.DependencyManager;
+import me.matthewedevelopment.atheriallib.discord.DiscordEmbed;
+import me.matthewedevelopment.atheriallib.discord.DiscordEmbedSerializable;
 import me.matthewedevelopment.atheriallib.item.AtherialItemAPI;
 import me.matthewedevelopment.atheriallib.item.AtherialItemBuilder;
 import me.matthewedevelopment.atheriallib.menu.HotBarListener;
@@ -301,6 +303,8 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         CustomTypeRegistry.registerType(AtherialXYZLocation.class, new AtherialXYZLocationSerializer());
 
         CustomTypeRegistry.registerType(AtherialSound.class, new AtherialSoundSerializer());
+
+        CustomTypeRegistry.registerType(DiscordEmbed.class, new DiscordEmbedSerializable());
 
     }
 
