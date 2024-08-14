@@ -84,7 +84,7 @@ public class PlayerAtherialLocation {
 
     public Location toLocation(String world) {
 
-        return new Location(Bukkit.getWorld(world),x,y,z,pitch,yaw);
+        return new Location(Bukkit.getWorld(world),x,y,z,yaw,pitch);
     }
 
     public String toFancyString() {
