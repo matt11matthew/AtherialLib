@@ -16,6 +16,40 @@ public class TimeUtils {
         final int ms = ticks * 50;
         return formatMsTime(ms);
     }
+
+    public static String formatLongTime(long time) {
+        if (time == 0) {
+            return "0s";
+        }
+
+        long day = TimeUnit.MILLISECONDS.toDays(time);
+        long hours = TimeUnit.MILLISECONDS.toHours(time) - (day * 24);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(time) - (TimeUnit.MILLISECONDS.toHours(time) * 60);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(time) - (TimeUnit.MILLISECONDS.toMinutes(time) * 60);
+
+        StringBuilder sb = new StringBuilder();
+
+        if (day > 0) {
+            sb.append(day).append("d").append(" ");
+        }
+
+        if (hours > 0) {
+            sb.append(hours).append(hours == 1 ? "h" : "h").append(" ");
+        }
+
+        if (minutes > 0) {
+            sb.append(minutes).append(minutes == 1 ? "m" : "m").append(" ");
+        }
+
+        if (seconds > 0) {
+            sb.append(seconds).append(seconds == 1 ? "s" : "s");
+        }
+
+        String diff = sb.toString();
+
+        return diff.isEmpty() ? "N/A" : diff;
+    }
+
     public static String formatLongTime(long time, String numColor, String letterColor) {
         if (time == 0) {
             return "0s";
