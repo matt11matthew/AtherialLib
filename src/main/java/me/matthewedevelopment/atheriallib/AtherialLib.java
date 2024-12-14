@@ -281,30 +281,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     public abstract void registerTypes();
 
     private void defaultRegisterTypes() {
-        CustomTypeRegistry.registerType(AtherialItemBuilder.class, new AtherialItemBuilderSerializable());
-        CustomTypeRegistry.registerType(AtherialLibItem.class, new AtherialLibItemSerializable());
-
-
-        CustomTypeRegistry.registerType(ActionBarMessage.class, new ActionBarMessageSerializer());
-        CustomTypeRegistry.registerType(MessageTitle.class, new TitleJsonSerializer());
-        CustomTypeRegistry.registerType(ChatMessage.class, new ChatMessageSerializer());
-        CustomTypeRegistry.registerType(ChatMessages.class, new ChatMessagesSerializer());
-
-
-        CustomTypeRegistry.registerType(IntSimpleList.class, new IntSimpleListSerializer());
-        CustomTypeRegistry.registerType(DoubleSimpleList.class, new DoubleSimpleListSerializer());
-        CustomTypeRegistry.registerType(StringSimpleList.class, new StringSimpleListSerializer());
-
-
-        CustomTypeRegistry.registerType(SelfCommandConfig.Usage.class, new UsageSerializer());
-        CustomTypeRegistry.registerType(SelfCommandConfig.class, new SelfCommandConfigSerializer());
-
-        CustomTypeRegistry.registerType(AtherialLocation.class, new AtherialLocationSerializer());
-        CustomTypeRegistry.registerType(AtherialXYZLocation.class, new AtherialXYZLocationSerializer());
-
-        CustomTypeRegistry.registerType(AtherialSound.class, new AtherialSoundSerializer());
-
-        CustomTypeRegistry.registerType(DiscordEmbed.class, new DiscordEmbedSerializable());
+        CustomTypeRegistry.init();
 
     }
 
