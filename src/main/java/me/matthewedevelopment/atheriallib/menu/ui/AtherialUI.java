@@ -1,6 +1,6 @@
 package me.matthewedevelopment.atheriallib.menu.ui;
 
-import dev.triumphteam.gui.guis.Gui;
+//import dev.triumphteam.gui.guis.Gui;
 import me.matthewedevelopment.atheriallib.config.yaml.YamlConfig;
 import org.bukkit.entity.Player;
 
@@ -9,7 +9,7 @@ import java.util.List;
 
 public abstract  class AtherialUI<C extends YamlConfig> {
     protected C c;
-    protected Gui menu;
+//    protected Gui menu;
     protected UIInformation information;
     public AtherialUI(C c, UIInformation information) {
         this.c = c;

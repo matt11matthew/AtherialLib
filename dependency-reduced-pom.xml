@@ -4,7 +4,7 @@
   <groupId>me.matthewedevelopment</groupId>
   <artifactId>atheriallib</artifactId>
   <name>AtherialLib</name>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
   <build>
     <resources>
       <resource>
@@ -30,7 +30,14 @@
             <goals>
               <goal>shade</goal>
             </goals>
-            <configuration />
+            <configuration>
+              <relocations>
+                <relocation>
+                  <pattern>de.tr7zw</pattern>
+                  <shadedPattern>me.matthewedevelopment.shaded.tr7zw</shadedPattern>
+                </relocation>
+              </relocations>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -54,12 +61,12 @@
       <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
     </repository>
     <repository>
-      <id>jitpack.io</id>
-      <url>https://jitpack.io</url>
-    </repository>
-    <repository>
       <id>codemc-repo</id>
       <url>https://repo.codemc.io/repository/maven-public/</url>
+    </repository>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
     </repository>
   </repositories>
   <dependencies>
