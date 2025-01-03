@@ -2,6 +2,7 @@ package me.matthewedevelopment.atheriallib.message.message;
 
 import me.matthewedevelopment.atheriallib.io.StringReplacer;
 import me.matthewedevelopment.atheriallib.utilities.ChatUtils;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.command.CommandSender;
 
 public class ChatMessage extends Message {
@@ -23,8 +24,19 @@ public class ChatMessage extends Message {
         }
         String replacePrefix = replacePrefix(stringReplacer.replace(message));
 
-        ChatUtils.message(sender, replacePrefix);
+        ChatUtils.send(sender,replacePrefix, null);
+//        ChatUtils.message(sender, replacePrefix);
         return replacePrefix;
+    }
+
+    public String send(CommandSender sender, TagResolver resolver) {
+        if (message==null||message.equalsIgnoreCase("none"))return null;
+        if (sender == null) {
+            return "";
+        }
+
+        ChatUtils.send(sender,message, resolver);
+        return  message;
     }
 
     @Override
@@ -33,7 +45,7 @@ public class ChatMessage extends Message {
         if (sender == null) {
             return;
         }
-        ChatUtils.message(sender, replacePrefix(message));
+        ChatUtils.send(sender, replacePrefix(message), null);
     }
 
     @Override

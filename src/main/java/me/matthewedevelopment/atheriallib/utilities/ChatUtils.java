@@ -1,5 +1,9 @@
 package me.matthewedevelopment.atheriallib.utilities;
 
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -191,7 +195,33 @@ public class ChatUtils {
             return input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase().trim();
         }
     }
+    public static boolean isMiniMessage(String message) {
+        // Check for MiniMessage tags (e.g., <tag> or &color codes for non-MiniMessage)
+        return message.contains("<") && message.contains(">") && !message.matches(".*&[0-9a-fk-or].*");
+    }
+
+    public static void send(CommandSender sender,  String message, TagResolver tagResolver ) {
+
+        // Deserialize as MiniMessage only if isMiniMessage is true
+        Component component;
+        if (isMiniMessage(message)) {
+            component = (tagResolver != null)
+                    ? MiniMessage.miniMessage().deserialize(message, tagResolver)
+                    : MiniMessage.miniMessage().deserialize(message);
+        } else {
+            // Treat as plain text
+            component = Component.text(colorize(message));
+        }
+
+        // Send the message
+        if (sender instanceof Audience) {
+            Audience audience = (Audience) sender;
+            audience.sendMessage(component);
+        }
+    }
+
     public static String colorize( String message){
+
         return colorize(null, message);
 
     }
