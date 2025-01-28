@@ -233,11 +233,15 @@ public class ChatUtils {
             if (p==null){
                 List<? extends Player> collect = Bukkit.getOnlinePlayers().stream().collect(Collectors.toList());
                 if (collect.isEmpty())return colorizedMessage;
-                return PlaceholderApplyUtils.applyPapi(colorizedMessage,collect.get(0));
+                return applyMini(PlaceholderApplyUtils.applyPapi(colorizedMessage,collect.get(0)));
             }
-            return PlaceholderApplyUtils.applyPapi(colorizedMessage,p);
+            return applyMini(PlaceholderApplyUtils.applyPapi(colorizedMessage,p));
         }
-        return colorizedMessage;
+        return applyMini(colorizedMessage);
 
+    }
+
+    private static String applyMini(String s) {
+       return s;
     }
 }

@@ -42,25 +42,26 @@ public class BukkitConfig {
         this.loadConfiguration();
     }
 
-    public String getString(String key){
+    public String getString(String key) {
         return this.configuration.getString(key);
     }
-    public String getString(String key, String defaultValue){
+
+    public String getString(String key, String defaultValue) {
         return this.configuration.getString(key, defaultValue);
     }
- public int getInt(String key, int defaultValue){
+
+    public int getInt(String key, int defaultValue) {
         return this.configuration.getInt(key, defaultValue);
-
-
     }
+
     public Location getBlockLocation(String key) {
         ConfigurationSection section = configuration.getConfigurationSection(key);
-        if (section==null)return null;
-        String worldName =section.getString("world");
-        if (worldName==null)return null;
+        if (section == null) return null;
+        String worldName = section.getString("world");
+        if (worldName == null) return null;
 
         World world = Bukkit.getWorld(worldName);
-        if (world==null)return  null;
+        if (world == null) return null;
 
         int x = section.getInt("x", 0);
         int y = section.getInt("y", 0);
@@ -68,24 +69,25 @@ public class BukkitConfig {
 
         return new Location(world, x, y, z);
     }
-    public double getDouble(String key, double defaultValue){
+
+    public double getDouble(String key, double defaultValue) {
         return this.configuration.getDouble(key, defaultValue);
     }
 
-    public Map<String, Object> getMap(String key){
+    public Map<String, Object> getMap(String key) {
         MemorySection o = (MemorySection) this.configuration.get(key);
         return o.getValues(false);
     }
 
-    public Map<String, Object> getMapWithinSection(String key, ConfigurationSection section){
+    public Map<String, Object> getMapWithinSection(String key, ConfigurationSection section) {
         MemorySection o = (MemorySection) section.get(key);
         return o.getValues(false);
     }
 
-    public Map<String, ConfigurationSection> getSectionByKeys(String key){
+    public Map<String, ConfigurationSection> getSectionByKeys(String key) {
         Map<String, ConfigurationSection> map = new HashMap<String, ConfigurationSection>();
         for (String s : configuration.getConfigurationSection(key).getKeys(false)) {
-            map.put(s, configuration.getConfigurationSection(key+"."+s));
+            map.put(s, configuration.getConfigurationSection(key + "." + s));
         }
         return map;
     }
@@ -127,6 +129,4 @@ public class BukkitConfig {
         }
         this.file = new File(plugin.getDataFolder() + File.separator + path);
     }
-
-
 }
