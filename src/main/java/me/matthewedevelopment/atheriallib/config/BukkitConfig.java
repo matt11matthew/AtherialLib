@@ -1,5 +1,8 @@
 package me.matthewedevelopment.atheriallib.config;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -50,7 +53,21 @@ public class BukkitConfig {
 
 
     }
+    public Location getBlockLocation(String key) {
+        ConfigurationSection section = configuration.getConfigurationSection(key);
+        if (section==null)return null;
+        String worldName =section.getString("world");
+        if (worldName==null)return null;
 
+        World world = Bukkit.getWorld(worldName);
+        if (world==null)return  null;
+
+        int x = section.getInt("x", 0);
+        int y = section.getInt("y", 0);
+        int z = section.getInt("y", 0);
+
+        return new Location(world, x, y, z);
+    }
     public double getDouble(String key, double defaultValue){
         return this.configuration.getDouble(key, defaultValue);
     }
