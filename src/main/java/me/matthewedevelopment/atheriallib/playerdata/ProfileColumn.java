@@ -3,7 +3,6 @@ package me.matthewedevelopment.atheriallib.playerdata;
 import lombok.Builder;
 import me.matthewedevelopment.atheriallib.AtherialLib;
 
-@Builder
 public class ProfileColumn {
     private String name;
     private ProfileColumnType type;
@@ -14,6 +13,7 @@ public class ProfileColumn {
         this.type = type;
         this.value = value;
     }
+
 
 
 
@@ -51,6 +51,38 @@ public class ProfileColumn {
             }
         }
         return type.toString();
+    }
+    public static ProfileColumnBuilder builder() {
+        return new ProfileColumnBuilder();
+    }
+
+    public static final class ProfileColumnBuilder {
+        private String name;
+        private ProfileColumnType type;
+        private Object value;
+
+        private ProfileColumnBuilder() {
+        }
+
+
+        public ProfileColumnBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public ProfileColumnBuilder type(ProfileColumnType type) {
+            this.type = type;
+            return this;
+        }
+
+        public ProfileColumnBuilder value(Object value) {
+            this.value = value;
+            return this;
+        }
+
+        public ProfileColumn build() {
+            return new ProfileColumn(name, type, value);
+        }
     }
 
     // Add getters and setters as needed
