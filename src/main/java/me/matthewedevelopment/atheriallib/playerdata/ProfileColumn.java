@@ -15,8 +15,6 @@ public class ProfileColumn {
     }
 
 
-
-
     public String getName() {
         return name;
     }
@@ -32,9 +30,11 @@ public class ProfileColumn {
     public String getValueAsString() {
         return String.valueOf(value);
     }
+
     public long getValueAsLong() {
         return (long) value;
     }
+
     public int getValueAsInt() {
         return (int) value;
     }
@@ -44,14 +44,15 @@ public class ProfileColumn {
     }
 
     public String getTypeToString() {
-        if (!AtherialLib.getInstance().getSqlHandler().isLite()){
+        if (!AtherialLib.getInstance().getSqlHandler().isLite()) {
 
-            if (type==ProfileColumnType.VARCHAR){
+            if (type == ProfileColumnType.VARCHAR) {
                 return "VARCHAR(255)";
             }
         }
         return type.toString();
     }
+
     public static ProfileColumnBuilder builder() {
         return new ProfileColumnBuilder();
     }
@@ -85,5 +86,4 @@ public class ProfileColumn {
         }
     }
 
-    // Add getters and setters as needed
 }
