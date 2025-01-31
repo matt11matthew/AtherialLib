@@ -1,7 +1,10 @@
 package me.matthewedevelopment.atheriallib.database.registry;
 
+import lombok.Builder;
 import me.matthewedevelopment.atheriallib.AtherialLib;
 
+import me.matthewedevelopment.atheriallib.AtherialLib;
+@Builder
 public class DataColumn {
     private String name;
     private DataColumnType type;

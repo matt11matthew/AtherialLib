@@ -1,7 +1,9 @@
 package me.matthewedevelopment.atheriallib.playerdata;
 
+import lombok.Builder;
 import me.matthewedevelopment.atheriallib.AtherialLib;
 
+@Builder
 public class ProfileColumn {
     private String name;
     private ProfileColumnType type;
@@ -12,6 +14,8 @@ public class ProfileColumn {
         this.type = type;
         this.value = value;
     }
+
+
 
     public String getName() {
         return name;
