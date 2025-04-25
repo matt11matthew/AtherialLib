@@ -187,6 +187,16 @@
       <systemPath>${basedir}/lib/PlaceholderAPI-2.11.6 (1).jar</systemPath>
     </dependency>
   </dependencies>
+  <distributionManagement>
+    <repository>
+      <id>nexus-releases</id>
+      <url>https://nexus.matthewe.me/repository/maven-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>nexus-snapshots</id>
+      <url>https://nexus.matthewe.me/repository/maven-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
   <properties>
     <java.version>1.8</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
