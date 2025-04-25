@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -197,8 +198,11 @@ public class ChatUtils {
         }
     }
     public static boolean isMiniMessage(String message) {
-        // Check for MiniMessage tags (e.g., <tag> or &color codes for non-MiniMessage)
-        return message.contains("<") && message.contains(">") && !message.matches(".*&[0-9a-fk-or].*");
+        if (message == null) return false;
+        // If it contains legacy '&' or '§' codes, it is NOT MiniMessage
+        if (message.contains("&") || message.contains("§")) return false;
+        // If it contains MiniMessage tags like <gradient:...> or <color:...>, it's probably MiniMessage
+        return message.contains("<") && message.contains(">");
     }
 
     public static void send(CommandSender sender,  String message, TagResolver tagResolver ) {
@@ -229,16 +233,11 @@ public class ChatUtils {
     public static String colorize(Player p, String message) {
         if (message == null) return null;
 
-        String colorizedMessage ;
+        String colorizedMessage = convertLegacyColorsToMiniMessage(message);
 
-        if (isMiniMessage(message)){
-            colorizedMessage =  applyMiniSafe(message);
-        } else {
-            colorizedMessage = translateHexColorCodes(message);
-        }
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             if (p == null) {
-                List<? extends Player> collect = Bukkit.getOnlinePlayers().stream().collect(Collectors.toList());
+                List<Player> collect = new ArrayList<>(Bukkit.getOnlinePlayers());
                 if (collect.isEmpty()) return colorizedMessage;
                 colorizedMessage = PlaceholderApplyUtils.applyPapi(colorizedMessage, collect.get(0));
             } else {
@@ -246,22 +245,75 @@ public class ChatUtils {
             }
         }
 
-        return colorizedMessage;
+        return applyMiniSafe(colorizedMessage);
+    }
+
+    public static String convertLegacyColorsToMiniMessage(String message) {
+        if (message == null) return null;
+
+        StringBuilder builder = new StringBuilder();
+        boolean expectingCode = false;
+
+        char[] chars = message.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            char c = chars[i];
+            if (expectingCode) {
+                expectingCode = false;
+                builder.append(getMiniMessageTagForCode(c));
+            } else if (c == '&') {
+                expectingCode = true;
+            } else {
+                builder.append(c);
+            }
+        }
+
+        return builder.toString();
+    }
+
+    private static String getMiniMessageTagForCode(char code) {
+        switch (Character.toLowerCase(code)) {
+            case '0': return "<black>";
+            case '1': return "<dark_blue>";
+            case '2': return "<dark_green>";
+            case '3': return "<dark_aqua>";
+            case '4': return "<dark_red>";
+            case '5': return "<dark_purple>";
+            case '6': return "<gold>";
+            case '7': return "<gray>";
+            case '8': return "<dark_gray>";
+            case '9': return "<blue>";
+            case 'a': return "<green>";
+            case 'b': return "<aqua>";
+            case 'c': return "<red>";
+            case 'd': return "<light_purple>";
+            case 'e': return "<yellow>";
+            case 'f': return "<white>";
+            case 'k': return "<obfuscated>";
+            case 'l': return "<bold>";
+            case 'm': return "<strikethrough>";
+            case 'n': return "<underlined>";
+            case 'o': return "<italic>";
+            case 'r': return "<reset>";
+            default: return "&" + code; // unknown code, keep as-is
+        }
     }
 
     public static String applyMiniSafe(String message) {
+        if (message == null) return null;
+
         if (message.contains("§")) {
-            // contains legacy codes, do NOT parse with MiniMessage
             return message;
         }
+
         try {
             return LegacyComponentSerializer.legacySection().serialize(
                     MiniMessage.miniMessage().deserialize(message)
             );
         } catch (Exception e) {
-            // fallback if MiniMessage parsing fails
             return message;
         }
     }
+
+
 
 }
