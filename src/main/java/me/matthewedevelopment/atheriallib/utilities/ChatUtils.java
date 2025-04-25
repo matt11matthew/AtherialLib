@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 /**
  * Created by Matthew E on 11/16/2023 at 1:11 PM for the project AtherialLib
  */
@@ -240,8 +241,12 @@ public class ChatUtils {
         return applyMini(colorizedMessage);
 
     }
+    public static String applyMini(String rankColor) {
+        if (isMiniMessage(rankColor)) {
+            return LegacyComponentSerializer.legacySection().serialize(MiniMessage.miniMessage().deserialize(rankColor));
+        }
 
-    private static String applyMini(String s) {
-       return s;
+
+        return rankColor;
     }
 }

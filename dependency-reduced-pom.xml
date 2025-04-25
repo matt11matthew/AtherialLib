@@ -4,7 +4,7 @@
   <groupId>me.matthewedevelopment</groupId>
   <artifactId>atheriallib</artifactId>
   <name>AtherialLib</name>
-  <version>1.0.7</version>
+  <version>1.0.8</version>
   <build>
     <resources>
       <resource>
@@ -74,12 +74,6 @@
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
       <version>1.20.1-R0.1-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>me.clip</groupId>
-      <artifactId>placeholderapi</artifactId>
-      <version>2.11.6</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -184,6 +178,13 @@
       <version>1</version>
       <scope>system</scope>
       <systemPath>${basedir}/lib/Vault (2).jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>me.clip</groupId>
+      <artifactId>placeholderapi</artifactId>
+      <version>2.11.6</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/lib/PlaceholderAPI-2.11.6 (1).jar</systemPath>
     </dependency>
   </dependencies>
   <properties>
