@@ -226,27 +226,42 @@ public class ChatUtils {
         return colorize(null, message);
 
     }
-    public static String colorize(Player p, String message){
-        String colorizedMessage;
-        if (message==null)return null;
-        colorizedMessage =  translateHexColorCodes(message);
+    public static String colorize(Player p, String message) {
+        if (message == null) return null;
+
+        String colorizedMessage ;
+
+        if (isMiniMessage(message)){
+            colorizedMessage =  applyMiniSafe(message);
+        } else {
+            colorizedMessage = translateHexColorCodes(message);
+        }
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            if (p==null){
+            if (p == null) {
                 List<? extends Player> collect = Bukkit.getOnlinePlayers().stream().collect(Collectors.toList());
-                if (collect.isEmpty())return colorizedMessage;
-                return applyMini(PlaceholderApplyUtils.applyPapi(colorizedMessage,collect.get(0)));
+                if (collect.isEmpty()) return colorizedMessage;
+                colorizedMessage = PlaceholderApplyUtils.applyPapi(colorizedMessage, collect.get(0));
+            } else {
+                colorizedMessage = PlaceholderApplyUtils.applyPapi(colorizedMessage, p);
             }
-            return applyMini(PlaceholderApplyUtils.applyPapi(colorizedMessage,p));
-        }
-        return applyMini(colorizedMessage);
-
-    }
-    public static String applyMini(String rankColor) {
-        if (isMiniMessage(rankColor)) {
-            return LegacyComponentSerializer.legacySection().serialize(MiniMessage.miniMessage().deserialize(rankColor));
         }
 
-
-        return rankColor;
+        return colorizedMessage;
     }
+
+    public static String applyMiniSafe(String message) {
+        if (message.contains("§")) {
+            // contains legacy codes, do NOT parse with MiniMessage
+            return message;
+        }
+        try {
+            return LegacyComponentSerializer.legacySection().serialize(
+                    MiniMessage.miniMessage().deserialize(message)
+            );
+        } catch (Exception e) {
+            // fallback if MiniMessage parsing fails
+            return message;
+        }
+    }
+
 }
