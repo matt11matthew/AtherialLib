@@ -225,12 +225,37 @@ public class ChatUtils {
         }
     }
 
-    public static String colorize( String message){
+    public static String colorizeNew( String message){
 
-        return colorize(null, message);
+        return colorizeNew(null, message);
 
     }
-    public static String colorize(Player p, String message) {
+    public static String colorize(String message){
+        return colorize(null, message);
+    }
+
+    public static String colorize(Player p, String message){
+        String colorizedMessage;
+        if (message==null)return null;
+        colorizedMessage =  translateHexColorCodes(message);
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            if (p==null){
+                List<? extends Player> collect = Bukkit.getOnlinePlayers().stream().collect(Collectors.toList());
+                if (collect.isEmpty())return colorizedMessage;
+                return applyMini(PlaceholderApplyUtils.applyPapi(colorizedMessage,collect.get(0)));
+            }
+            return applyMini(PlaceholderApplyUtils.applyPapi(colorizedMessage,p));
+        }
+        return applyMini(colorizedMessage);
+
+    }
+
+    private static String applyMini(String s) {
+
+        return s;
+    }
+
+    public static String colorizeNew(Player p, String message) {
         if (message == null) return null;
 
         String colorizedMessage = convertLegacyColorsToMiniMessage(message);
