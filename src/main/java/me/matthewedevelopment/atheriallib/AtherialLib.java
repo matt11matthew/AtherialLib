@@ -21,6 +21,8 @@ import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.seriali
 import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.serializer.StringSimpleListSerializer;
 import me.matthewedevelopment.atheriallib.database.mysql.MySqlHandler;
 import me.matthewedevelopment.atheriallib.dependency.DependencyManager;
+import me.matthewedevelopment.atheriallib.discord.DiscordEmbed;
+import me.matthewedevelopment.atheriallib.discord.DiscordEmbedSerializable;
 import me.matthewedevelopment.atheriallib.item.AtherialItemAPI;
 import me.matthewedevelopment.atheriallib.item.AtherialItemBuilder;
 import me.matthewedevelopment.atheriallib.menu.HotBarListener;
@@ -28,9 +30,11 @@ import me.matthewedevelopment.atheriallib.menu.gui.AtherialMenuRegistry;
 import me.matthewedevelopment.atheriallib.menu.gui.speed.FastAtherialMenuRegistry;
 import me.matthewedevelopment.atheriallib.message.message.ActionBarMessage;
 import me.matthewedevelopment.atheriallib.message.message.ChatMessage;
+import me.matthewedevelopment.atheriallib.message.message.ChatMessages;
 import me.matthewedevelopment.atheriallib.message.message.MessageTitle;
 import me.matthewedevelopment.atheriallib.message.message.json.ActionBarMessageSerializer;
 import me.matthewedevelopment.atheriallib.message.message.json.ChatMessageSerializer;
+import me.matthewedevelopment.atheriallib.message.message.json.ChatMessagesSerializer;
 import me.matthewedevelopment.atheriallib.message.message.json.TitleJsonSerializer;
 import me.matthewedevelopment.atheriallib.message.title.AtherialTitle;
 import me.matthewedevelopment.atheriallib.minigame.GameMapHandler;
@@ -277,27 +281,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     public abstract void registerTypes();
 
     private void defaultRegisterTypes() {
-        CustomTypeRegistry.registerType(AtherialItemBuilder.class, new AtherialItemBuilderSerializable());
-        CustomTypeRegistry.registerType(AtherialLibItem.class, new AtherialLibItemSerializable());
-
-
-        CustomTypeRegistry.registerType(ActionBarMessage.class, new ActionBarMessageSerializer());
-        CustomTypeRegistry.registerType(MessageTitle.class, new TitleJsonSerializer());
-        CustomTypeRegistry.registerType(ChatMessage.class, new ChatMessageSerializer());
-
-
-        CustomTypeRegistry.registerType(IntSimpleList.class, new IntSimpleListSerializer());
-        CustomTypeRegistry.registerType(DoubleSimpleList.class, new DoubleSimpleListSerializer());
-        CustomTypeRegistry.registerType(StringSimpleList.class, new StringSimpleListSerializer());
-
-
-        CustomTypeRegistry.registerType(SelfCommandConfig.Usage.class, new UsageSerializer());
-        CustomTypeRegistry.registerType(SelfCommandConfig.class, new SelfCommandConfigSerializer());
-
-        CustomTypeRegistry.registerType(AtherialLocation.class, new AtherialLocationSerializer());
-        CustomTypeRegistry.registerType(AtherialXYZLocation.class, new AtherialXYZLocationSerializer());
-
-        CustomTypeRegistry.registerType(AtherialSound.class, new AtherialSoundSerializer());
+        CustomTypeRegistry.init();
 
     }
 

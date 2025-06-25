@@ -6,16 +6,24 @@
 
     <groupId>me.matthewedevelopment</groupId>
     <artifactId>atheriallib</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.11</version>
 <!--    <packaging>jar</packaging>-->
-
     <name>AtherialLib</name>
 
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
+    <distributionManagement>
+        <repository>
+            <id>nexus-releases</id>
+            <url>https://nexus.matthewe.me/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <url>https://nexus.matthewe.me/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
     <build>
         <plugins>
             <plugin>
@@ -38,8 +46,12 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-<!--                            <minimizeJar>true</minimizeJar>-->
-<!--                            <createDependencyReducedPom>false</createDependencyReducedPom>-->
+                            <relocations>
+                                <relocation>
+                                    <pattern>de.tr7zw</pattern>
+                                    <shadedPattern>me.matthewedevelopment.shaded.tr7zw</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
@@ -71,14 +83,23 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
-
     </repositories>
 
     <dependencies>
-
+        <dependency>
+            <groupId>de.tr7zw</groupId>
+            <artifactId>item-nbt-api</artifactId>
+            <version>2.15.0</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
@@ -96,6 +117,7 @@
             <groupId>net.kyori</groupId>
             <artifactId>adventure-api</artifactId>
             <version>4.15.0</version>
+            <scope>compile</scope>
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>mysql</groupId>-->
@@ -135,13 +157,7 @@
             <systemPath>${basedir}/lib/Spigot-1.8.8.jar</systemPath>
             <version>1.8</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>spigot120</groupId>-->
-<!--            <artifactId>spigot120</artifactId>-->
-<!--            <scope>system</scope>-->
-<!--            <systemPath>${basedir}/lib/spigot-1.20.2-R0.1-SNAPSHOT.jar</systemPath>-->
-<!--            <version>spigot120</version>-->
-<!--        </dependency>-->
+
 
         <dependency>
             <groupId>spigot1.14</groupId>
@@ -227,9 +243,14 @@
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
             <version>2.11.6</version>
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/PlaceholderAPI-2.11.6 (1).jar</systemPath>
         </dependency>
-
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-text-minimessage</artifactId>
+            <version>4.17.0</version>
+        </dependency>
         <dependency>
             <groupId>com.arcaniax</groupId>
             <artifactId>HeadDatabase-API</artifactId>
@@ -237,13 +258,20 @@
             <scope>provided</scope>
 <!--            <systemPath>${basedir}/lib/HeadDatabase-4.19.0.jar</systemPath>-->
         </dependency>
-
         <dependency>
-            <groupId>dev.triumphteam</groupId>
-            <artifactId>triumph-gui</artifactId>
-            <version>3.1.10</version>
-            <scope>compile</scope>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.34</version>
+            <scope>provided</scope>
         </dependency>
+
+        <!--        <dependency>-->
+<!--            <groupId>dev.triumphteam</groupId>-->
+<!--            <artifactId>triumph-gui</artifactId>-->
+<!--            <version>3.1.10</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
+
 
     </dependencies>
 </project>

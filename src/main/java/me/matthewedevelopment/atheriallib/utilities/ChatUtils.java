@@ -1,15 +1,21 @@
 package me.matthewedevelopment.atheriallib.utilities;
 
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 /**
  * Created by Matthew E on 11/16/2023 at 1:11 PM for the project AtherialLib
  */
@@ -191,10 +197,43 @@ public class ChatUtils {
             return input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase().trim();
         }
     }
-    public static String colorize( String message){
-        return colorize(null, message);
+    public static boolean isMiniMessage(String message) {
+        if (message == null) return false;
+        // If it contains legacy '&' or '§' codes, it is NOT MiniMessage
+        if (message.contains("&") || message.contains("§")) return false;
+        // If it contains MiniMessage tags like <gradient:...> or <color:...>, it's probably MiniMessage
+        return message.contains("<") && message.contains(">");
+    }
+
+    public static void send(CommandSender sender,  String message, TagResolver tagResolver ) {
+
+        // Deserialize as MiniMessage only if isMiniMessage is true
+        Component component;
+        if (isMiniMessage(message)) {
+            component = (tagResolver != null)
+                    ? MiniMessage.miniMessage().deserialize(message, tagResolver)
+                    : MiniMessage.miniMessage().deserialize(message);
+        } else {
+            // Treat as plain text
+            component = Component.text(colorize(message));
+        }
+
+        // Send the message
+        if (sender instanceof Audience) {
+            Audience audience = (Audience) sender;
+            audience.sendMessage(component);
+        }
+    }
+
+    public static String colorizeNew( String message){
+
+        return colorizeNew(null, message);
 
     }
+    public static String colorize(String message){
+        return colorize(null, message);
+    }
+
     public static String colorize(Player p, String message){
         String colorizedMessage;
         if (message==null)return null;
@@ -203,11 +242,103 @@ public class ChatUtils {
             if (p==null){
                 List<? extends Player> collect = Bukkit.getOnlinePlayers().stream().collect(Collectors.toList());
                 if (collect.isEmpty())return colorizedMessage;
-                return PlaceholderApplyUtils.applyPapi(colorizedMessage,collect.get(0));
+                return applyMini(PlaceholderApplyUtils.applyPapi(colorizedMessage,collect.get(0)));
             }
-            return PlaceholderApplyUtils.applyPapi(colorizedMessage,p);
+            return applyMini(PlaceholderApplyUtils.applyPapi(colorizedMessage,p));
         }
-        return colorizedMessage;
+        return applyMini(colorizedMessage);
 
     }
+
+    private static String applyMini(String s) {
+
+        return s;
+    }
+
+    public static String colorizeNew(Player p, String message) {
+        if (message == null) return null;
+
+        String colorizedMessage = convertLegacyColorsToMiniMessage(message);
+
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            if (p == null) {
+                List<Player> collect = new ArrayList<>(Bukkit.getOnlinePlayers());
+                if (collect.isEmpty()) return colorizedMessage;
+                colorizedMessage = PlaceholderApplyUtils.applyPapi(colorizedMessage, collect.get(0));
+            } else {
+                colorizedMessage = PlaceholderApplyUtils.applyPapi(colorizedMessage, p);
+            }
+        }
+
+        return applyMiniSafe(colorizedMessage);
+    }
+
+    public static String convertLegacyColorsToMiniMessage(String message) {
+        if (message == null) return null;
+
+        StringBuilder builder = new StringBuilder();
+        boolean expectingCode = false;
+
+        char[] chars = message.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            char c = chars[i];
+            if (expectingCode) {
+                expectingCode = false;
+                builder.append(getMiniMessageTagForCode(c));
+            } else if (c == '&') {
+                expectingCode = true;
+            } else {
+                builder.append(c);
+            }
+        }
+
+        return builder.toString();
+    }
+
+    private static String getMiniMessageTagForCode(char code) {
+        switch (Character.toLowerCase(code)) {
+            case '0': return "<black>";
+            case '1': return "<dark_blue>";
+            case '2': return "<dark_green>";
+            case '3': return "<dark_aqua>";
+            case '4': return "<dark_red>";
+            case '5': return "<dark_purple>";
+            case '6': return "<gold>";
+            case '7': return "<gray>";
+            case '8': return "<dark_gray>";
+            case '9': return "<blue>";
+            case 'a': return "<green>";
+            case 'b': return "<aqua>";
+            case 'c': return "<red>";
+            case 'd': return "<light_purple>";
+            case 'e': return "<yellow>";
+            case 'f': return "<white>";
+            case 'k': return "<obfuscated>";
+            case 'l': return "<bold>";
+            case 'm': return "<strikethrough>";
+            case 'n': return "<underlined>";
+            case 'o': return "<italic>";
+            case 'r': return "<reset>";
+            default: return "&" + code; // unknown code, keep as-is
+        }
+    }
+
+    public static String applyMiniSafe(String message) {
+        if (message == null) return null;
+
+        if (message.contains("§")) {
+            return message;
+        }
+
+        try {
+            return LegacyComponentSerializer.legacySection().serialize(
+                    MiniMessage.miniMessage().deserialize(message)
+            );
+        } catch (Exception e) {
+            return message;
+        }
+    }
+
+
+
 }

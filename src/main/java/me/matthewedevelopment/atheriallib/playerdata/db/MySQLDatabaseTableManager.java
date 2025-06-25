@@ -88,7 +88,7 @@ public class MySQLDatabaseTableManager implements DatabaseTableManager{
 
         // Check if the column has a default value and add it to the query
         if (column.getValue() != null) {
-            query += " DEFAULT " + column.getValue();
+            query += " DEFAULT " + (column.getValue()==null?"":column.getValue());
         }
 
         if (AtherialLib.getInstance().isDebug()) {

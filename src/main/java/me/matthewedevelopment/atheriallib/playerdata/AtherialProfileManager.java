@@ -7,6 +7,8 @@ import me.matthewedevelopment.atheriallib.playerdata.db.DatabaseTableManager;
 import me.matthewedevelopment.atheriallib.playerdata.db.MySQLDatabaseTableManager;
 import me.matthewedevelopment.atheriallib.playerdata.db.SQLiteDatabaseTableManager;
 import me.matthewedevelopment.atheriallib.utilities.AtherialTasks;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -25,6 +27,7 @@ import java.util.*;
  * Created by Matthew E on 12/5/2023 at 9:50 PM for the project AtherialLib
  */
 public class AtherialProfileManager  implements Listener {
+    private static final Logger log = LogManager.getLogger(AtherialProfileManager.class);
     private AtherialLib atherialLib;
     private Map<String, Class<? extends AtherialProfile>> profiles;
 
@@ -314,6 +317,7 @@ public class AtherialProfileManager  implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (profiles.isEmpty()){
+            log.warn("Profiles is empty so we could not load any profile.");
             return;
         }
         for (Class<? extends AtherialProfile> value : profiles.values()) {

@@ -4,6 +4,7 @@ import me.matthewedevelopment.atheriallib.database.registry.DataColumn;
 import me.matthewedevelopment.atheriallib.database.registry.DataColumnType;
 import me.matthewedevelopment.atheriallib.database.registry.DataObject;
 import me.matthewedevelopment.atheriallib.utilities.location.AtherialLocation;
+import me.matthewedevelopment.atheriallib.utilities.location.PlayerAtherialLocation;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,7 +27,7 @@ public class GameMap extends DataObject<GameMap> {
 
     private UUID editSessionId;
 
-    public AtherialLocation getLobbySpawn() {
+    public PlayerAtherialLocation getLobbySpawn() {
         return lobbySpawn;
     }
 
@@ -38,7 +39,7 @@ public class GameMap extends DataObject<GameMap> {
 //        return editClass;
 //    }
 
-    private AtherialLocation lobbySpawn;
+    private PlayerAtherialLocation lobbySpawn;
 //    private Class gameClass;
 //    private Class editClass;
 
@@ -69,7 +70,7 @@ public class GameMap extends DataObject<GameMap> {
         return lobbySpawn!=null;
     }
 
-    public void setLobbySpawn(AtherialLocation lobbySpawn) {
+    public void setLobbySpawn(PlayerAtherialLocation lobbySpawn) {
         this.lobbySpawn = lobbySpawn;
     }
 
@@ -125,7 +126,7 @@ public class GameMap extends DataObject<GameMap> {
         try {
             this.name = resultSet.getString("name");
             this.zipFileName = resultSet.getString("zipFileName");
-            this.lobbySpawn = AtherialLocation.fromString(resultSet.getString("spawn"));
+            this.lobbySpawn = PlayerAtherialLocation.fromString(resultSet.getString("spawn"));
 
             gameMapData.load(resultSet);
         } catch (SQLException e) {

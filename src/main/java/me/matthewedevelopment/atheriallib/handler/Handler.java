@@ -13,6 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public abstract class Handler<T extends JavaPlugin, C  extends YamlConfig> implements Listener {
     protected C c;
+    protected C config;
     protected T core;
 
     private HandlerPriority unloadPriority;
@@ -29,6 +30,8 @@ public abstract class Handler<T extends JavaPlugin, C  extends YamlConfig> imple
         this.loadPriority = loadPriority;
         this.enabled = false;
         this.c = config;
+        this.config = c;
+
     }
 
 //    public final <T extends AtherialRedisPacket> void registerListener(Class<T> msg, AtherialPacketListener<T> listener) {

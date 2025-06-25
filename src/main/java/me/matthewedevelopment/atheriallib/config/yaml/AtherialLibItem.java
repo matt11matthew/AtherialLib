@@ -171,6 +171,16 @@ public class AtherialLibItem {
 
         return build(ChatUtils::colorize);
     }
+
+    public ItemStack build(StringReplacer stringReplacer, boolean allFlags) {
+        ItemStack build = build(stringReplacer);
+        if (!allFlags)return build;
+        ItemMeta itemMeta = build.getItemMeta();
+
+        itemMeta.addItemFlags(ItemFlag.values());
+        build.setItemMeta(itemMeta);
+        return build;
+    }
     public ItemStack build(StringReplacer stringReplacer) {
         ItemStack itemStack=null;
         if (amount < 1) {

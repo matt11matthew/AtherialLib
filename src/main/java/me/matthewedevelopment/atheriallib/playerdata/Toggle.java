@@ -12,6 +12,13 @@ public enum Toggle {
         this.status = status;
     }
 
+    public Toggle toggle() {
+        switch (this) {
+            case ON: return OFF;
+            case OFF: return ON;
+        }
+        return OFF;
+    }
     public static Toggle getByValue(boolean value){
         return value ? ON : OFF;
     }

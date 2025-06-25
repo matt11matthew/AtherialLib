@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 public class AtherialSound {
     private String name;
     private float volume, pitch;
+    private boolean enabled = true;
 
     public static AtherialSound of(Sound sound, float vol, float pitch) {
         return new AtherialSound(sound.toString(),vol,pitch);
@@ -24,13 +25,28 @@ public class AtherialSound {
         return pitch;
     }
 
-    public AtherialSound(String name, float volume, float pitch) {
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public AtherialSound(String name, float volume, float pitch, boolean enabled) {
         this.name = name;
         this.volume = volume;
         this.pitch = pitch;
+        this.enabled =enabled;
+    }
+
+    public AtherialSound(String name, float volume, float pitch) {
+        this(name,volume,pitch,true);
+
     }
 
     public void play(Player p){
+        if (!enabled)return;
         Sound sound = null;
         try {
             sound = Sound.valueOf(name);

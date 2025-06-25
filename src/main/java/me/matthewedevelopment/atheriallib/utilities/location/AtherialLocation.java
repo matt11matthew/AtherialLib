@@ -10,7 +10,7 @@ import java.util.Objects;
 public class AtherialLocation {
     private String world;
     private double x,y,z;
-    private float yaw, pitch;
+    private float yaw = -1f, pitch= -1f;
 
     public AtherialLocation(String world, double x, double y, double z, float pitch, float yaw) {
         this.world = world;
@@ -216,6 +216,7 @@ public class AtherialLocation {
         }
         return new AtherialLocation(world,x,y,z,pitch,yaw);
     }
+
 
     public AtherialLocation(double x, double y, double z, float yaw, float pitch) {
         this.x = x;
