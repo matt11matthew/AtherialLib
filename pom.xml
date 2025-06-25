@@ -23,6 +23,7 @@
             <id>nexus-snapshots</id>
             <url>https://nexus.matthewe.me/repository/maven-snapshots/</url>
         </snapshotRepository>
+
     </distributionManagement>
     <build>
         <plugins>
