@@ -27,6 +27,7 @@ public class AtherialLibItem {
     private int amount;
     private String displayName;
     private List<String> lore;
+    private List<String> commands =new ArrayList<>();
     private int modelId=0;
     private Map<String, Integer> enchantments;
     private String headDatabaseHead;
@@ -78,6 +79,16 @@ public class AtherialLibItem {
         this.slot = slot;
         this.enchantments = enchantments;
     }
+
+    public List<String> getCommands() {
+        return commands;
+    }
+
+    public AtherialLibItem setCommands(List<String> commands) {
+        this.commands = commands;
+        return this;
+    }
+
     public AtherialLibItem setLore(String... lore) {
         this.lore = new ArrayList<>();
         for (String s : lore) {

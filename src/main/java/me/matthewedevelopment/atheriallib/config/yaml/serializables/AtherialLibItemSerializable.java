@@ -24,6 +24,9 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
         if (item.getModelId()!=0) {
             serializedData.put("modelId", item.getModelId());  // Mandatory
         }
+        if (item.getCommands()!=null&&item.getCommands().size()>0) {
+            serializedData.put("commands", item.getCommands());
+        }
         // Optional fields
         if (item.getAmount()>1){
             serializedData.put("amount", item.getAmount());
@@ -97,6 +100,17 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
         String skullOwner = map.containsKey("skullOwner") ? (String) map.get("skullOwner") : null;
         String displayName = map.containsKey("displayName") ? (String) map.get("displayName") : null;
 
+        List<String> commands =null;
+
+        if (map.containsKey("commands")){
+            commands=new ArrayList<>();
+            Object o = map.get("commands");
+            if (o instanceof String) {
+                commands.add((String) o);
+            } else {
+                commands=(List<String>) map.get("commands");
+            }
+        }
 
         IntSimpleList multiSlots = map.containsKey("multiSlots") ? new IntSimpleListSerializer().deserializeSimple( (String)map.get("multiSlots")) : null;
 
@@ -129,6 +143,9 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
         }
         if (modelId!=0){
             atherialLibItem = atherialLibItem.setModelId(modelId);
+        }
+        if (commands!=null&&!commands.isEmpty()){
+            atherialLibItem = atherialLibItem.setCommands(commands);
         }
 
         return atherialLibItem;
