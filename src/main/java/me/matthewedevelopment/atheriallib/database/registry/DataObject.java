@@ -32,7 +32,7 @@ public abstract class DataObject<T extends DataObject<T>> {
     }
     public List<DataColumn> getColumns() {
         List<DataColumn> columns = new ArrayList<>();
-        columns.add(new DataColumn("uuid", DataColumnType.VARCHAR, ""));
+        columns.add(new DataColumn("uuid", DataColumnType.VARCHAR, uuid==null?"":uuid.toString()));
 
         List<DataColumn> optionalColumns = getOptionalColumns();
         if (optionalColumns!=null&&!optionalColumns.isEmpty()){
