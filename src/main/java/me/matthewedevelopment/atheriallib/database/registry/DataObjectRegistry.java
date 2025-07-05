@@ -1,5 +1,7 @@
 package me.matthewedevelopment.atheriallib.database.registry;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.database.mysql.MySqlHandler;
 import me.matthewedevelopment.atheriallib.database.registry.db.DatabaseTableManagerCustomData;
@@ -19,7 +21,15 @@ public abstract class DataObjectRegistry<T extends DataObject<T>> {
     private Class<T> clazz;
     private DatabaseTableManagerCustomData databaseTableManager;
     private String tableName=null;
-    public void register() {
+
+
+    @Data
+    @AllArgsConstructor
+    public static class Tuple<A,B> {
+        public A a;
+        public B b;
+    }
+    public Tuple<Boolean, T> preRegister() {
 
 
         if (AtherialLib.getInstance().getSqlHandler().isLite()){
@@ -29,18 +39,25 @@ public abstract class DataObjectRegistry<T extends DataObject<T>> {
         }
         T temp=null;
         try {
-             temp = clazz.newInstance();
+            temp = clazz.newInstance();
 
             tableName=temp.getTableName();
             AtherialLib.getInstance().getLogger().info("TABLE NAME: ("+tableName+")");
             databaseTableManager.createOrUpdateTable(getConnection(),tableName,temp.getColumns());
         } catch (InstantiationException | IllegalAccessException | SQLException e) {
-          e.printStackTrace();
-          return;
+            e.printStackTrace();
+            return new Tuple<>(false,null);
         }
+        return new Tuple<>(true,temp);
 
-        if (temp!=null) {
-            loadAllSync(temp);
+    }
+    public void register() {
+
+
+        Tuple<Boolean, T> booleanTTuple = preRegister();
+
+        if ((booleanTTuple != null) && booleanTTuple.a && (booleanTTuple.getB() != null)) {
+            loadAllSync(booleanTTuple.getB());
         }
         onRegister();
     }
@@ -54,6 +71,8 @@ public abstract class DataObjectRegistry<T extends DataObject<T>> {
     public T getData(UUID uuid){
         return map.getOrDefault(uuid, null);
     }
+
+
     public void loadAllSync(T tempInstance) {
         AtherialTasks.runSync(() -> {
             List<T> ts = tempInstance.loadAllSync(getConnection());

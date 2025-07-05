@@ -160,6 +160,43 @@ public abstract class DataObject<T extends DataObject<T>> {
     public boolean isTextClear(String text) {
         return text!=null&&!text.equalsIgnoreCase("null")&&!text.isEmpty()&&!text.equalsIgnoreCase("none");
     }
+
+    public List<T> loadAllSyncWhereKeys(Connection connection, List<UUID> keys) {
+        List<T> results = new ArrayList<>();
+        if (keys == null || keys.isEmpty()) return results;
+
+        StringBuilder query = new StringBuilder("SELECT * FROM ")
+                .append(getTableName())
+                .append(" WHERE uuid IN (");
+
+        for (int i = 0; i < keys.size(); i++) {
+            query.append("?");
+            if (i < keys.size() - 1) query.append(", ");
+        }
+        query.append(");");
+
+        try (PreparedStatement statement = connection.prepareStatement(query.toString())) {
+            for (int i = 0; i < keys.size(); i++) {
+                statement.setString(i + 1, keys.get(i).toString());
+            }
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    DataObject dataObject = this.getClass().newInstance(); // Or use a factory method
+                    dataObject.setUuid(UUID.fromString(resultSet.getString("uuid")));
+                    T loaded = (T) dataObject.loadFromRS(resultSet);
+                    results.add(loaded);
+                }
+            }
+
+        } catch (SQLException | InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return results;
+    }
+
+
     public List<T> loadAllSync(Connection connection){
         List<T> results = new ArrayList<>();
         ResultSet resultSet = null;
