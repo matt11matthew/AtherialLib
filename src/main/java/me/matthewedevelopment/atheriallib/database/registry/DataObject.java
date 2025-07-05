@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 public abstract class DataObject<T extends DataObject<T>> {
-    private UUID uuid;
+    protected UUID uuid;
 
 
     public DataObject(UUID uuid) {
