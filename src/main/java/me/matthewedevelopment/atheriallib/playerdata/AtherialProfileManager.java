@@ -151,6 +151,16 @@ public class AtherialProfileManager  implements Listener {
         Connection connection = getConnection();
         if (connection == null) return;
 
+        try {
+            if (connection.isClosed()) {
+                AtherialLib.getInstance().getSqlHandler().start();
+                connection =  AtherialLib.getInstance().getSqlHandler().getConnection();
+                log.info("Reconnecting to SQL due to strange shutdown...");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
 
         try {
             for (Map.Entry<String, Map<UUID, AtherialProfile<?>>> value : playerDataMap.entrySet()) {
