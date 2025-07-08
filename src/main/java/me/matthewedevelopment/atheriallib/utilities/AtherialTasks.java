@@ -1,85 +1,48 @@
 package me.matthewedevelopment.atheriallib.utilities;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
+
+import com.tcoded.folialib.FoliaLib;
+import com.tcoded.folialib.wrapper.task.WrappedTask;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.lang.reflect.Method;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.function.Consumer;
 
 public class AtherialTasks {
     private static Plugin plugin;
-    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
-    private static final boolean isFolia = detectFolia();
+    private static FoliaLib foliaLib;
 
     public static void setPlugin(Plugin plugin) {
         AtherialTasks.plugin = plugin;
+        AtherialTasks.foliaLib = new FoliaLib(plugin);
     }
 
     public static void shutdown() {
-        scheduler.shutdown();
+        // No shutdown needed for FoliaLib scheduler
     }
 
     public static void runAsync(Runnable task) {
         if (plugin == null) return;
-        scheduler.execute(task);
+        foliaLib.getScheduler().runAsync(toConsumer(task));
     }
 
     public static void runSync(Runnable task) {
         if (plugin == null) return;
-        if (isFolia) {
-            try {
-                Object globalScheduler = Bukkit.class.getMethod("getGlobalRegionScheduler").invoke(Bukkit.class);
-                Method execute = globalScheduler.getClass().getMethod("execute", Plugin.class, Runnable.class);
-                execute.invoke(globalScheduler, plugin, task);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            Bukkit.getScheduler().runTask(plugin, task);
-        }
+        foliaLib.getScheduler().runNextTick(toConsumer(task));
     }
 
     public static void runIn(Runnable task, long delayTicks) {
         if (plugin == null) return;
-        if (isFolia) {
-            try {
-                Object globalScheduler = Bukkit.class.getMethod("getGlobalRegionScheduler").invoke(Bukkit.class);
-                Method runDelayed = globalScheduler.getClass().getMethod("runDelayed", Plugin.class, Runnable.class, long.class);
-                long delayMillis = delayTicks * 50L;
-                runDelayed.invoke(globalScheduler, plugin, task, delayMillis);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            Bukkit.getScheduler().runTaskLater(plugin, task, delayTicks);
-        }
+        foliaLib.getScheduler().runLater(toConsumer(task), delayTicks);
     }
 
     public static void runRegion(Player player, Runnable task) {
         if (plugin == null || player == null) return;
-        if (isFolia) {
-            try {
-                Location location = player.getLocation();
-                Object regionScheduler = Bukkit.class.getMethod("getRegionScheduler").invoke(Bukkit.class);
-                Method execute = regionScheduler.getClass().getMethod("execute", Plugin.class, Location.class, Runnable.class);
-                execute.invoke(regionScheduler, plugin, location, task);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            Bukkit.getScheduler().runTask(plugin, task);
-        }
+        foliaLib.getScheduler().runAtEntity(player, toConsumer(task));
     }
 
-    private static boolean detectFolia() {
-        try {
-            Bukkit.class.getMethod("getRegionScheduler");
-            return true;
-        } catch (NoSuchMethodException e) {
-            return false;
-        }
+    private static Consumer<WrappedTask> toConsumer(Runnable runnable) {
+        return (wrappedTask) -> runnable.run();
     }
 }
+

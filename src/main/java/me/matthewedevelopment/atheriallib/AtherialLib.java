@@ -1,5 +1,7 @@
 package me.matthewedevelopment.atheriallib;
 
+import com.tcoded.folialib.FoliaLib;
+import lombok.Getter;
 import me.matthewedevelopment.atheriallib.chat.ChatPromptHandler;
 import me.matthewedevelopment.atheriallib.command.AnnotationlessAtherialCommand;
 import me.matthewedevelopment.atheriallib.command.AtherialCommand;
@@ -41,6 +43,8 @@ import java.util.List;
 
 public abstract class AtherialLib extends JavaPlugin implements Listener {
     protected VersionProvider versionProvider;
+
+    @Getter private FoliaLib foliaLib;
 
     protected DependencyManager dependencyManager;
 //    protected HandlerManager handlerManager;
@@ -159,6 +163,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     private boolean started = false;
     @Override
     public void onEnable() {
+        foliaLib = new FoliaLib(this);
         initDependencies();
         if(!loadNMS()){
             if (nmsRequired){
