@@ -121,9 +121,6 @@ public class AtherialProfileManager  implements Listener {
 //        }
 
         SchedulerAdapter.runGlobalRepeatingTask( 20*30,20*30, () -> {
-            
-        } );
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(atherialLib, () -> {
             if (!intervalSave)return;
             if (profiles.isEmpty())return;
             for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
@@ -138,12 +135,8 @@ public class AtherialProfileManager  implements Listener {
                     }
                 }
             }
-//            if (bukkitConfig!=null){
-//
-//
-//                bukkitConfig.saveConfiguration();
-//            }
-        }, 20*30, 20*30);
+        } );
+
     }
 
     public void stop(){
