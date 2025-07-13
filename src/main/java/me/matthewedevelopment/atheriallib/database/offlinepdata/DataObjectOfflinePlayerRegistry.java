@@ -553,15 +553,6 @@ public abstract class DataObjectOfflinePlayerRegistry<T extends DataObjectOfflin
             if (resultSet.next()) {
                 int count = resultSet.getInt(1);
                 boolean c = count > 0;
-
-//                if (AtherialLib.getInstance().isDebug()){
-//                    if (c){
-//                        System.err.println("EXISTS " + uuid.toString());
-//                    } else {
-//                        System.err.println("DOESNT EXISTS " + uuid.toString());
-//
-//                    }
-//                }
                 return c; // Return true if a profile with the given UUID exists
             }
 
