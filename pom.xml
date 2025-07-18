@@ -99,6 +99,10 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+        <repository>
+            <id>tcoded-releases</id>
+            <url>https://repo.tcoded.com/releases</url>
+        </repository>
          <repository>
             <id>nexus</id>
             <url>https://nexus.matthewe.me/repository/group</url>
@@ -171,13 +175,11 @@
             <version>1.8</version>
         </dependency>
         <dependency>
-            <groupId>com.tcodedmc</groupId>
-
-            <scope>compile</scope>
+            <groupId>com.tcoded</groupId>
             <artifactId>FoliaLib</artifactId>
             <version>0.5.1</version>
+            <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>spigot1.14</groupId>
             <artifactId>spigot1.14</artifactId>
