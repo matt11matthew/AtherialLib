@@ -171,7 +171,8 @@
             <version>1.8</version>
         </dependency>
         <dependency>
-            <groupId>com.tcoded</groupId>
+            <groupId>com.github.tcodedmc</groupId>
+
             <scope>compile</scope>
             <artifactId>FoliaLib</artifactId>
             <version>0.5.1</version>
