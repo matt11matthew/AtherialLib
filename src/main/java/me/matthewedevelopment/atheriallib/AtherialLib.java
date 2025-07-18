@@ -329,13 +329,16 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
             gameHandler.stop();
         }
         this.onStop();
-        if (sqlHandler.isEnabled()) {
-            sqlHandler.stop();
-        }
+
 
 
         this.dependencyManager.disableDependencies();
         AtherialTasks.shutdown();
+
+
+        if (sqlHandler.isEnabled()) {
+            sqlHandler.stop();
+        }
     }
 
 

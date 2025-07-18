@@ -140,6 +140,15 @@ public class MySqlHandler {
         }
     }
     public Connection getConnection() {
+        try {
+            if ((connection == null) || connection.isClosed()) {
+                start();
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return connection;
     }
 
