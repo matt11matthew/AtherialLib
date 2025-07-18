@@ -99,6 +99,10 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+         <repository>
+            <id>nexus/id>
+            <url>https://nexus.matthewe.me/repository/group/</url>
+        </repository>
     </repositories>
 
     <dependencies>
