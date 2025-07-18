@@ -1,6 +1,6 @@
 package me.matthewedevelopment.atheriallib.menu.gui.speed;
 
-import me.matthewedevelopment.atheriallib.AtherialLib;
+import me.matthewedevelopment.atheriallib.SchedulerAdapter;
 import me.matthewedevelopment.atheriallib.menu.gui.events.AtherialFastMenuCloseEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -21,8 +21,10 @@ public class FastAtherialMenuRegistry {
     }
 
     public  void start() {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(AtherialLib.getInstance(),() -> updateGUI(),10L, 10L);
 
+        SchedulerAdapter.runGlobalRepeatingTask(10,10, () -> {
+            updateGUI();
+        });
 
 
     }

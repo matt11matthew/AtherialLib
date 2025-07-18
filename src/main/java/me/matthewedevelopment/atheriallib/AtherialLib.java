@@ -1,41 +1,18 @@
 package me.matthewedevelopment.atheriallib;
 
+import com.tcoded.folialib.FoliaLib;
+import lombok.Getter;
 import me.matthewedevelopment.atheriallib.chat.ChatPromptHandler;
 import me.matthewedevelopment.atheriallib.command.AnnotationlessAtherialCommand;
 import me.matthewedevelopment.atheriallib.command.AtherialCommand;
 import me.matthewedevelopment.atheriallib.command.spigot.AtherialLibSpigotCommand;
-import me.matthewedevelopment.atheriallib.command.spigot.config.SelfCommandConfig;
-import me.matthewedevelopment.atheriallib.command.spigot.serializers.SelfCommandConfigSerializer;
-import me.matthewedevelopment.atheriallib.command.spigot.serializers.UsageSerializer;
-import me.matthewedevelopment.atheriallib.config.sound.AtherialSound;
-import me.matthewedevelopment.atheriallib.config.sound.AtherialSoundSerializer;
-import me.matthewedevelopment.atheriallib.config.yaml.AtherialLibItem;
 import me.matthewedevelopment.atheriallib.config.yaml.CustomTypeRegistry;
-import me.matthewedevelopment.atheriallib.config.yaml.serializables.AtherialItemBuilderSerializable;
-import me.matthewedevelopment.atheriallib.config.yaml.serializables.AtherialLibItemSerializable;
-import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.DoubleSimpleList;
-import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.IntSimpleList;
-import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.StringSimpleList;
-import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.serializer.DoubleSimpleListSerializer;
-import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.serializer.IntSimpleListSerializer;
-import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.serializer.StringSimpleListSerializer;
 import me.matthewedevelopment.atheriallib.database.mysql.MySqlHandler;
 import me.matthewedevelopment.atheriallib.dependency.DependencyManager;
-import me.matthewedevelopment.atheriallib.discord.DiscordEmbed;
-import me.matthewedevelopment.atheriallib.discord.DiscordEmbedSerializable;
 import me.matthewedevelopment.atheriallib.item.AtherialItemAPI;
-import me.matthewedevelopment.atheriallib.item.AtherialItemBuilder;
 import me.matthewedevelopment.atheriallib.menu.HotBarListener;
 import me.matthewedevelopment.atheriallib.menu.gui.AtherialMenuRegistry;
 import me.matthewedevelopment.atheriallib.menu.gui.speed.FastAtherialMenuRegistry;
-import me.matthewedevelopment.atheriallib.message.message.ActionBarMessage;
-import me.matthewedevelopment.atheriallib.message.message.ChatMessage;
-import me.matthewedevelopment.atheriallib.message.message.ChatMessages;
-import me.matthewedevelopment.atheriallib.message.message.MessageTitle;
-import me.matthewedevelopment.atheriallib.message.message.json.ActionBarMessageSerializer;
-import me.matthewedevelopment.atheriallib.message.message.json.ChatMessageSerializer;
-import me.matthewedevelopment.atheriallib.message.message.json.ChatMessagesSerializer;
-import me.matthewedevelopment.atheriallib.message.message.json.TitleJsonSerializer;
 import me.matthewedevelopment.atheriallib.message.title.AtherialTitle;
 import me.matthewedevelopment.atheriallib.minigame.GameMapHandler;
 import me.matthewedevelopment.atheriallib.minigame.load.edit.EditLoadedGameMap;
@@ -46,10 +23,6 @@ import me.matthewedevelopment.atheriallib.nms.VersionProvider;
 import me.matthewedevelopment.atheriallib.playerdata.AtherialProfile;
 import me.matthewedevelopment.atheriallib.playerdata.AtherialProfileManager;
 import me.matthewedevelopment.atheriallib.utilities.AtherialTasks;
-import me.matthewedevelopment.atheriallib.utilities.location.AtherialLocation;
-import me.matthewedevelopment.atheriallib.utilities.location.AtherialLocationSerializer;
-import me.matthewedevelopment.atheriallib.utilities.location.AtherialXYZLocation;
-import me.matthewedevelopment.atheriallib.utilities.location.AtherialXYZLocationSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.World;
@@ -70,6 +43,8 @@ import java.util.List;
 
 public abstract class AtherialLib extends JavaPlugin implements Listener {
     protected VersionProvider versionProvider;
+
+    @Getter private FoliaLib foliaLib;
 
     protected DependencyManager dependencyManager;
 //    protected HandlerManager handlerManager;
@@ -188,6 +163,7 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     private boolean started = false;
     @Override
     public void onEnable() {
+        foliaLib = new FoliaLib(this);
         initDependencies();
         if(!loadNMS()){
             if (nmsRequired){
@@ -242,21 +218,19 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
 
         started=true;
         if (debug) {
-            Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-                @Override
-                public void run() {
-                    for (World world : Bukkit.getServer().getWorlds()) {
-                        if (!slimesEnabled){
-                            world.getEntitiesByClass(Slime.class).forEach(Entity::remove);
-                        }
-
-                        world.setStorm(false);
-                        world.setThundering(false);
-                        world.setTime(500);
-                        world.setDifficulty(Difficulty.EASY);
+            SchedulerAdapter.runGlobalRepeatingTask(20,20, () -> {
+                for (World world : Bukkit.getServer().getWorlds()) {
+                    if (!slimesEnabled){
+                        world.getEntitiesByClass(Slime.class).forEach(Entity::remove);
                     }
+
+                    world.setStorm(false);
+                    world.setThundering(false);
+                    world.setTime(500);
+                    world.setDifficulty(Difficulty.EASY);
                 }
-            }, 20L, 20); // Schedule this to run every 5 minutes, for example
+            });
+
         }
 
     }

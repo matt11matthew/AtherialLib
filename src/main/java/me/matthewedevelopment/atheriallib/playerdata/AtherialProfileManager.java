@@ -1,6 +1,7 @@
 package me.matthewedevelopment.atheriallib.playerdata;
 
 import me.matthewedevelopment.atheriallib.AtherialLib;
+import me.matthewedevelopment.atheriallib.SchedulerAdapter;
 import me.matthewedevelopment.atheriallib.database.mysql.MySqlHandler;
 import me.matthewedevelopment.atheriallib.io.Callback;
 import me.matthewedevelopment.atheriallib.playerdata.db.DatabaseTableManager;
@@ -119,7 +120,7 @@ public class AtherialProfileManager  implements Listener {
 //            bukkitConfig.saveConfiguration();
 //        }
 
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(atherialLib, () -> {
+        SchedulerAdapter.runGlobalRepeatingTask( 20*30,20*30, () -> {
             if (!intervalSave)return;
             if (profiles.isEmpty())return;
             for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
@@ -134,12 +135,8 @@ public class AtherialProfileManager  implements Listener {
                     }
                 }
             }
-//            if (bukkitConfig!=null){
-//
-//
-//                bukkitConfig.saveConfiguration();
-//            }
-        }, 20*30, 20*30);
+        } );
+
     }
 
     public void stop(){

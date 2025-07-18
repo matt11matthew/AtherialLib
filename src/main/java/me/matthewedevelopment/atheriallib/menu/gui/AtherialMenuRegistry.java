@@ -1,6 +1,6 @@
 package me.matthewedevelopment.atheriallib.menu.gui;
 
-import me.matthewedevelopment.atheriallib.AtherialLib;
+import me.matthewedevelopment.atheriallib.SchedulerAdapter;
 import me.matthewedevelopment.atheriallib.menu.gui.events.AtherialMenuCloseEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -21,12 +21,13 @@ public class AtherialMenuRegistry {
     }
 
     public  void start() {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(AtherialLib.getInstance(),() -> {
+        SchedulerAdapter.runGlobalRepeatingTask(40,40, () -> {
             updateGUI(true);
-        },40L,40L);
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(AtherialLib.getInstance(),() -> {
+        });
+        SchedulerAdapter.runGlobalRepeatingTask(15,15, () -> {
             updateGUI(false);
-        },15L,15L);
+        });
+
     }
 
     public Map<UUID, AtherialMenu> getMenuMap() {

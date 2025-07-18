@@ -1,6 +1,6 @@
 package me.matthewedevelopment.atheriallib.chat;
 
-import me.matthewedevelopment.atheriallib.AtherialLib;
+import me.matthewedevelopment.atheriallib.SchedulerAdapter;
 import me.matthewedevelopment.atheriallib.utilities.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -18,8 +18,8 @@ public class ChatPromptHandler  implements Listener {
     public ChatPromptHandler() {
         this.listeningMap = new HashMap<>();
 
-        Bukkit.getScheduler().scheduleAsyncRepeatingTask(AtherialLib.getInstance(),() -> {
 
+        SchedulerAdapter.runGlobalRepeatingTask(20,20, () -> {
             Set<UUID> toRemoveList = new HashSet<>();
 
             for (UUID uuid : listeningMap.keySet()) {
@@ -37,7 +37,8 @@ public class ChatPromptHandler  implements Listener {
                 }
             }
             toRemoveList.forEach(uuid -> listeningMap.remove(uuid));
-        },20,20);
+        });
+
     }
 
     public void chatPrompt(Player player, String message,Chat chat, long timeout){

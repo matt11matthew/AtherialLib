@@ -1,6 +1,7 @@
 package me.matthewedevelopment.atheriallib.minigame;
 
 import me.matthewedevelopment.atheriallib.AtherialLib;
+import me.matthewedevelopment.atheriallib.SchedulerAdapter;
 import me.matthewedevelopment.atheriallib.handler.Handler;
 import me.matthewedevelopment.atheriallib.handler.HandlerPriority;
 import me.matthewedevelopment.atheriallib.minigame.commands.GameMapCommand;
@@ -98,17 +99,20 @@ public  class GameMapHandler extends Handler<AtherialLib, GameMapConfig> impleme
         gameMapRegistry.register();
 
 
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this.core,() -> {
+        SchedulerAdapter.runGlobalRepeatingTask(5,5, () -> {
             for (LoadedGameMap value : gameMapRegistry.getUuidLoadedGameMapMap().values()) {
                 value.selfUpdate();
                 value.update();
             }
-        },5L,5L);
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this.core,() -> {
+        });
+
+        SchedulerAdapter.runGlobalRepeatingTask(1,1, () -> {
             for (LoadedGameMap<? > value : gameMapRegistry.getUuidLoadedGameMapMap().values()) {
                 value.fastUpdate();
             }
-        },1L,1L);
+        });
+
+
 
 
 
