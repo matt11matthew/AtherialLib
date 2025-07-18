@@ -100,7 +100,7 @@
             <url>https://jitpack.io</url>
         </repository>
          <repository>
-            <id>nexus/id>
+            <id>nexus</id>
             <url>https://nexus.matthewe.me/repository/group/</url>
         </repository>
     </repositories>
