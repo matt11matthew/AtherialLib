@@ -101,7 +101,7 @@
         </repository>
          <repository>
             <id>nexus</id>
-            <url>https://nexus.matthewe.me/repository/group/</url>
+            <url>https://nexus.matthewe.me/repository/group</url>
         </repository>
     </repositories>
 
