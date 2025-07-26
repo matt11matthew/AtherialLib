@@ -242,6 +242,26 @@ public class AtherialProfileManager  implements Listener {
 
     }
 
+    /**
+     * Forcefully unload a player's profile without saving it.
+     * Useful when another plugin or system takes over saving.
+     *
+     * @param clazz  The profile class type
+     * @param uuid   The player's UUID
+     */
+    public void forceUnloadProfile(Class<? extends AtherialProfile> clazz, UUID uuid) {
+        String profileName = clazz.getSimpleName();
+
+        if (!playerDataMap.containsKey(profileName)) return;
+
+        Map<UUID, AtherialProfile<?>> profilesMap = playerDataMap.get(profileName);
+        if (profilesMap == null) return;
+
+        AtherialProfile<?> removed = profilesMap.remove(uuid);
+        if (removed != null) {
+            Bukkit.getLogger().info("[AtherialLib] Force-unloaded profile " + profileName + " for player " + uuid);
+        }
+    }
 
     public Connection getConnection() {
         MySqlHandler sqlHandler = AtherialLib.getInstance().getSqlHandler();
