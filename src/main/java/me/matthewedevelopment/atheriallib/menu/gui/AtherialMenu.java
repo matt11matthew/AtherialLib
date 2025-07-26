@@ -76,8 +76,8 @@ public abstract class AtherialMenu<C extends YamlConfig> {
     public void destroy(){
         AtherialLib.getInstance().getMenuRegistry().destroy(player);
     }
-    public void create() {
 
+    public void create() {
         if (AtherialLib.getInstance().getMenuRegistry().getMenuMap().containsKey(player.getUniqueId())) {
             AtherialLib.getInstance().getMenuRegistry().getMenuMap().get(player.getUniqueId()).onRealClose();
             AtherialLib.getInstance().getMenuRegistry().getMenuMap().remove(player.getUniqueId());
@@ -145,18 +145,15 @@ public abstract class AtherialMenu<C extends YamlConfig> {
 
                 if (!ItemUtils.isEmpty(menu.getInventory())){
                     AtherialTasks.runSync(() -> {
-
                         player.openInventory(menu.getInventory());
                     });
-                    break;
+                   return;
                 }
             }
-            if (!ItemUtils.isEmpty(menu.getInventory())){
-                AtherialTasks.runSync(() -> {
+            AtherialTasks.runSync(() -> {
 
-                    player.openInventory(menu.getInventory());
-                });
-            }
+                player.openInventory(menu.getInventory());
+            });
         });
     }
 
