@@ -83,14 +83,17 @@ public abstract class AtherialMenu<C extends YamlConfig> {
             AtherialLib.getInstance().getMenuRegistry().getMenuMap().remove(player.getUniqueId());
         }
         AtherialLib.getInstance().getMenuRegistry().getMenuMap().put(player.getUniqueId(), this);
-
         if (menu == null) {
+            needsUpdate = true;
             menu = generateMenu(player);
+            firstUpdate();
 
         }
 
         open();
     }
+    public abstract int getRows();
+    public abstract String getTitle();
 
     public String colorize(String input) {
         if (menu==null) {
@@ -128,7 +131,13 @@ public abstract class AtherialMenu<C extends YamlConfig> {
         return menu;
     }
 
-    public abstract SGMenu generateMenu(Player player);
+    public  SGMenu generateMenu(Player player) {
+        SGMenu sgMenu = AtherialLib.getInstance().getMenu().create(this, getTitle(), getRows());
+        return sgMenu;
+    }
+
+
+
     public void open() {
 
         AtherialTasks.runAsync(() -> {
@@ -162,5 +171,16 @@ public abstract class AtherialMenu<C extends YamlConfig> {
         update();
         menu.refreshInventory(player);
         updating = false;
+        needsUpdate  = false;
+    }
+
+    private boolean needsUpdate;
+
+    public  void setNeedsUpdate(boolean needsUpdate) {
+        this.needsUpdate = needsUpdate;
+    }
+
+    public boolean needsUpdate() {
+        return needsUpdate;
     }
 }

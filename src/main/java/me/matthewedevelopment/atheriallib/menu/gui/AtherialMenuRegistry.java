@@ -51,11 +51,17 @@ public class AtherialMenuRegistry {
                 if (atherialMenu.isSlow()){
 
                     if (slow) {
-                        atherialMenu.firstUpdate();
+                        if (atherialMenu.needsUpdate()) {
+                            atherialMenu.firstUpdate();
+                        }
+
                     }
                 } else {
                     if (!slow) {
-                        atherialMenu.firstUpdate();
+                        if (atherialMenu.needsUpdate()) {
+
+                            atherialMenu.firstUpdate();
+                        }
 
                     }
                 }

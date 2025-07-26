@@ -1,5 +1,6 @@
 package spigui.menu;
 
+import me.matthewedevelopment.atheriallib.menu.gui.AtherialMenu;
 import spigui.SpiGUI;
 import spigui.buttons.SGButton;
 import spigui.toolbar.SGToolbarBuilder;
@@ -23,7 +24,6 @@ import java.util.function.Consumer;
  * <br><br>
  * You do not instantiate this class when you need it - as you would
  * have done with the older version of the library - rather you make a
- * call to {@link SpiGUI#create(String, int)} (or {@link SpiGUI#create(String, int, String)})
  * from your plugin's {@link SpiGUI} instance.
  * <br><br>
  * This creates an inventory that is already associated with your plugin.
@@ -32,6 +32,7 @@ import java.util.function.Consumer;
  */@Deprecated
 public class SGMenu implements InventoryHolder {
 
+     private AtherialMenu link;
     /** The plugin (owner of the SpiGUI instance) that created this inventory. */
     private final JavaPlugin owner;
     /** The SpiGUI instance that created this inventory. */
@@ -87,7 +88,6 @@ public class SGMenu implements InventoryHolder {
     private Consumer<SGMenu> onPageChange;
 
     /**
-     * <b>Intended for internal use only. Use {@link SpiGUI#create(String, int)} or {@link SpiGUI#create(String, int, String)}!</b><br>
      * Used by the library internally to construct an SGMenu.
      * <br>
      * The name parameter is color code translated.
@@ -98,10 +98,9 @@ public class SGMenu implements InventoryHolder {
      * @param rowsPerPage The number of rows per page.
      * @param tag The inventory's tag.
      *
-     * @see SpiGUI#create(String, int)
-     * @see SpiGUI#create(String, int, String)
      */
-    public SGMenu(JavaPlugin owner, SpiGUI spiGUI, String name, int rowsPerPage, String tag) {
+    public SGMenu(AtherialMenu link, JavaPlugin owner, SpiGUI spiGUI, String name, int rowsPerPage, String tag) {
+        this.link = link;
         this.owner = owner;
         this.spiGUI = spiGUI;
         this.name = ChatColor.translateAlternateColorCodes('&', name);
@@ -303,6 +302,8 @@ public class SGMenu implements InventoryHolder {
     public void addButton(SGButton button) {
         // If slot 0 is empty, but it's the 'highest filled slot', then set slot 0 to contain button.
         // (This is an edge case for when the whole inventory is empty).
+        link.setNeedsUpdate(true);
+
         if (getHighestFilledSlot() == 0 && getButton(0) == null) {
             setButton(0, button);
             return;
@@ -335,6 +336,9 @@ public class SGMenu implements InventoryHolder {
      */
     public void setButton(int slot, SGButton button) {
         items.put(slot, button);
+        link.setNeedsUpdate(true);
+
+
     }
 
     /**

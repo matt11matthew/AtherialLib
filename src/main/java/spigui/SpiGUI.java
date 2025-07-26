@@ -2,6 +2,7 @@ package spigui;
 
 
 
+import me.matthewedevelopment.atheriallib.menu.gui.AtherialMenu;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.Inventory;
@@ -68,41 +69,7 @@ public class SpiGUI {
      */
     private SGToolbarBuilder defaultToolbarBuilder = new SGDefaultToolbarBuilder();
 
-    /**
-     * Creates an instance of the SpiGUI library associated with a given plugin.
-     * <br><br>
-     * This is intended to be stored as a static field in your plugin with a public static
-     * getter (or a public static field - dealer's choice) and you create inventories through
-     * this class by calling {@link #create(String, int)} on the static {@link SpiGUI} field.
-     * <br>
-     * A lengthy justification of this is provided below, should you care to read it.
-     *
-     * <br><br>
-     *
-     * <p><b>Note:</b></p>
-     * The association with a plugin is an important design decision that was overlooked
-     * in this library's predecessor, SpigotPaginatedGUI.
-     * <br><br>
-     * This library is not designed to act as a standalone plugin because that is inconvenient
-     * for both developers and server administrators for such a relatively insignificant task - the
-     * library is more just a small convenience measure. However, this library still needs to register
-     * a listener under a given plugin, which is where the issue arises; which plugin should the
-     * library use to register events with. Previously, it was whichever plugin made the call to
-     * <code>PaginatedGUI.prepare</code> first, however this obviously causes problems if that
-     * particular plugin is unloaded - as any other plugins using the library no longer have the
-     * listener that was registered.
-     * <br><br>
-     * This approach was therefore considered a viable compromise - each plugin registers its own
-     * listener, however the downside of this is that each inventory and the listener must now
-     * also be registered with the plugin too.
-     * <br><br>
-     * Thus, the design whereby this class is registered as a static field on a {@link JavaPlugin}
-     * instance and serves as a proxy for creating () inventories and an instance
-     * of the {@link SGMenuListener} registered with that plugin seemed like a good way to try
-     * and minimize the inconvenience of the approach.
-     *
-     * @param plugin The plugin using SpiGUI.
-     */
+
     public SpiGUI(JavaPlugin plugin) {
         this.plugin = plugin;
 
@@ -114,28 +81,10 @@ public class SpiGUI {
     }
 
     private SGMenuListener sgMenuListener;
-    /**
-     * An alias for {@link #create(String, int, String)} with the tag set to null.
-     * Use this method if you don't need the tag, or you don't know what it's for.
-     * <br>
-     * The rows parameter is used in place of the size parameter of the
-     * Bukkit/Spigot inventory API. So, if you wanted an inventory of size
-     * 27, you would supply 3 as the value of the <code>rows</code> parameter.
-     *
-     * <br><br>
-     *
-     * The <code>name</code> parameter supports the following 'placeholders':
-     * <ul>
-     * <li><code>{currentPage}</code>: the current page the inventory is on.</li>
-     * <li><code>{maxPage}</code>: the final page of the inventory.</li>
-     * </ul>
-     *
-     * @param name The display name of the inventory.
-     * @param rows The number of rows the inventory should have per page.
-     * @return The created inventory.
-     */
-    public SGMenu create(String name, int rows) {
-        return create(name, rows, null);
+
+
+    public SGMenu create(AtherialMenu AtherialMenu, String name, int rows) {
+        return create(AtherialMenu, name, rows, null);
     }
 
     /**
@@ -177,8 +126,8 @@ public class SpiGUI {
      * @param tag The inventory's tag.
      * @return The created inventory.
      */
-    public SGMenu create(String name, int rows, String tag) {
-        return new SGMenu(plugin, this, name, rows, tag);
+    public SGMenu create(AtherialMenu menu, String name, int rows, String tag) {
+        return new SGMenu(menu, plugin, this, name, rows, tag);
     }
 
     /**
