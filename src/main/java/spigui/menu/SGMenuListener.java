@@ -36,6 +36,8 @@ public class SGMenuListener implements Listener {
     private static final ClickType[] PERMITTED_MENU_CLICK_TYPES = new ClickType[]{
         ClickType.LEFT,
         ClickType.RIGHT,
+            ClickType.SHIFT_LEFT,
+            ClickType.SHIFT_RIGHT,
             ClickType.MIDDLE
     };
 
