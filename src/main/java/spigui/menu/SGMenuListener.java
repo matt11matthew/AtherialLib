@@ -1,10 +1,5 @@
 package spigui.menu;
 
-import spigui.SpiGUI;
-import spigui.buttons.SGButton;
-import spigui.menu.SGMenu;
-import spigui.toolbar.SGToolbarBuilder;
-import spigui.toolbar.SGToolbarButtonType;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -13,6 +8,10 @@ import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.plugin.java.JavaPlugin;
+import spigui.SpiGUI;
+import spigui.buttons.SGButton;
+import spigui.toolbar.SGToolbarBuilder;
+import spigui.toolbar.SGToolbarButtonType;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -150,13 +149,19 @@ public class SGMenuListener implements Listener {
             event.setResult(Event.Result.DENY);
             return;
         }
+        InventoryAction action = event.getAction();
+        ClickType clickType = event.getClick();
 
-        // If the action is blocked, instantly deny the event and do nothing
-        // else.
-        if (Arrays.stream(BLOCKED_MENU_ACTIONS).anyMatch(action -> action == event.getAction())) {
-            event.setResult(Event.Result.DENY);
-            return;
+        if (Arrays.stream(BLOCKED_MENU_ACTIONS).anyMatch(a -> a == action)) {
+            // Allow SHIFT_LEFT and SHIFT_RIGHT despite being MOVE_TO_OTHER_INVENTORY
+            if ((clickType == ClickType.SHIFT_LEFT || clickType == ClickType.SHIFT_RIGHT) && action == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                // Do nothing, allow it
+            } else {
+                event.setResult(Event.Result.DENY);
+                return;
+            }
         }
+
 
         // Get the instance of the SpiGUI that was clicked.
         spigui.menu.SGMenu clickedGui = (spigui.menu.SGMenu) event.getClickedInventory().getHolder();
