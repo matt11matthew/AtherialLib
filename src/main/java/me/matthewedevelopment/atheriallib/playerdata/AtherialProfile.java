@@ -78,6 +78,33 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
 
         return loadResultFromSet(resultSet);
     }
+
+    public T loadSyncOffline(Connection sqliteConnection) {
+        try {
+            // Construct and execute an SQL query to retrieve the player's data
+            String query = "SELECT * FROM " + getKey() + " WHERE uuid = ?";
+            PreparedStatement statement = sqliteConnection.prepareStatement(query);
+            statement.setString(1, uuid.toString());
+
+            // Execute the query and process the result set
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                // Data exists in the database, create a new instance of the profile and load data from the result set
+                T loadedProfile = loadFromRS(resultSet);
+                resultSet.close();
+                statement.close();
+                return loadedProfile;
+            } else {
+                // No data found in the database,
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
     public T loadSync(Player player, Connection sqliteConnection) {
 //        checkTable();
         try {
