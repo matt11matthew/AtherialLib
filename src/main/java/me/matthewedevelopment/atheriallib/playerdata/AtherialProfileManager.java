@@ -201,6 +201,9 @@ public class AtherialProfileManager  implements Listener {
                                 case LONG:
                                     statement.setLong(updateParameterIndex, column.getValueAsLong());
                                     break;
+                                case DOUBLE:
+                                    statement.setDouble(updateParameterIndex, column.getValueAsDouble());
+                                    break;
                                 case TEXT:
                                     statement.setString(updateParameterIndex, column.getValueAsString());
                                     break;

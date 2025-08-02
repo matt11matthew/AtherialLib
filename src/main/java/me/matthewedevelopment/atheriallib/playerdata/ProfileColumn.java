@@ -35,6 +35,10 @@ public class ProfileColumn {
         return (long) value;
     }
 
+    public double getValueAsDouble() {
+        return (double) value;
+    }
+
     public int getValueAsInt() {
         return (int) value;
     }

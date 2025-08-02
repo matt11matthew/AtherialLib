@@ -183,6 +183,11 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
                             case LONG:
                                 statement.setLong(parameterIndex, column.getValueAsLong());
                                 break;
+
+                            case DOUBLE:
+                                statement.setDouble(parameterIndex, column.getValueAsDouble());
+                                break;
+
                             case TEXT:
                                 statement.setString(parameterIndex, column.getValueAsString());
                                 break;
@@ -239,6 +244,9 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
                             switch (column.getType()) {
                                 case LONG:
                                     statement.setLong(updateParameterIndex, column.getValueAsLong());
+                                    break;
+                                case DOUBLE:
+                                    statement.setDouble(updateParameterIndex, column.getValueAsDouble());
                                     break;
                                 case TEXT:
                                     statement.setString(updateParameterIndex, column.getValueAsString());
@@ -303,6 +311,9 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
                             case LONG:
                                 statement.setLong(parameterIndex, column.getValueAsLong());
                                 break;
+                            case DOUBLE:
+                                statement.setDouble(parameterIndex, column.getValueAsDouble());
+                                break;
                             case TEXT:
                                 statement.setString(parameterIndex, column.getValueAsString());
                                 break;
@@ -359,6 +370,9 @@ public abstract class AtherialProfile<T extends AtherialProfile<T>> {
                             switch (column.getType()) {
                                 case LONG:
                                     statement.setLong(updateParameterIndex, column.getValueAsLong());
+                                    break;
+                                case DOUBLE:
+                                    statement.setDouble(updateParameterIndex, column.getValueAsDouble());
                                     break;
                                 case TEXT:
                                     statement.setString(updateParameterIndex, column.getValueAsString());
