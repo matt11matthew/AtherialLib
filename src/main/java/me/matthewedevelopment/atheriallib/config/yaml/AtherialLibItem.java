@@ -132,6 +132,8 @@ public class AtherialLibItem {
         this.enchantments = clone.enchantments;
         this.headDatabaseHead = clone.headDatabaseHead;
         this.modelId = clone.modelId;
+        this.commands = clone.commands;
+
         this.multiSlots = clone.multiSlots;
 
     }
