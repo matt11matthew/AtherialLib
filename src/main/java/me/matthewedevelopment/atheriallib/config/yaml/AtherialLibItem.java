@@ -1,5 +1,7 @@
 package me.matthewedevelopment.atheriallib.config.yaml;
 
+import lombok.Getter;
+import lombok.Setter;
 import me.matthewedevelopment.atheriallib.config.yaml.serializables.AtherialLibItemSerializable;
 import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.IntSimpleList;
 import me.matthewedevelopment.atheriallib.dependency.headdatabase.HeadDatabaseDependency;
@@ -27,11 +29,23 @@ public class AtherialLibItem {
     private int amount;
     private String displayName;
     private List<String> lore;
-    private List<String> commands =new ArrayList<>();
-    private int modelId=0;
+    private List<String> commands = new ArrayList<>();
+    private int modelId = 0;
     private Map<String, Integer> enchantments;
     private String headDatabaseHead;
+
+    @Getter
+    private String customModel;
     private IntSimpleList multiSlots = null;
+
+    public AtherialLibItem setCustomModel(String customModel) {
+        this.customModel = customModel;
+        return this;
+    }
+
+    @Getter
+    @Setter
+    private boolean snakeCase;
 
     public int getModelId() {
         return modelId;
@@ -51,7 +65,7 @@ public class AtherialLibItem {
     }
 
     public static AtherialLibItem of(ConfigurationSection section, String key) {
-        if (!section.isSet(key))return null;
+        if (!section.isSet(key)) return null;
         MemorySection memorySection = (MemorySection) section.get(key);
         return new AtherialLibItemSerializable().deserializeComplex(memorySection.getValues(false));
     }
@@ -70,7 +84,8 @@ public class AtherialLibItem {
     private String skullOwner;
 
     private int slot = -1;
-    public AtherialLibItem(Material type, int amount, String displayName, List<String> lore, String skullOwner, int slot,Map<String, Integer> enchantments) {
+
+    public AtherialLibItem(Material type, int amount, String displayName, List<String> lore, String skullOwner, int slot, Map<String, Integer> enchantments) {
         this.type = type;
         this.amount = amount;
         this.displayName = displayName;
@@ -103,10 +118,10 @@ public class AtherialLibItem {
     }
 
     public AtherialLibItem addEnchantment(Enchantment enchantment, int level) {
-       if (this.enchantments==null){
-           this.enchantments=new HashMap<>();
-       }
-       this.enchantments.put(enchantment.getName().toUpperCase(),level);
+        if (this.enchantments == null) {
+            this.enchantments = new HashMap<>();
+        }
+        this.enchantments.put(enchantment.getName().toUpperCase(), level);
         return this;
     }
 
@@ -122,21 +137,25 @@ public class AtherialLibItem {
     }
 
     public AtherialLibItem(AtherialLibItem clone) {
-        this.type=clone.type;
-        this.displayName=clone.displayName;
-        this.lore=clone.lore;
-        this.amount=clone.amount;
-        this.data=clone.data;
-        this.skullOwner=clone.skullOwner;
-        this.slot=clone.slot;
+        this.type = clone.type;
+        this.displayName = clone.displayName;
+        this.lore = clone.lore;
+        this.amount = clone.amount;
+        this.data = clone.data;
+        this.skullOwner = clone.skullOwner;
+        this.slot = clone.slot;
         this.enchantments = clone.enchantments;
         this.headDatabaseHead = clone.headDatabaseHead;
         this.modelId = clone.modelId;
         this.commands = clone.commands;
 
+        this.customModel = clone.customModel;
+
+        this.snakeCase = clone.snakeCase;
         this.multiSlots = clone.multiSlots;
 
     }
+
     /*
         private Material type;
     private int amount;
@@ -155,23 +174,24 @@ public class AtherialLibItem {
      */
     public AtherialLibItem() {
     }
+
     public AtherialLibItem(ItemStack itemStack) {
         this.slot = -1;
 
         this.amount = itemStack.getAmount();
 
-        this.type=itemStack.getType();
+        this.type = itemStack.getType();
 //        this.data = itemStack.getData().getData();
 
-        if (itemStack.hasItemMeta()){
+        if (itemStack.hasItemMeta()) {
             ItemMeta itemMeta = itemStack.getItemMeta();
-            this.lore=itemMeta.hasLore()?itemMeta.getLore():new ArrayList<>();
-            this.displayName =itemMeta.hasDisplayName()?itemMeta.getDisplayName():null;
+            this.lore = itemMeta.hasLore() ? itemMeta.getLore() : new ArrayList<>();
+            this.displayName = itemMeta.hasDisplayName() ? itemMeta.getDisplayName() : null;
         }
-        if (!itemStack.getEnchantments().isEmpty()){
-            this.enchantments=new HashMap<>();
+        if (!itemStack.getEnchantments().isEmpty()) {
+            this.enchantments = new HashMap<>();
             for (Map.Entry<Enchantment, Integer> entry : itemStack.getEnchantments().entrySet()) {
-                enchantments.put(entry.getKey().getName().toUpperCase(),entry.getValue());
+                enchantments.put(entry.getKey().getName().toUpperCase(), entry.getValue());
             }
         }
     }
@@ -180,6 +200,7 @@ public class AtherialLibItem {
     public int getSlot() {
         return slot;
     }
+
     public ItemStack build() {
 
         return build(ChatUtils::colorize);
@@ -187,23 +208,24 @@ public class AtherialLibItem {
 
     public ItemStack build(StringReplacer stringReplacer, boolean allFlags) {
         ItemStack build = build(stringReplacer);
-        if (!allFlags)return build;
+        if (!allFlags) return build;
         ItemMeta itemMeta = build.getItemMeta();
 
         itemMeta.addItemFlags(ItemFlag.values());
         build.setItemMeta(itemMeta);
         return build;
     }
+
     public ItemStack build(StringReplacer stringReplacer) {
-        ItemStack itemStack=null;
+        ItemStack itemStack = null;
         if (amount < 1) {
             amount = 1;
         }
-        if (headDatabaseHead!=null&&HeadDatabaseDependency.get()!=null){
+        if (headDatabaseHead != null && HeadDatabaseDependency.get() != null) {
             itemStack = HeadDatabaseDependency.get().createHead(headDatabaseHead);
         } else {
 
-            if (data!=-1){
+            if (data != -1) {
                 itemStack = new ItemStack(type, amount, (short) data);
             } else {
 
@@ -211,39 +233,44 @@ public class AtherialLibItem {
             }
         }
 
-        ItemMeta itemMeta=itemStack.getItemMeta();
+        ItemMeta itemMeta = itemStack.getItemMeta();
 
-        if (displayName!=null){
+        if (displayName != null) {
             itemMeta.setDisplayName(stringReplacer.replace(new String(displayName)));
         }
-        if (lore!=null&&!lore.isEmpty()){
+        if (lore != null && !lore.isEmpty()) {
             List<String> newLore = new ArrayList<>();
             for (String s : lore) {
                 newLore.add(stringReplacer.replace(new String(s)));
             }
-            if (!newLore.isEmpty()){
+            if (!newLore.isEmpty()) {
                 itemMeta.setLore(newLore);
             }
         }
-        itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE,ItemFlag.HIDE_ATTRIBUTES);
-        if (this.modelId!=0){
+        itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES);
+        if (this.modelId != 0) {
             itemMeta.setCustomModelData(modelId);
 
         }
         itemStack.setItemMeta(itemMeta);
 
-        if (enchantments!=null&&!enchantments.isEmpty()){
+        if (enchantments != null && !enchantments.isEmpty()) {
             for (String s : enchantments.keySet()) {
                 Enchantment byName = Enchantment.getByName(s.toLowerCase());
-                if (byName==null)continue;
+                if (byName == null) continue;
 
-                itemStack.addUnsafeEnchantment(byName,enchantments.get(s));
+                itemStack.addUnsafeEnchantment(byName, enchantments.get(s));
 
             }
         }
-        if (skullOwner!=null){
+
+        if (customModel != null && !customModel.isEmpty()) {
+            itemStack = CustomItemUtil.applyCustomItem(itemStack, customModel);
+        }
+        if (skullOwner != null) {
             return new ItemBuilder(itemStack).skullOwner(skullOwner).build();
         }
+
         return itemStack;
     }
 
