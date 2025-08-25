@@ -47,7 +47,7 @@ public class TimeUtils {
 
         String diff = sb.toString();
 
-        return diff.isEmpty() ? "N/A" : diff;
+        return diff.isEmpty() ? "0s" : diff;
     }
 
     public static String formatLongTime(long time, String numColor, String letterColor) {
@@ -80,7 +80,7 @@ public class TimeUtils {
 
         String diff = sb.toString();
 
-        return diff.isEmpty() ? "N/A" : diff;
+        return diff.isEmpty() ? "0s" : diff;
     }
     public static String formatTime(final String format, final long time) {
         final SimpleDateFormat sdf = new SimpleDateFormat(format);
