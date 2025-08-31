@@ -153,6 +153,10 @@ public abstract class DataObjectRegistry<T extends DataObject<T>> {
                         case TEXT:
                             statement.setString(updateParameterIndex, column.getValueAsString());
                             break;
+
+                        case LONGTEXT:
+                            statement.setString(updateParameterIndex, column.getValueAsString());
+                            break;
                         case INTEGER:
                             statement.setInt(updateParameterIndex, column.getValueAsInt());
                             break;
@@ -259,6 +263,10 @@ public abstract class DataObjectRegistry<T extends DataObject<T>> {
                             case TEXT:
                                 statement.setString(parameterIndex, column.getValueAsString());
                                 break;
+
+                            case LONGTEXT:
+                                statement.setString(parameterIndex, column.getValueAsString());
+                                break;
                             case INTEGER:
                                 statement.setInt(parameterIndex, column.getValueAsInt());
                                 break;
@@ -314,6 +322,10 @@ public abstract class DataObjectRegistry<T extends DataObject<T>> {
                             statement.setLong(parameterIndex, column.getValueAsLong());
                             break;
                         case TEXT:
+                            statement.setString(parameterIndex, column.getValueAsString());
+                            break;
+
+                            case LONGTEXT:
                             statement.setString(parameterIndex, column.getValueAsString());
                             break;
                         case INTEGER:

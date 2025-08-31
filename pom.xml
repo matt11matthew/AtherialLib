@@ -6,7 +6,7 @@
 
     <groupId>me.matthewedevelopment</groupId>
     <artifactId>atheriallib</artifactId>
-    <version>1.1.10</version>
+    <version>1.1.11</version>
 <!--    <packaging>jar</packaging>-->
     <name>AtherialLib</name>
 

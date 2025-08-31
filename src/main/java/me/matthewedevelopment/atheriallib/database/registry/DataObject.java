@@ -117,6 +117,12 @@ public abstract class DataObject<T extends DataObject<T>> {
                         case TEXT:
                             statement.setString(updateParameterIndex, column.getValueAsString());
                             break;
+
+
+
+                        case LONGTEXT:
+                            statement.setString(updateParameterIndex, column.getValueAsString());
+                            break;
                         case INTEGER:
                             statement.setInt(updateParameterIndex, column.getValueAsInt());
                             break;
