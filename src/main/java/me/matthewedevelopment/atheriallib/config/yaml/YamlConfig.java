@@ -92,6 +92,7 @@ public  class YamlConfig<A extends JavaPlugin> implements Config {
                                     } else if (configSection instanceof Map) {
                                         map = (Map<String, Object>) configSection;
                                     } else {
+                                        System.err.println(annotation.value());
                                         System.err.println(configSection);
                                         throw new IllegalArgumentException("Unsupported configuration object type");
 
