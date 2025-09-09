@@ -97,8 +97,15 @@ public  class YamlConfig<A extends JavaPlugin> implements Config {
                                         throw new IllegalArgumentException("Unsupported configuration object type");
 
                                     }
-                                    Object deserializedObject = serializer.deserializeComplex(map);
-                                    field.set(this, deserializedObject);
+                                    try {
+                                        Object deserializedObject = serializer.deserializeComplex(map);
+                                        field.set(this, deserializedObject);
+                                    } catch(Exception e) {
+                                        System.err.println(annotation.value());
+                                        System.err.println(configSection);
+                                        e.printStackTrace();
+                                        throw new IllegalArgumentException("Unsupported configuration serialization type");
+                                    }
                                 } else {
                                     Object deserializedObject = serializer.deserializeSimple(configSection);
                                     field.set(this, deserializedObject);
