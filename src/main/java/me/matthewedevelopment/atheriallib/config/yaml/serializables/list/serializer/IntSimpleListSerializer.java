@@ -41,7 +41,7 @@ public class IntSimpleListSerializer implements ConfigSerializable<IntSimpleList
         if (textValue.equals("[]")){
             return list;
         }
-        textValue=textValue.replace("[", "").replace("]", "").trim();
+        textValue=textValue.replaceAll(" ", "").trim().replace("[", "").replace("]", "").trim();
         if (textValue.contains(",")) {
             for (String s : textValue.split(",")) {
                 list = list.add(NumberUtils.getInteger(s));
