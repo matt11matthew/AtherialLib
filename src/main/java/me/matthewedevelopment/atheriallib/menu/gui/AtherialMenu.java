@@ -92,6 +92,12 @@ public abstract class AtherialMenu<C extends YamlConfig> {
 
         open();
     }
+
+    public void forceUpdate() {
+        setNeedsUpdate(true);
+        firstUpdate();
+    }
+
     public abstract int getRows();
     public abstract String getTitle();
 
