@@ -1,13 +1,14 @@
 package me.matthewedevelopment.atheriallib.chat;
 
-@Deprecated
-public class ChatPrompt {
-    private String message;
+import net.kyori.adventure.text.Component;
+
+public class NewChatPrompt {
+    private Component message;
     private Chat chat;
 
     private long timeout;
 
-    public ChatPrompt(String message, Chat chat, long timeout) {
+    public NewChatPrompt(Component message, Chat chat, long timeout) {
         this.message = message;
         this.chat = chat;
         this.timeout = timeout;
@@ -16,7 +17,7 @@ public class ChatPrompt {
         return timeout;
     }
 
-    public String getMessage() {
+    public Component getMessage() {
         return message;
     }
 
