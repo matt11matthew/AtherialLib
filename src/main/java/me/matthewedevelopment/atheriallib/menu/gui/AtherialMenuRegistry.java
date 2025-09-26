@@ -88,5 +88,12 @@ public class AtherialMenuRegistry {
             menuHashMap.remove(player.getUniqueId());
         }
     }
+
+    public AtherialMenu get(Player player) {
+        if (menuHashMap.containsKey(player.getUniqueId())){
+           return menuHashMap.get(player.getUniqueId());
+        }
+        return null;
+    }
 }
 
