@@ -4,6 +4,7 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -11,11 +12,10 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 /**
  * Created by Matthew E on 11/16/2023 at 1:11 PM for the project AtherialLib
  */
@@ -184,19 +184,36 @@ public class ChatUtils {
 //
 //        return result.toString();
 //    }
-    public static String formatEnum(String input) {
-        if (input.contains("_")) {
-            StringBuilder stringBuilder = new StringBuilder();
-            for (String s : input.split("_")) {
+public static String formatEnum(String input) {
+    // Words to keep lowercase if not the first word
+    Set<String> lowerWords = Set.of("of", "with", "and", "in", "on", "at", "to");
 
-                stringBuilder.append(formatEnum(s));
+    if (input.contains("_")) {
+        StringBuilder stringBuilder = new StringBuilder();
+        String[] parts = input.split("_");
+
+        for (int i = 0; i < parts.length; i++) {
+            String s = parts[i].toLowerCase().trim();
+
+            if (i == 0 || !lowerWords.contains(s)) {
+                // Capitalize first letter
+                stringBuilder.append(s.substring(0, 1).toUpperCase()).append(s.substring(1));
+            } else {
+                // Keep lowercase for "of", "with", etc.
+                stringBuilder.append(s);
+            }
+
+            if (i < parts.length - 1) {
                 stringBuilder.append(" ");
             }
-            return stringBuilder.toString().trim();
-        } else {
-            return input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase().trim();
         }
+        return stringBuilder.toString().trim();
+    } else {
+        input = input.toLowerCase().trim();
+        return (input.substring(0, 1).toUpperCase() + input.substring(1)).trim();
     }
+}
+
     public static boolean isMiniMessage(String message) {
         if (message == null) return false;
         // If it contains legacy '&' or '§' codes, it is NOT MiniMessage
