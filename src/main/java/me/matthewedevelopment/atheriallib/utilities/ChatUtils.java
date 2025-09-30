@@ -186,7 +186,7 @@ public class ChatUtils {
 //    }
 public static String formatEnum(String input) {
     // Words to keep lowercase if not the first word
-    Set<String> lowerWords = Set.of("of", "with", "and", "in", "on", "at", "to");
+    Set<String> lowerWords = Set.of("of", "with", "and", "in", "on", "at", "to", "the");
 
     if (input.contains("_")) {
         StringBuilder stringBuilder = new StringBuilder();
