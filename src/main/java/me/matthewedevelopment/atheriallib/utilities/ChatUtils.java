@@ -188,6 +188,9 @@ public static String formatEnum(String input) {
     // Words to keep lowercase if not the first word
     Set<String> lowerWords = Set.of("of", "with", "and", "in", "on", "at", "to", "the");
 
+    // Words to always keep uppercase
+    Set<String> upperWords = Set.of("tnt");
+
     if (input.contains("_")) {
         StringBuilder stringBuilder = new StringBuilder();
         String[] parts = input.split("_");
@@ -195,8 +198,11 @@ public static String formatEnum(String input) {
         for (int i = 0; i < parts.length; i++) {
             String s = parts[i].toLowerCase().trim();
 
-            if (i == 0 || !lowerWords.contains(s)) {
-                // Capitalize first letter
+            if (upperWords.contains(s)) {
+                // Always force uppercase (e.g., TNT)
+                stringBuilder.append(s.toUpperCase());
+            } else if (i == 0 || !lowerWords.contains(s)) {
+                // Capitalize first letter normally
                 stringBuilder.append(s.substring(0, 1).toUpperCase()).append(s.substring(1));
             } else {
                 // Keep lowercase for "of", "with", etc.
@@ -210,9 +216,13 @@ public static String formatEnum(String input) {
         return stringBuilder.toString().trim();
     } else {
         input = input.toLowerCase().trim();
+        if (upperWords.contains(input)) {
+            return input.toUpperCase();
+        }
         return (input.substring(0, 1).toUpperCase() + input.substring(1)).trim();
     }
 }
+
 
     public static boolean isMiniMessage(String message) {
         if (message == null) return false;
