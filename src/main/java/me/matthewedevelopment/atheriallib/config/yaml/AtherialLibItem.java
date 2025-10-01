@@ -42,6 +42,10 @@ public class AtherialLibItem {
         this.customModel = customModel;
         return this;
     }
+   public AtherialLibItem setItemModel(String customModel) {
+        this.customModel = customModel;
+        return this;
+    }
 
     @Getter
     @Setter
@@ -299,6 +303,7 @@ public class AtherialLibItem {
         this.skullOwner = skullOwner;
         return this;
     }
+
 
     public Material getType() {
         return type;
