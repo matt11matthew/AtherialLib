@@ -186,6 +186,15 @@ public class ChatUtils {
 //    }
 public static String formatEnum(String input) {
     // Words to keep lowercase if not the first word
+    if (input.equalsIgnoreCase("CARROT_ON_A_STICK")) {
+        return "Carrot on a Stick";
+    }
+
+    if (input.equalsIgnoreCase("WARPED_FUNGUS_ON_A_STICK")) {
+        return "Warped Fungus on a Stick";
+    }
+
+
     Set<String> lowerWords = Set.of("of", "with", "and", "in", "on", "at", "to", "the");
 
     // Words to always keep uppercase
