@@ -184,15 +184,21 @@ public class ChatUtils {
 //
 //        return result.toString();
 //    }
-public static String formatEnum(String input) {
+
+    public static String formatEnum(String input) {
+        String s = _formatEnum(input);
+        if (s.equalsIgnoreCase("bane of arthropods")) {
+            return "Bane of Arthropods";
+        }
+        return s;
+    }
+private static String _formatEnum(String input) {
     // Words to keep lowercase if not the first word
     if (input.equalsIgnoreCase("CARROT_ON_A_STICK")) {
         return "Carrot on a Stick";
     }
 
-    if (input.equalsIgnoreCase("Bane_of_Arthorpods")) {
-        return "Bane of Arthropods";
-    }
+
     if (input.equalsIgnoreCase("WARPED_FUNGUS_ON_A_STICK")) {
         return "Warped Fungus on a Stick";
     }
