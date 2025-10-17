@@ -190,6 +190,9 @@ public static String formatEnum(String input) {
         return "Carrot on a Stick";
     }
 
+    if (input.equalsIgnoreCase("Bane_of_Arthorpods")) {
+        return "Bane of Arthropods";
+    }
     if (input.equalsIgnoreCase("WARPED_FUNGUS_ON_A_STICK")) {
         return "Warped Fungus on a Stick";
     }
