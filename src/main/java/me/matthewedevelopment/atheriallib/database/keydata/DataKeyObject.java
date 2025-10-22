@@ -38,6 +38,10 @@ public abstract class DataKeyObject<K extends DataKeyObject.DataKey<?>, T extend
         this.keyClazz = keyClazz;
     }
 
+    public DataKeyObject( Class<K> keyClazz) {
+        this.keyClazz = keyClazz;
+    }
+
     public DataKeyObject() {
     }
 
