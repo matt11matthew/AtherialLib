@@ -57,6 +57,15 @@ public abstract class DataKeyObject<K extends DataKeyObject.DataKey<?>, T extend
     }
     public List<DataColumn> getColumns() {
         List<DataColumn> columns = new ArrayList<>();
+        if (id==null){
+            try {
+                id =  keyClazz.newInstance();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
         columns.add(id.buildColumn());
 
 
