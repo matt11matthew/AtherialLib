@@ -19,80 +19,66 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class DataKeyObjectRegistry<K extends DataKeyObject.DataKey<?>, T extends DataKeyObject<K, T>> {
-     protected Map<K,T> map;
-    private Class<T> clazz;
+    protected Map<K, T> map;
+    private final Class<T> clazz;
     private DatabaseTableManagerCustomData databaseTableManager;
-    private String tableName=null;
-
+    private String tableName = null;
 
     @Data
     @AllArgsConstructor
-    public static class Tuple<A,B> {
+    public static class Tuple<A, B> {
         public A a;
         public B b;
     }
 
     public Tuple<Boolean, T> preRegister() {
-
-
-        if (AtherialLib.getInstance().getSqlHandler().isLite()){
-            databaseTableManager=new SQLiteDatabaseTableManagerCustom();
+        if (AtherialLib.getInstance().getSqlHandler().isLite()) {
+            databaseTableManager = new SQLiteDatabaseTableManagerCustom();
         } else {
-            databaseTableManager=new MySQLDatabaseTableManagerCustom();
+            databaseTableManager = new MySQLDatabaseTableManagerCustom();
         }
-        T temp=null;
+        T temp;
         try {
             temp = clazz.newInstance();
-
-            tableName=temp.getTableName();
-            AtherialLib.getInstance().getLogger().info("TABLE NAME: ("+tableName+")");
-            databaseTableManager.createOrUpdateTable(getConnection(),tableName,temp.getColumns());
+            tableName = temp.getTableName();
+            AtherialLib.getInstance().getLogger().info("TABLE NAME: (" + tableName + ")");
+            databaseTableManager.createOrUpdateTable(getConnection(), tableName, temp.getColumns());
         } catch (InstantiationException | IllegalAccessException | SQLException e) {
             e.printStackTrace();
-            return new Tuple<>(false,null);
+            return new Tuple<>(false, null);
         }
-        return new Tuple<>(true,temp);
-
+        return new Tuple<>(true, temp);
     }
+
     public void register() {
-
-
-        Tuple<Boolean, T> booleanTTuple = preRegister();
-
-        if ((booleanTTuple != null) && booleanTTuple.a && (booleanTTuple.getB() != null)) {
-            loadAllSync(booleanTTuple.getB());
+        Tuple<Boolean, T> res = preRegister();
+        if (res != null && res.a && res.getB() != null) {
+            loadAllSync(res.getB());
         }
         onRegister();
     }
+
     public DataKeyObjectRegistry(Class<T> clazz) {
         this.clazz = clazz;
-
         this.map = new HashMap<>();
     }
 
     public abstract void onRegister();
-    public T getData(UUID uuid){
-        return map.getOrDefault(uuid, null);
-    }
-
 
     public void loadAllSync(T tempInstance) {
         AtherialTasks.runSync(() -> {
             List<T> ts = tempInstance.loadAllSync(getConnection());
             for (T t1 : ts) {
-                map.put(t1.getId(),t1);
+                map.put(t1.getId(), t1);
             }
             onLoadAll(ts);
         });
-
     }
 
     public Connection getConnection() {
         MySqlHandler sqlHandler = AtherialLib.getInstance().getSqlHandler();
         return sqlHandler.getConnection();
-//        return null;
     }
-
 
     public void updateAsync(T t, Runnable runnable) {
         AtherialTasks.runAsync(() -> {
@@ -103,29 +89,42 @@ public abstract class DataKeyObjectRegistry<K extends DataKeyObject.DataKey<?>, 
 
     public void uploadAllSync() {
         Connection connection = getConnection();
-        if (connection==null)return;
-        updateSyncBatch(connection,new ArrayList<>(map.values()));
+        if (connection == null) return;
+        updateSyncBatch(connection, new ArrayList<>(map.values()));
     }
 
     public void onLoadAll(final List<T> list) {
-
+        // hook
     }
 
     public void uploadAllAsync(Runnable runnable) {
-        AtherialTasks.runAsync(() ->{
+        AtherialTasks.runAsync(() -> {
             uploadAllSync();
             runnable.run();
         });
     }
-    public void updateSyncBatch(Connection connection, List<T> dataObjects) {
-        if (tableName==null){
-            if (AtherialLib.getInstance().isDebug()){
-                AtherialLib.getInstance().getLogger().severe("Failed to update sync batch due to table name being null");
 
+    /** Helper: resolve key column name for this registry via a fresh instance */
+    private String resolveKeyColumnName() {
+        try {
+            T temp = clazz.newInstance();
+            // getColumns() guarantees key column is present (it instantiates id if needed)
+            return temp.getColumns().get(0).getName();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new IllegalStateException("Unable to resolve key column name", e);
+        }
+    }
+
+    public void updateSyncBatch(Connection connection, List<T> dataObjects) {
+        if (tableName == null) {
+            if (AtherialLib.getInstance().isDebug()) {
+                AtherialLib.getInstance().getLogger().severe("Failed to update sync batch due to table name being null");
             }
             return;
         }
         if (connection == null || dataObjects == null || dataObjects.isEmpty()) return;
+
+        String keyCol = resolveKeyColumnName();
         PreparedStatement statement = null;
 
         try {
@@ -133,31 +132,29 @@ public abstract class DataKeyObjectRegistry<K extends DataKeyObject.DataKey<?>, 
 
             for (T dataObject : dataObjects) {
                 StringBuilder updateQuery = new StringBuilder("UPDATE ").append(tableName).append(" SET ");
-                List<DataColumn> columns = dataObject.getColumns(); // Assuming DataObject has a method to get its columns
+                List<DataColumn> columns = dataObject.getColumns();
 
                 for (DataColumn column : columns) {
-                    if (column.getName().equalsIgnoreCase("uuid"))continue;
+                    if (column.getName().equalsIgnoreCase(keyCol)) continue;
                     updateQuery.append(column.getName()).append(" = ?, ");
                 }
 
-                updateQuery.delete(updateQuery.length() - 2, updateQuery.length()); // Remove trailing comma and space
-                updateQuery.append(" WHERE uuid = ?;"); // Assuming each DataObject can be uniquely identified by a UUID
+                // remove trailing ", "
+                updateQuery.delete(updateQuery.length() - 2, updateQuery.length());
+                updateQuery.append(" WHERE ").append(keyCol).append(" = ?;");
 
                 statement = connection.prepareStatement(updateQuery.toString());
 
                 int updateParameterIndex = 1;
                 for (DataColumn column : columns) {
-                    if (column.getName().equalsIgnoreCase("uuid"))continue;
-                    // Set the parameters for each column
+                    if (column.getName().equalsIgnoreCase(keyCol)) continue;
                     switch (column.getType()) {
                         case LONG:
                             statement.setLong(updateParameterIndex, column.getValueAsLong());
                             break;
                         case TEXT:
-                            statement.setString(updateParameterIndex, column.getValueAsString());
-                            break;
-
                         case LONGTEXT:
+                        case VARCHAR:
                             statement.setString(updateParameterIndex, column.getValueAsString());
                             break;
                         case INTEGER:
@@ -166,27 +163,28 @@ public abstract class DataKeyObjectRegistry<K extends DataKeyObject.DataKey<?>, 
                         case BOOLEAN:
                             statement.setBoolean(updateParameterIndex, column.getValueAsBoolean());
                             break;
-                        case VARCHAR:
+                        default:
                             statement.setString(updateParameterIndex, column.getValueAsString());
                             break;
-                        // Add other cases as needed
                     }
                     updateParameterIndex++;
                 }
 
-                dataObject.getId().updateStatement(statement,updateParameterIndex);
-                statement.addBatch(); // Add this update to the batch
+                // bind WHERE key = ?
+                dataObject.getId().updateStatement(statement, updateParameterIndex);
+
+                statement.addBatch();
             }
 
-            statement.executeBatch(); // Execute all updates in the batch
-            connection.commit(); // Commit the transaction
+            statement.executeBatch();
+            connection.commit();
             statement.close();
 
         } catch (Exception e) {
             e.printStackTrace();
             if (connection != null) {
                 try {
-                    connection.rollback(); // Rollback in case of an error
+                    connection.rollback();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
@@ -194,7 +192,7 @@ public abstract class DataKeyObjectRegistry<K extends DataKeyObject.DataKey<?>, 
         } finally {
             if (connection != null) {
                 try {
-                    connection.setAutoCommit(true); // Reset auto-commit to true
+                    connection.setAutoCommit(true);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -202,23 +200,25 @@ public abstract class DataKeyObjectRegistry<K extends DataKeyObject.DataKey<?>, 
         }
     }
 
-    public void deleteSync(UUID uuid) {
-        if (map.containsKey(uuid)) {
-            T remove = map.get(uuid);
-            Connection connection = getConnection();
-            if (connection==null)return;
-            String sql = "DELETE FROM " + remove.getTableName() +" WHERE uuid=?;";
-            try {
-                PreparedStatement statement= connection.prepareStatement(sql);
-                statement.setString(1, uuid.toString());
-                statement.executeUpdate();
-                statement.close();
-                map.remove(uuid);
-            } catch (SQLException e) {
-               e.printStackTrace();
-            }
-        }
+    /** Delete by the new key type, not UUID */
+    public void deleteSync(K key) {
+        if (key == null) return;
+        if (!map.containsKey(key)) return;
 
+        T remove = map.get(key);
+        Connection connection = getConnection();
+        if (connection == null) return;
+
+        String keyCol = resolveKeyColumnName();
+        String sql = "DELETE FROM " + remove.getTableName() + " WHERE " + keyCol + " = ?;";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            key.updateStatement(statement, 1);
+            statement.executeUpdate();
+            map.remove(key);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public Map<K, T> getMap() {
@@ -228,24 +228,25 @@ public abstract class DataKeyObjectRegistry<K extends DataKeyObject.DataKey<?>, 
     public T insertSync(T t) {
         map.put(t.getId(), t);
         Connection connection = getConnection();
+        if (connection == null) return map.get(t.getId());
+
+        String keyCol = t.getId().buildColumn().getName();
 
         try {
             PreparedStatement statement = null;
             if (AtherialLib.getInstance().getSqlHandler().isLite()) {
-
+                // SQLITE: INSERT OR REPLACE
                 if (!existsInDBSync(t.getId(), connection)) {
-
-                    StringBuilder query = new StringBuilder("INSERT OR REPLACE INTO ").append(tableName).append(" (uuid");
+                    StringBuilder query = new StringBuilder("INSERT OR REPLACE INTO ")
+                            .append(tableName)
+                            .append(" (").append(keyCol);
                     StringBuilder placeholders = new StringBuilder(" VALUES (?");
 
-                    // Get the schema requirements from the profile (this is just a conceptual example)
                     List<DataColumn> columns = t.getColumns();
 
-                    // Add columns dynamically to the SQL query
                     for (DataColumn column : columns) {
-                        if (!column.getName().equalsIgnoreCase("uuid")) {
+                        if (!column.getName().equalsIgnoreCase(keyCol)) {
                             query.append(", ").append(column.getName());
-
                             placeholders.append(", ?");
                         }
                     }
@@ -253,21 +254,22 @@ public abstract class DataKeyObjectRegistry<K extends DataKeyObject.DataKey<?>, 
                     query.append(")").append(placeholders).append(");");
 
                     statement = connection.prepareStatement(query.toString());
-                    statement.setString(1, t.getId().toString());
 
-                    // Set values for each column based on the profile's schema requirements
-                    int parameterIndex = 2; // Start at the second parameter
-                    for (DataColumn column : columns.stream().filter(dataColumn -> !dataColumn.getName().equalsIgnoreCase("uuid")).collect(Collectors.toList())) {
-                        // Set the parameter value based on the column's data type
+                    // bind key first
+                    t.getId().updateStatement(statement, 1);
+
+                    // bind the rest
+                    int parameterIndex = 2;
+                    for (DataColumn column : columns.stream()
+                            .filter(c -> !c.getName().equalsIgnoreCase(keyCol))
+                            .collect(Collectors.toList())) {
                         switch (column.getType()) {
                             case LONG:
                                 statement.setLong(parameterIndex, column.getValueAsLong());
                                 break;
                             case TEXT:
-                                statement.setString(parameterIndex, column.getValueAsString());
-                                break;
-
                             case LONGTEXT:
+                            case VARCHAR:
                                 statement.setString(parameterIndex, column.getValueAsString());
                                 break;
                             case INTEGER:
@@ -276,59 +278,50 @@ public abstract class DataKeyObjectRegistry<K extends DataKeyObject.DataKey<?>, 
                             case BOOLEAN:
                                 statement.setBoolean(parameterIndex, column.getValueAsBoolean());
                                 break;
-                            case VARCHAR: // Handle VARCHAR
-                                statement.setString(parameterIndex, column.getValueAsString());
-                                break;
                             default:
-                                // Handle other data types as needed
                                 break;
                         }
-
                         parameterIndex++;
                     }
                 }
             } else {
-                StringBuilder query = new StringBuilder("INSERT INTO ").append(t.getTableName()).append(" (uuid");
+                // MYSQL: regular INSERT
+                StringBuilder query = new StringBuilder("INSERT INTO ")
+                        .append(t.getTableName())
+                        .append(" (").append(keyCol);
                 StringBuilder placeholders = new StringBuilder(") VALUES (?");
 
                 List<DataColumn> columns = t.getColumns();
-
                 for (DataColumn column : columns) {
-                    if (!column.getName().equalsIgnoreCase("uuid")) {
+                    if (!column.getName().equalsIgnoreCase(keyCol)) {
                         query.append(", ").append(column.getName());
                         placeholders.append(", ?");
-
                     }
-//                        query.append(", ").append(column.getName());
                 }
-
                 placeholders.append(")");
-
-
-                // Combine the main query and placeholders
                 query.append(placeholders).append(";");
 
                 if (AtherialLib.getInstance().isDebug()) {
                     AtherialLib.getInstance().getLogger().info(query.toString());
                 }
 
-
                 statement = connection.prepareStatement(query.toString());
+
+                // bind key
                 t.getId().updateStatement(statement, 1);
 
-                // Set values for each column based on the profile's schema requirements
-                int parameterIndex = 2; // Start at the second parameter
-                for (DataColumn column : columns.stream().filter(dataColumn -> !dataColumn.getName().equalsIgnoreCase("uuid")).collect(Collectors.toList())) {
-                    // Set the parameter value based on the column's data type
+                // bind the rest
+                int parameterIndex = 2;
+                for (DataColumn column : columns.stream()
+                        .filter(c -> !c.getName().equalsIgnoreCase(keyCol))
+                        .collect(Collectors.toList())) {
                     switch (column.getType()) {
                         case LONG:
                             statement.setLong(parameterIndex, column.getValueAsLong());
                             break;
                         case TEXT:
-                            statement.setString(parameterIndex, column.getValueAsString());
-                            break;
-
-                            case LONGTEXT:
+                        case LONGTEXT:
+                        case VARCHAR:
                             statement.setString(parameterIndex, column.getValueAsString());
                             break;
                         case INTEGER:
@@ -337,22 +330,17 @@ public abstract class DataKeyObjectRegistry<K extends DataKeyObject.DataKey<?>, 
                         case BOOLEAN:
                             statement.setBoolean(parameterIndex, column.getValueAsBoolean());
                             break;
-                        case VARCHAR: // Handle VARCHAR
-                            statement.setString(parameterIndex, column.getValueAsString());
-                            break;
                         default:
-                            // Handle other data types as needed
                             break;
                     }
-
                     parameterIndex++;
                 }
             }
+
             if (statement != null) {
                 if (AtherialLib.getInstance().isDebug()) {
                     AtherialLib.getInstance().getLogger().info(statement.toString());
                 }
-                // Execute the query to save or update the data
                 statement.executeUpdate();
                 statement.close();
                 return null;
@@ -362,58 +350,46 @@ public abstract class DataKeyObjectRegistry<K extends DataKeyObject.DataKey<?>, 
         }
         return map.get(t.getId());
     }
+
     public void insertAsync(T t, Runnable onComplete) {
         AtherialTasks.runAsync(() -> {
-            T t1 = insertSync(t);
+            insertSync(t);
             onComplete.run();
         });
     }
 
-    private boolean existsInDBSync(K uuid, Connection connection) {
-        if (connection == null || uuid == null ||tableName==null) {
+    /** Existence check by new key, not by UUID */
+    private boolean existsInDBSync(K key, Connection connection) {
+        if (connection == null || key == null || tableName == null) {
             return false;
         }
 
-        try {
-            // Construct an SQL query to check if a profile with the given UUID exists
-            String query = "SELECT COUNT(*) FROM " + tableName + " WHERE uuid = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, String.valueOf(uuid));
+        String keyCol = resolveKeyColumnName();
+        String query = "SELECT COUNT(*) FROM " + tableName + " WHERE " + keyCol + " = ?";
 
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                int count = resultSet.getInt(1);
-                boolean c = count > 0;
-
-                if (AtherialLib.getInstance().isDebug()){
-//                    if (c){
-//                        System.err.println("EXISTS " + uuid.toString());
-//                    } else {
-//                        System.err.println("DOESNT EXISTS " + uuid.toString());
-//
-//                    }
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            key.updateStatement(statement, 1);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    int count = resultSet.getInt(1);
+                    return count > 0;
                 }
-                return c; // Return true if a profile with the given UUID exists
             }
-
-            resultSet.close();
-            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return false; // An error occurred or the profile was not found
+        return false;
     }
 
-    public void updateAsync(UUID uuid, Runnable result) {
-        if (map.containsKey(uuid)){
-            T t = map.get(uuid);
+    /** Async update by key (new type) */
+    public void updateAsync(K key, Runnable result) {
+        if (map.containsKey(key)) {
+            T t = map.get(key);
             AtherialTasks.runAsync(() -> {
                 t.updateSync(getConnection());
                 result.run();
             });
         }
-
-
     }
 }
