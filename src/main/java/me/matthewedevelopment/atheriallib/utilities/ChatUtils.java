@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 /**
  * Created by Matthew E on 11/16/2023 at 1:11 PM for the project AtherialLib
  */
@@ -26,39 +28,42 @@ public class ChatUtils {
         }
         sender.sendMessage(message);
     }
+
     public static String getMessageFromArgs(String[] args) {
         return getMessageFromArgs(0, args);
 
     }
+
     public static String getMessageFromArgs(int start, String[] args) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = start; i < args.length; i++) {
             stringBuilder.append(args[i]);
-            if (i < args.length-1) {
+            if (i < args.length - 1) {
                 stringBuilder.append(' ');
             }
         }
         return stringBuilder.toString();
     }
+
     private static final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
 
     public static String translateHexColorCodes(String message) {
-        if (message==null||message.isEmpty())return message;
+        if (message == null || message.isEmpty()) return message;
         char colorChar = '§';
         Matcher matcher = HEX_PATTERN.matcher(message);
         StringBuffer buffer = new StringBuffer(message.length() + 32);
 
-        while(matcher.find()) {
+        while (matcher.find()) {
             String group = matcher.group(1);
             matcher.appendReplacement(buffer, "§x§" + group.charAt(0) + '§' + group.charAt(1) + '§' + group.charAt(2) + '§' + group.charAt(3) + '§' + group.charAt(4) + '§' + group.charAt(5));
         }
 
-        String finalString =  matcher.appendTail(buffer).toString();
+        String finalString = matcher.appendTail(buffer).toString();
 
-       return ChatColor.translateAlternateColorCodes('&', finalString);
+        return ChatColor.translateAlternateColorCodes('&', finalString);
     }
 
-//    public static String translateHexColorCodes(String message) {
+    //    public static String translateHexColorCodes(String message) {
 //        final char COLOR_CHAR = '§';
 //        // This pattern matches hex color codes in the format "#FFFFFF"
 //        final Pattern hexPattern = Pattern.compile("#[a-fA-F0-9]{6}");
@@ -133,6 +138,7 @@ public class ChatUtils {
 
         return result.toString();
     }
+
     public static String applyBold(String input) {
         // Regular expression to find the style sequence
         String stylePattern = "(&[0-9a-fk-or]*[l-o])";
@@ -148,6 +154,7 @@ public class ChatUtils {
         // Insert the underline code &n after the style sequence
         return input.replaceAll(stylePattern, "$1&m");
     }
+
     public static String applyUnderline(String input) {
         // Regular expression to find the style sequence
         String stylePattern = "(&[0-9a-fk-or]*[l-o])";
@@ -192,54 +199,62 @@ public class ChatUtils {
         }
         return s;
     }
-private static String _formatEnum(String input) {
-    // Words to keep lowercase if not the first word
-    if (input.equalsIgnoreCase("CARROT_ON_A_STICK")) {
-        return "Carrot on a Stick";
+   public static String formatItemStack(ItemStack itemStack) {
+        if (itemStack==null || itemStack.getType().isAir()) return "Air";
+        if (itemStack.hasItemMeta() && itemStack.getItemMeta().hasDisplayName()) return itemStack.getItemMeta().getDisplayName();
+        return formatEnum(itemStack.getType().name());
+
     }
 
 
-    if (input.equalsIgnoreCase("WARPED_FUNGUS_ON_A_STICK")) {
-        return "Warped Fungus on a Stick";
-    }
-
-
-    Set<String> lowerWords = Set.of("of", "with", "and", "in", "on", "at", "to", "the");
-
-    // Words to always keep uppercase
-    Set<String> upperWords = Set.of("tnt");
-
-    if (input.contains("_")) {
-        StringBuilder stringBuilder = new StringBuilder();
-        String[] parts = input.split("_");
-
-        for (int i = 0; i < parts.length; i++) {
-            String s = parts[i].toLowerCase().trim();
-
-            if (upperWords.contains(s)) {
-                // Always force uppercase (e.g., TNT)
-                stringBuilder.append(s.toUpperCase());
-            } else if (i == 0 || !lowerWords.contains(s)) {
-                // Capitalize first letter normally
-                stringBuilder.append(s.substring(0, 1).toUpperCase()).append(s.substring(1));
-            } else {
-                // Keep lowercase for "of", "with", etc.
-                stringBuilder.append(s);
-            }
-
-            if (i < parts.length - 1) {
-                stringBuilder.append(" ");
-            }
+    private static String _formatEnum(String input) {
+        // Words to keep lowercase if not the first word
+        if (input.equalsIgnoreCase("CARROT_ON_A_STICK")) {
+            return "Carrot on a Stick";
         }
-        return stringBuilder.toString().trim();
-    } else {
-        input = input.toLowerCase().trim();
-        if (upperWords.contains(input)) {
-            return input.toUpperCase();
+
+
+        if (input.equalsIgnoreCase("WARPED_FUNGUS_ON_A_STICK")) {
+            return "Warped Fungus on a Stick";
         }
-        return (input.substring(0, 1).toUpperCase() + input.substring(1)).trim();
+
+
+        Set<String> lowerWords = Set.of("of", "with", "and", "in", "on", "at", "to", "the");
+
+        // Words to always keep uppercase
+        Set<String> upperWords = Set.of("tnt");
+
+        if (input.contains("_")) {
+            StringBuilder stringBuilder = new StringBuilder();
+            String[] parts = input.split("_");
+
+            for (int i = 0; i < parts.length; i++) {
+                String s = parts[i].toLowerCase().trim();
+
+                if (upperWords.contains(s)) {
+                    // Always force uppercase (e.g., TNT)
+                    stringBuilder.append(s.toUpperCase());
+                } else if (i == 0 || !lowerWords.contains(s)) {
+                    // Capitalize first letter normally
+                    stringBuilder.append(s.substring(0, 1).toUpperCase()).append(s.substring(1));
+                } else {
+                    // Keep lowercase for "of", "with", etc.
+                    stringBuilder.append(s);
+                }
+
+                if (i < parts.length - 1) {
+                    stringBuilder.append(" ");
+                }
+            }
+            return stringBuilder.toString().trim();
+        } else {
+            input = input.toLowerCase().trim();
+            if (upperWords.contains(input)) {
+                return input.toUpperCase();
+            }
+            return (input.substring(0, 1).toUpperCase() + input.substring(1)).trim();
+        }
     }
-}
 
 
     public static boolean isMiniMessage(String message) {
@@ -250,7 +265,7 @@ private static String _formatEnum(String input) {
         return message.contains("<") && message.contains(">");
     }
 
-    public static void send(CommandSender sender,  String message, TagResolver tagResolver ) {
+    public static void send(CommandSender sender, String message, TagResolver tagResolver) {
 
         // Deserialize as MiniMessage only if isMiniMessage is true
         Component component;
@@ -270,26 +285,27 @@ private static String _formatEnum(String input) {
         }
     }
 
-    public static String colorizeNew( String message){
+    public static String colorizeNew(String message) {
 
         return colorizeNew(null, message);
 
     }
-    public static String colorize(String message){
+
+    public static String colorize(String message) {
         return colorize(null, message);
     }
 
-    public static String colorize(Player p, String message){
+    public static String colorize(Player p, String message) {
         String colorizedMessage;
-        if (message==null)return null;
-        colorizedMessage =  translateHexColorCodes(message);
+        if (message == null) return null;
+        colorizedMessage = translateHexColorCodes(message);
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            if (p==null){
+            if (p == null) {
                 List<? extends Player> collect = Bukkit.getOnlinePlayers().stream().collect(Collectors.toList());
-                if (collect.isEmpty())return colorizedMessage;
-                return applyMini(PlaceholderApplyUtils.applyPapi(colorizedMessage,collect.get(0)));
+                if (collect.isEmpty()) return colorizedMessage;
+                return applyMini(PlaceholderApplyUtils.applyPapi(colorizedMessage, collect.get(0)));
             }
-            return applyMini(PlaceholderApplyUtils.applyPapi(colorizedMessage,p));
+            return applyMini(PlaceholderApplyUtils.applyPapi(colorizedMessage, p));
         }
         return applyMini(colorizedMessage);
 
@@ -342,29 +358,52 @@ private static String _formatEnum(String input) {
 
     private static String getMiniMessageTagForCode(char code) {
         switch (Character.toLowerCase(code)) {
-            case '0': return "<black>";
-            case '1': return "<dark_blue>";
-            case '2': return "<dark_green>";
-            case '3': return "<dark_aqua>";
-            case '4': return "<dark_red>";
-            case '5': return "<dark_purple>";
-            case '6': return "<gold>";
-            case '7': return "<gray>";
-            case '8': return "<dark_gray>";
-            case '9': return "<blue>";
-            case 'a': return "<green>";
-            case 'b': return "<aqua>";
-            case 'c': return "<red>";
-            case 'd': return "<light_purple>";
-            case 'e': return "<yellow>";
-            case 'f': return "<white>";
-            case 'k': return "<obfuscated>";
-            case 'l': return "<bold>";
-            case 'm': return "<strikethrough>";
-            case 'n': return "<underlined>";
-            case 'o': return "<italic>";
-            case 'r': return "<reset>";
-            default: return "&" + code; // unknown code, keep as-is
+            case '0':
+                return "<black>";
+            case '1':
+                return "<dark_blue>";
+            case '2':
+                return "<dark_green>";
+            case '3':
+                return "<dark_aqua>";
+            case '4':
+                return "<dark_red>";
+            case '5':
+                return "<dark_purple>";
+            case '6':
+                return "<gold>";
+            case '7':
+                return "<gray>";
+            case '8':
+                return "<dark_gray>";
+            case '9':
+                return "<blue>";
+            case 'a':
+                return "<green>";
+            case 'b':
+                return "<aqua>";
+            case 'c':
+                return "<red>";
+            case 'd':
+                return "<light_purple>";
+            case 'e':
+                return "<yellow>";
+            case 'f':
+                return "<white>";
+            case 'k':
+                return "<obfuscated>";
+            case 'l':
+                return "<bold>";
+            case 'm':
+                return "<strikethrough>";
+            case 'n':
+                return "<underlined>";
+            case 'o':
+                return "<italic>";
+            case 'r':
+                return "<reset>";
+            default:
+                return "&" + code; // unknown code, keep as-is
         }
     }
 
@@ -383,7 +422,6 @@ private static String _formatEnum(String input) {
             return message;
         }
     }
-
 
 
 }
