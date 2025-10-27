@@ -11,15 +11,25 @@ import java.lang.reflect.Method;
 public class CustomItemUtil {
 
 
+
     public static ItemStack applyCustomItem(ItemStack item, String namespacedKey) {
+        if (item == null || namespacedKey == null) return item;
+
         try {
-
             ItemMeta meta = item.getItemMeta();
+            if (meta == null) return item;
 
-            meta.setItemModel(NamespacedKey.fromString(namespacedKey));
+            // Reflection-based access to Paper's custom model setter
+            Method setItemModelMethod = meta.getClass().getMethod("setItemModel", NamespacedKey.class);
+            setItemModelMethod.invoke(meta, NamespacedKey.fromString(namespacedKey));
+
             item.setItemMeta(meta);
-        } catch (Exception e) {
+        } catch (NoSuchMethodException e) {
+            log.warning("ItemMeta#setItemModel not found — likely not a Paper version supporting it");
+        } catch (Throwable t) {
+            log.warning("Failed to set custom model via reflection: " + t.getMessage());
         }
+
         return item;
     }
 }
