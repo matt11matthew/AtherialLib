@@ -27,6 +27,7 @@ public class CustomItemUtil {
         } catch (NoSuchMethodException e) {
             log.warning("ItemMeta#setItemModel not found — likely not a Paper version supporting it");
         } catch (Throwable t) {
+            t.printStackTrace();
             log.warning("Failed to set custom model via reflection: " + t.getMessage());
         }
 
