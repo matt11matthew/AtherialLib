@@ -100,42 +100,15 @@ public class ItemSerialization {
     @SuppressWarnings("unchecked")
     public static ItemStack[] itemStackArrayFromBase64Portable(String data){
         try {
-            byte[] raw = java.util.Base64.getDecoder().decode(data);
-            try (ByteArrayInputStream in = new ByteArrayInputStream(raw);
-                 java.io.ObjectInputStream dataIn = new java.io.ObjectInputStream(in)) {
-                int len = dataIn.readInt();
-                ItemStack[] items = new ItemStack[len];
-                for (int i = 0; i < len; i++) {
-                    Object obj = dataIn.readObject();
-                    if (obj == null) {
-                        items[i] = null;
-                    } else {
-                        Map<String, Object> map = (Map<String, Object>) obj;
-                        items[i] = ItemStack.deserialize(map); // faithfully restores meta & CustomModelData
-                    }
-                }
-                return items;
-            } catch (ClassNotFoundException e) {
-                throw new IOException("Unable to decode class type.", e);
-            }
+            return  itemStackArrayFromBase64(data);
+
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
     public static String itemStackArrayToBase64Portable(ItemStack[] items) {
-        try (ByteArrayOutputStream out = new ByteArrayOutputStream();
-             java.io.ObjectOutputStream dataOut = new java.io.ObjectOutputStream(out)) {
-            dataOut.writeInt(items.length);
-            for (ItemStack it : items) {
-                Map<String, Object> map = it == null ? null : it.serialize(); // includes meta+CustomModelData
-                dataOut.writeObject(map);
-            }
-            dataOut.flush();
-            return java.util.Base64.getEncoder().encodeToString(out.toByteArray());
-        } catch (IOException e) {
-            throw new IllegalStateException("Unable to save item stacks.", e);
-        }
+        return itemStackArrayToBase64(items);
     }
 
 
