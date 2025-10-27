@@ -21,27 +21,7 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
         if (item.getType() != null) {
             serializedData.put("type", item.getType().toString());  // Mandatory
         }
-        if (item.getModelId() != 0) {
-            if (item.isSnakeCase()) {
 
-                serializedData.put("model_id", item.getModelId());  // Mandatory
-            } else {
-
-                serializedData.put("modelId", item.getModelId());  // Mandatory
-            }
-        }
-
-
-
-        if (item.getCustomModel() != null) {
-            if (item.isSnakeCase()) {
-
-                serializedData.put("item_model", item.getCustomModel());  // Mandatory
-            } else {
-
-                serializedData.put("itemModel", item.getCustomModel());  // Mandatory
-            }
-        }
 
         if (item.getCommands() != null && item.getCommands().size() > 0) {
             serializedData.put("commands", item.getCommands());
@@ -89,6 +69,27 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
 
             }
 
+        }
+        if (item.getModelId() != 0) {
+            if (item.isSnakeCase()) {
+
+                serializedData.put("model_id", item.getModelId());  // Mandatory
+            } else {
+
+                serializedData.put("modelId", item.getModelId());  // Mandatory
+            }
+        }
+
+
+
+        if (item.getCustomModel() != null) {
+            if (item.isSnakeCase()) {
+
+                serializedData.put("item_model", item.getCustomModel());  // Mandatory
+            } else {
+
+                serializedData.put("itemModel", item.getCustomModel());  // Mandatory
+            }
         }
         if (item.getHeadDatabaseHead() != null) {
             if (item.isSnakeCase()) {
@@ -145,10 +146,10 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
             }
         }
 
-        String customModel = map.containsKey("itemModel") ? (String) map.get("itemModel") : null;
+        String itemModel = map.containsKey("itemModel") ? (String) map.get("itemModel") : null;
         if (map.containsKey("item_model")) {
             snakeCase = true;
-            customModel = (String) map.get("item_model");
+            itemModel = (String) map.get("item_model");
         }
 
 
@@ -226,8 +227,8 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
         if ((commands != null) && !commands.isEmpty()) {
             atherialLibItem = atherialLibItem.setCommands(commands);
         }
-        if (customModel!=null) {
-            atherialLibItem = atherialLibItem.setCustomModel(customModel);
+        if (itemModel!=null) {
+            atherialLibItem = atherialLibItem.setCustomModel(itemModel);
         }
 
         return atherialLibItem;

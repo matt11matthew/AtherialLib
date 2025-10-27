@@ -6,7 +6,7 @@
 
     <groupId>me.matthewedevelopment</groupId>
     <artifactId>atheriallib</artifactId>
-    <version>1.1.30</version>
+    <version>1.1.31</version>
 <!--    <packaging>jar</packaging>-->
     <name>AtherialLib</name>
 
@@ -135,7 +135,12 @@
             <version>4.15.0</version>
             <scope>compile</scope>
         </dependency>
-
+        <dependency>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.21.10-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>mysql</groupId>-->
 <!--            <artifactId>mysql-connector-java</artifactId>-->

@@ -270,6 +270,7 @@ public class AtherialLibItem {
 
         if (customModel != null && !customModel.isEmpty()) {
             itemStack = CustomItemUtil.applyCustomItem(itemStack, customModel);
+
         }
         if (skullOwner != null) {
             return new ItemBuilder(itemStack).skullOwner(skullOwner).build();
