@@ -245,10 +245,16 @@ public class AtherialLibItem {
 
         if (displayName != null) {
             Component component = new AtherialTranslationMessage(displayName).toComponent(stringReplacer);
-            component = component.decoration(TextDecoration.ITALIC, false);
-            boolean b = DisplayNameUtil.tryAdventureSetter(itemMeta, component);
-            if (!b) {
+            if (component!=null) {
+
+                component = component.decoration(TextDecoration.ITALIC, false);
+                boolean b = DisplayNameUtil.tryAdventureSetter(itemMeta, component);
+                if (!b) {
+                    itemMeta.setDisplayName(ChatUtils.colorize(stringReplacer.replace(displayName)));
+                }
+            } else {
                 itemMeta.setDisplayName(ChatUtils.colorize(stringReplacer.replace(displayName)));
+
             }
         }
         if (lore != null && !lore.isEmpty()) {
