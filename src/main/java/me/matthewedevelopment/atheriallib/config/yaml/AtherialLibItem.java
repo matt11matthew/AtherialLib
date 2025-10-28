@@ -273,7 +273,7 @@ public class AtherialLibItem {
             if (!newLoreComp.isEmpty()) {
 
                 boolean b = DisplayNameUtil.tryAdventureLoreSetter(itemMeta, newLoreComp);
-                if (b) {
+                if (!b) {
 
                     if (!newLore.isEmpty()) {
                         itemMeta.setLore(newLore);
