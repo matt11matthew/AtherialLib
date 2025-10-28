@@ -7,12 +7,15 @@ import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.IntSimp
 import me.matthewedevelopment.atheriallib.item.ItemUtils;
 import me.matthewedevelopment.atheriallib.utilities.AtherialTasks;
 import me.matthewedevelopment.atheriallib.utilities.ChatUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import spigui.buttons.SGButton;
 import spigui.menu.SGMenu;
 
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 @Deprecated
@@ -141,27 +144,51 @@ public abstract class AtherialMenu<C extends YamlConfig> {
         SGMenu sgMenu = AtherialLib.getInstance().getMenu().create(this, getTitle(), getRows());
         return sgMenu;
     }
-
+    /** Optional: provide an Adventure Component title. If null, getTitle() string is used. */
+    public Component getTitleComponent() {
+        return null; // subclasses can override
+    }
+    private static boolean tryOpenWithComponentTitle(Player player, Inventory inv, Component title) {
+        if (player == null || inv == null || title == null) return false;
+        try {
+            // Paper API: Player#openInventory(Inventory, Component)
+            Method m = Player.class.getMethod("openInventory", Inventory.class, Component.class);
+            m.invoke(player, inv, title);
+            return true;
+        } catch (NoSuchMethodException ignored) {
+            // Not on this platform/version
+            return false;
+        } catch (Throwable t) {
+            return false;
+        }
+    }
 
 
     public void open() {
-
         AtherialTasks.runAsync(() -> {
-            while (ItemUtils.isEmpty(menu.getInventory())){
-
-                if (!ItemUtils.isEmpty(menu.getInventory())){
+            while (ItemUtils.isEmpty(menu.getInventory())) {
+                if (!ItemUtils.isEmpty(menu.getInventory())) {
                     AtherialTasks.runSync(() -> {
+                        // Prefer component title if provided and supported
+                        Component compTitle = getTitleComponent();
+                        if (compTitle != null && tryOpenWithComponentTitle(player, menu.getInventory(), compTitle)) {
+                            return;
+                        }
                         player.openInventory(menu.getInventory());
                     });
-                   return;
+                    return;
                 }
             }
             AtherialTasks.runSync(() -> {
-
+                Component compTitle = getTitleComponent();
+                if (compTitle != null && tryOpenWithComponentTitle(player, menu.getInventory(), compTitle)) {
+                    return;
+                }
                 player.openInventory(menu.getInventory());
             });
         });
     }
+
 
     private boolean updating = false;
 
