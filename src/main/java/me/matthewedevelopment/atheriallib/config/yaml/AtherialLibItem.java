@@ -259,11 +259,31 @@ public class AtherialLibItem {
         }
         if (lore != null && !lore.isEmpty()) {
             List<String> newLore = new ArrayList<>();
+            List<Component> newLoreComp = new ArrayList<>();
             for (String s : lore) {
                 newLore.add(stringReplacer.replace(new String(s)));
+
+                Component component = new AtherialTranslationMessage(s).toComponent(stringReplacer);
+                if (component!=null) {
+
+                    component = component.decoration(TextDecoration.ITALIC, false);
+                    newLoreComp.add(component);
+                }
             }
-            if (!newLore.isEmpty()) {
-                itemMeta.setLore(newLore);
+            if (!newLoreComp.isEmpty()) {
+
+                boolean b = DisplayNameUtil.tryAdventureLoreSetter(itemMeta, newLoreComp);
+                if (b) {
+
+                    if (!newLore.isEmpty()) {
+                        itemMeta.setLore(newLore);
+                    }
+                }
+            } else {
+
+                if (!newLore.isEmpty()) {
+                    itemMeta.setLore(newLore);
+                }
             }
         }
         itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES);
