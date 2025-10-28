@@ -10,6 +10,7 @@ import me.matthewedevelopment.atheriallib.utilities.AtherialTranslationMessage;
 import me.matthewedevelopment.atheriallib.utilities.ChatUtils;
 import me.matthewedevelopment.atheriallib.utilities.DisplayNameUtil;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemorySection;
@@ -244,6 +245,7 @@ public class AtherialLibItem {
 
         if (displayName != null) {
             Component component = new AtherialTranslationMessage(displayName).toComponent(stringReplacer);
+            component = component.decoration(TextDecoration.ITALIC, false);
             boolean b = DisplayNameUtil.tryAdventureSetter(itemMeta, component);
             if (!b) {
                 itemMeta.setDisplayName(ChatUtils.colorize(stringReplacer.replace(displayName)));
