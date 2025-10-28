@@ -6,7 +6,10 @@ import me.matthewedevelopment.atheriallib.config.yaml.serializables.AtherialLibI
 import me.matthewedevelopment.atheriallib.config.yaml.serializables.list.IntSimpleList;
 import me.matthewedevelopment.atheriallib.dependency.headdatabase.HeadDatabaseDependency;
 import me.matthewedevelopment.atheriallib.io.StringReplacer;
+import me.matthewedevelopment.atheriallib.utilities.AtherialTranslationMessage;
 import me.matthewedevelopment.atheriallib.utilities.ChatUtils;
+import me.matthewedevelopment.atheriallib.utilities.DisplayNameUtil;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemorySection;
@@ -240,7 +243,11 @@ public class AtherialLibItem {
         ItemMeta itemMeta = itemStack.getItemMeta();
 
         if (displayName != null) {
-            itemMeta.setDisplayName(stringReplacer.replace(new String(displayName)));
+            Component component = new AtherialTranslationMessage(displayName).toComponent(stringReplacer);
+            boolean b = DisplayNameUtil.tryAdventureSetter(itemMeta, component);
+            if (!b) {
+                itemMeta.setDisplayName(ChatUtils.colorize(stringReplacer.replace(displayName)));
+            }
         }
         if (lore != null && !lore.isEmpty()) {
             List<String> newLore = new ArrayList<>();
