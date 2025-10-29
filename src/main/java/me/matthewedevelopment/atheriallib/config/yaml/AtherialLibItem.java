@@ -268,6 +268,9 @@ public class AtherialLibItem {
 
                     component = component.decoration(TextDecoration.ITALIC, false);
                     newLoreComp.add(component);
+                } else {
+                    newLoreComp.add(Component.empty());
+
                 }
             }
             if (!newLoreComp.isEmpty()) {
