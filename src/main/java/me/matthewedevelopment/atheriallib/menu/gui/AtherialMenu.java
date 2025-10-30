@@ -102,8 +102,13 @@ public abstract class AtherialMenu<C extends YamlConfig> {
         firstUpdate();
     }
 
-    public abstract int getRows();
-    public abstract String getTitle();
+    public int getRows() {
+        return 1;
+    }
+
+    public  String getTitle() {
+        return "title";
+    }
 
     public String colorize(String input) {
         if (menu==null) {
