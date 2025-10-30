@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import spigui.buttons.SGButton;
+import spigui.buttons.SGButtonListener;
 import spigui.menu.SGMenu;
 
 import java.lang.reflect.Method;
@@ -189,6 +190,13 @@ public abstract class AtherialMenu<C extends YamlConfig> {
         });
     }
 
+    public void set(int slot, ItemStack itemStack, SGButtonListener listener) {
+        menu.setButton(slot, new SGButton(itemStack).withListener(listener));
+    }
+
+    public void set(int slot, ItemStack itemStack) {
+        menu.setButton(slot, new SGButton(itemStack));
+    }
 
     private boolean updating = false;
 
