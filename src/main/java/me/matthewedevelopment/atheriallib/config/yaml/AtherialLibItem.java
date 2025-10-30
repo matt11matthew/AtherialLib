@@ -244,7 +244,7 @@ public class AtherialLibItem {
         ItemMeta itemMeta = itemStack.getItemMeta();
 
         if (displayName != null) {
-            Component component = new AtherialTranslationMessage(displayName).toComponent(stringReplacer);
+            Component component = new AtherialTranslationMessage(stringReplacer.replace(displayName)).toComponent(stringReplacer);
             if (component!=null) {
 
                 component = component.decoration(TextDecoration.ITALIC, false);
