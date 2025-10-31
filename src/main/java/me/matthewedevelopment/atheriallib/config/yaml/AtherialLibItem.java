@@ -37,6 +37,7 @@ public class AtherialLibItem {
     private int modelId = 0;
     private Map<String, Integer> enchantments;
     private String headDatabaseHead;
+    private String tooltipStyle;
 
     @Getter
     private String customModel;
@@ -144,6 +145,15 @@ public class AtherialLibItem {
         return this;
     }
 
+    public AtherialLibItem setTooltipStyle(String tooltipStyle) {
+        this.tooltipStyle = tooltipStyle;
+        return this;
+    }
+
+    public String getTooltipStyle() {
+        return tooltipStyle;
+    }
+
     public AtherialLibItem(AtherialLibItem clone) {
         this.type = clone.type;
         this.displayName = clone.displayName;
@@ -159,6 +169,7 @@ public class AtherialLibItem {
 
         this.customModel = clone.customModel;
 
+        this.tooltipStyle = clone.tooltipStyle;
         this.snakeCase = clone.snakeCase;
         this.multiSlots = clone.multiSlots;
 
@@ -307,7 +318,11 @@ public class AtherialLibItem {
         }
 
         if (customModel != null && !customModel.isEmpty()) {
-            itemStack = CustomItemUtil.applyCustomItem(itemStack, customModel);
+            itemStack = CustomItemUtil.applyCustomItem(itemStack, customModel,null);
+
+        }
+        if (tooltipStyle != null && !tooltipStyle.isEmpty()) {
+            itemStack = CustomItemUtil.applyCustomItem(itemStack, null, tooltipStyle);
 
         }
         if (skullOwner != null) {

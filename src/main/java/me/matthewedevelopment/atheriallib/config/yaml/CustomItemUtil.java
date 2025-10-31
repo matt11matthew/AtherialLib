@@ -10,44 +10,94 @@ import java.lang.reflect.Method;
 @Log
 public class CustomItemUtil {
 
-    public static ItemStack applyCustomItem(ItemStack item, String namespacedKey) {
-        if (item == null || namespacedKey == null || namespacedKey.isEmpty()) return item;
+    /** Back-compat: sets only the custom model (item model) */
+    public static ItemStack applyCustomItem(ItemStack item, String modelKey) {
+        return applyCustomItem(item, modelKey, null);
+    }
 
-        final NamespacedKey key = NamespacedKey.fromString(namespacedKey);
-        if (key == null) {
-            log.warning("Invalid namespaced key: " + namespacedKey);
-            return item;
-        }
+    /**
+     * Sets custom model and/or tooltip style (Paper 1.21+).
+     * Any null/empty key is ignored. Uses API first, then CraftMeta fallback via reflection.
+     */
+    public static ItemStack applyCustomItem(ItemStack item, String modelKey, String tooltipStyleKey) {
+        if (item == null) return null;
 
         final ItemMeta meta = item.getItemMeta();
         if (meta == null) return item;
 
-        // 1) Prefer reflecting on the interface (prevents IllegalAccess on CraftMetaItem)
-        try {
-            Method api = ItemMeta.class.getMethod("setItemModel", NamespacedKey.class);
-            api.invoke(meta, key);
-            item.setItemMeta(meta);
-            return item;
-        } catch (NoSuchMethodException e) {
-            log.warning("ItemMeta#setItemModel not found (older/non-Paper API?)");
-        } catch (IllegalAccessException e) {
-            // Fall through to impl reflection
-        } catch (Throwable t) {
-            log.warning("API reflection failed: " + t.getClass().getSimpleName() + ": " + t.getMessage());
-        }
+        // Parse keys (ignore invalid)
+        final NamespacedKey model = parseKey(modelKey, "item model");
+        final NamespacedKey tooltip = parseKey(tooltipStyleKey, "tooltip style");
 
-        // 2) Fallback: call the Craft implementation but force accessibility
-        try {
-            Method impl = meta.getClass().getDeclaredMethod("setItemModel", NamespacedKey.class);
-            impl.setAccessible(true); // avoid "cannot access member of CraftMetaItem"
-            impl.invoke(meta, key);
-            item.setItemMeta(meta);
-            return item;
-        } catch (Throwable t) {
-            log.warning("Impl reflection failed: " + t.getClass().getSimpleName() + ": " + t.getMessage());
-        }
+        boolean mutated = false;
 
-        // 3) Last resort: skip silently (or add your NMS/DataComponents fallback here if you want)
+        // 1) Try public API first
+        if (model != null && tryInvokeApi(meta, "setItemModel", model)) mutated = true;
+        if (tooltip != null && tryInvokeApi(meta, "setTooltipStyle", tooltip)) mutated = true;
+
+        // 2) Fallback to Craft implementation (force accessible)
+        if (model != null && !hasModel(meta, model) && tryInvokeImpl(meta, "setItemModel", model)) mutated = true;
+        if (tooltip != null && !hasTooltip(meta, tooltip) && tryInvokeImpl(meta, "setTooltipStyle", tooltip)) mutated = true;
+
+        if (mutated) item.setItemMeta(meta);
         return item;
+    }
+
+    // ---------- helpers ----------
+
+    private static NamespacedKey parseKey(String key, String kind) {
+        if (key == null || key.isEmpty()) return null;
+        NamespacedKey ns = NamespacedKey.fromString(key);
+        if (ns == null) log.warning("Invalid " + kind + " namespaced key: " + key);
+        return ns;
+    }
+
+    private static boolean tryInvokeApi(ItemMeta meta, String method, NamespacedKey key) {
+        try {
+            Method m = ItemMeta.class.getMethod(method, NamespacedKey.class);
+            m.invoke(meta, key);
+            return true;
+        } catch (NoSuchMethodException e) {
+            // Older/non-Paper API
+            return false;
+        } catch (IllegalAccessException e) {
+            // Will try impl fallback next
+            return false;
+        } catch (Throwable t) {
+            log.warning("API call " + method + " failed: " + t.getClass().getSimpleName() + ": " + t.getMessage());
+            return false;
+        }
+    }
+
+    private static boolean tryInvokeImpl(ItemMeta meta, String method, NamespacedKey key) {
+        try {
+            Method m = meta.getClass().getDeclaredMethod(method, NamespacedKey.class);
+            m.setAccessible(true);
+            m.invoke(meta, key);
+            return true;
+        } catch (NoSuchMethodException e) {
+            log.warning("Impl method " + method + " not found on " + meta.getClass().getName());
+            return false;
+        } catch (Throwable t) {
+            log.warning("Impl call " + method + " failed: " + t.getClass().getSimpleName() + ": " + t.getMessage());
+            return false;
+        }
+    }
+
+    // Optional guards to avoid double work if getters exist (best-effort).
+    private static boolean hasModel(ItemMeta meta, NamespacedKey expected) {
+        try {
+            Method g = ItemMeta.class.getMethod("getItemModel");
+            Object v = g.invoke(meta);
+            return expected.equals(v);
+        } catch (Throwable ignored) { return false; }
+    }
+
+    private static boolean hasTooltip(ItemMeta meta, NamespacedKey expected) {
+        try {
+            Method g = ItemMeta.class.getMethod("getTooltipStyle");
+            Object v = g.invoke(meta);
+            return expected.equals(v);
+        } catch (Throwable ignored) { return false; }
     }
 }

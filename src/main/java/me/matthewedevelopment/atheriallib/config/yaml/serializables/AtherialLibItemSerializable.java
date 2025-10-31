@@ -99,8 +99,20 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
                 serializedData.put("headDatabaseHead", item.getHeadDatabaseHead());
 
             }
-
         }
+
+        if (item.getTooltipStyle() != null) {
+            if (item.isSnakeCase()) {
+
+                serializedData.put("tooltip_style", item.getTooltipStyle());
+            } else {
+                serializedData.put("tooltipStyle", item.getTooltipStyle());
+
+            }
+        }
+
+
+
         if (item.getSlot() != -1) {
             serializedData.put("slot", item.getSlot());
         }
@@ -197,6 +209,15 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
             headDatabaseHead = map.containsKey("head_database_head") ? (String) map.get("head_database_head") : null;
             snakeCase = true;
         }
+
+
+        String tooltipStyle = map.containsKey("tooltipStyle") ? (String) map.get("tooltipStyle") : null;
+        if (map.containsKey("tooltip_style")) {
+            tooltipStyle = map.containsKey("tooltip_style") ? (String) map.get("tooltip_style") : null;
+            snakeCase = true;
+        }
+
+
         int slot = map.containsKey("slot") ? (int) map.get("slot") : -1;
         int amount = map.containsKey("amount") ? (int) map.get("amount") : 1;
         Map<String, Integer> enchantments = new HashMap<>();
@@ -217,6 +238,9 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
         }
         if (multiSlots != null) {
             atherialLibItem.setMultiSlots(multiSlots);
+        }
+        if (tooltipStyle!=null) {
+            atherialLibItem =  atherialLibItem.setTooltipStyle(tooltipStyle);
         }
         if (headDatabaseHead != null) {
             atherialLibItem = atherialLibItem.setHeadDatabaseHead(headDatabaseHead);
