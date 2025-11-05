@@ -252,9 +252,11 @@ public class AtherialLibItem {
             }
         }
 
+
         ItemMeta itemMeta = itemStack.getItemMeta();
 
         if (displayName != null) {
+            displayName = displayName.replaceAll("<center>", "").replaceAll("</center>", "");
             Component component = new AtherialTranslationMessage(stringReplacer.replace(displayName)).toComponent(stringReplacer);
             if (component!=null) {
 
@@ -272,6 +274,8 @@ public class AtherialLibItem {
             List<String> newLore = new ArrayList<>();
             List<Component> newLoreComp = new ArrayList<>();
             for (String s : lore) {
+
+                s = s.replaceAll("<center>", "").replaceAll("</center>", "");
                 newLore.add(stringReplacer.replace(new String(s)));
 
                 Component component = new AtherialTranslationMessage(s).toComponent(stringReplacer);
