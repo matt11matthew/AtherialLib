@@ -11,6 +11,7 @@ import me.matthewedevelopment.atheriallib.utilities.ChatUtils;
 import me.matthewedevelopment.atheriallib.utilities.DisplayNameUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemorySection;
@@ -231,118 +232,116 @@ public class AtherialLibItem {
         build.setItemMeta(itemMeta);
         return build;
     }
-
     public ItemStack build(StringReplacer stringReplacer) {
-        ItemStack itemStack = null;
-        if (amount < 1) {
-            amount = 1;
-        }
+        final String CENTER_TAG_REGEX = "(?i)</?center>"; // case-insensitive strip
+
+        ItemStack itemStack;
+        if (amount < 1) amount = 1;
+
         if (headDatabaseHead != null && HeadDatabaseDependency.get() != null) {
             itemStack = HeadDatabaseDependency.get().createHead(headDatabaseHead);
         } else {
-
-            if (data != -1) {
-                itemStack = new ItemStack(type, amount, (short) data);
-            } else {
-
-                itemStack = new ItemStack(type, amount);
-            }
+            if (data != -1) itemStack = new ItemStack(type, amount, (short) data);
+            else itemStack = new ItemStack(type, amount);
         }
-
 
         ItemMeta itemMeta = itemStack.getItemMeta();
 
+        // ----- Display Name -----
         if (displayName != null) {
-            displayName = displayName.replaceAll("<center>", "").replaceAll("</center>", "");
-            Component component = new AtherialTranslationMessage(stringReplacer.replace(displayName)).toComponent(stringReplacer);
-            if (component!=null) {
+            String dn = stringReplacer.replace(displayName)
+                    .replaceAll(CENTER_TAG_REGEX, ""); // strip all <center> tags
 
-                component = component.decoration(TextDecoration.ITALIC, false);
-                boolean b = DisplayNameUtil.tryAdventureSetter(itemMeta, component);
-                if (!b) {
-                    itemMeta.setDisplayName(ChatUtils.colorize(stringReplacer.replace(displayName)));
-                }
+            Component comp = new AtherialTranslationMessage(dn).toComponent(stringReplacer);
+            if (comp != null) {
+                comp = comp.decoration(TextDecoration.ITALIC, false);
+                boolean ok = DisplayNameUtil.tryAdventureSetter(itemMeta, comp);
+                if (!ok) itemMeta.setDisplayName(ChatUtils.colorize(dn));
             } else {
-                itemMeta.setDisplayName(ChatUtils.colorize(stringReplacer.replace(displayName)));
-
+                itemMeta.setDisplayName(ChatUtils.colorize(dn));
             }
         }
+
+        // ----- Lore -----
         if (lore != null && !lore.isEmpty()) {
-            List<String> newLore = new ArrayList<>();
-            List<Component> newLoreComp = new ArrayList<>();
-            for (String line : lore) {
+            List<String> vanillaLore = new ArrayList<>();
+            List<Component> adventureLore = new ArrayList<>();
 
+            for (String rawLine : lore) {
+                // replace variables first, then strip tags, then normalize newlines
+                String expanded = stringReplacer.replace(rawLine)
+                        .replaceAll(CENTER_TAG_REGEX, "")
+                        .replace("\r\n", "\n")
+                        .replace("\r", "\n");
 
-                line = stringReplacer.replace(new String(line));
-                line  = line.replaceAll("<center>", "").replaceAll("</center>", "");;
-                List<String> toLoop = new ArrayList<>();
-                if (line.contains("\n")) {
-                    toLoop.addAll(Arrays.asList(line.split("\n")));
-                } else {
-                    toLoop.add(line);
-                }
+                // split on \n, preserve empty trailing lines with -1
+                String[] lines = expanded.split("\n", -1);
+                for (String s : lines) {
+                    // keep as-is (including empty) to truly preserve user-intended spacing
+                    String sReplaced = stringReplacer.replace(s); // in case of nested tokens
 
-                for (String s : toLoop) {
-
-                    s = s.replaceAll("<center>", "").replaceAll("</center>", "");
-                    newLore.add(stringReplacer.replace(new String(s)));
-
-                    Component component = new AtherialTranslationMessage(s).toComponent(stringReplacer);
-                    if (component!=null) {
-
-                        component = component.decoration(TextDecoration.ITALIC, false);
-                        newLoreComp.add(component);
+                    // Build Adventure component per line if possible
+                    Component lineComp = new AtherialTranslationMessage(sReplaced).toComponent(stringReplacer);
+                    if (lineComp != null) {
+                        lineComp = lineComp.decoration(TextDecoration.ITALIC, false);
+                        adventureLore.add(lineComp);
                     } else {
-                        newLoreComp.add(Component.empty());
-
+                        // Fallback: add colorized vanilla text
+                        vanillaLore.add(ChatUtils.colorize(sReplaced));
+                        adventureLore.add(Component.empty()); // placeholder to keep indexing consistent
                     }
                 }
             }
-            if (!newLoreComp.isEmpty()) {
 
-                boolean b = DisplayNameUtil.tryAdventureLoreSetter(itemMeta, newLoreComp);
-                if (!b) {
+            // Prefer Adventure if at least one real component exists
+            boolean hasAnyAdventure =
+                    adventureLore.stream().anyMatch(c -> c != null && !c.equals(Component.empty()));
 
-                    if (!newLore.isEmpty()) {
-                        itemMeta.setLore(newLore);
+            if (hasAnyAdventure) {
+                // Filter out placeholders by regenerating vanilla for those empties if needed
+                // but try Adventure setter first
+                List<Component> compact = new ArrayList<>();
+                for (int i = 0; i < adventureLore.size(); i++) {
+                    Component c = adventureLore.get(i);
+                    if (c != null && !c.equals(Component.empty())) {
+                        compact.add(c);
+                    } else {
+                        // no Adventure component for this line; add vanilla text component
+                        String vanilla = (i < vanillaLore.size()) ? vanillaLore.get(i) : "";
+                        compact.add(Component.text(ChatColor.stripColor(vanilla))
+                                .decoration(TextDecoration.ITALIC, false));
                     }
                 }
-            } else {
-
-                if (!newLore.isEmpty()) {
-                    itemMeta.setLore(newLore);
+                boolean ok = DisplayNameUtil.tryAdventureLoreSetter(itemMeta, compact);
+                if (!ok && !vanillaLore.isEmpty()) {
+                    itemMeta.setLore(vanillaLore);
                 }
+            } else if (!vanillaLore.isEmpty()) {
+                itemMeta.setLore(vanillaLore);
             }
         }
+
         itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES);
-        if (this.modelId != 0) {
-            itemMeta.setCustomModelData(modelId);
+        if (this.modelId != 0) itemMeta.setCustomModelData(modelId);
 
-        }
         itemStack.setItemMeta(itemMeta);
 
         if (enchantments != null && !enchantments.isEmpty()) {
-            for (String s : enchantments.keySet()) {
-                Enchantment byName = Enchantment.getByName(s.toLowerCase());
-                if (byName == null) continue;
-
-                itemStack.addUnsafeEnchantment(byName, enchantments.get(s));
-
+            for (Map.Entry<String, Integer> e : enchantments.entrySet()) {
+                Enchantment ench = Enchantment.getByName(e.getKey().toLowerCase());
+                if (ench != null) itemStack.addUnsafeEnchantment(ench, e.getValue());
             }
         }
 
         if (customModel != null && !customModel.isEmpty()) {
-            itemStack = CustomItemUtil.applyCustomItem(itemStack, customModel,null);
-
+            itemStack = CustomItemUtil.applyCustomItem(itemStack, customModel, null);
         }
         if (tooltipStyle != null && !tooltipStyle.isEmpty()) {
             itemStack = CustomItemUtil.applyCustomItem(itemStack, null, tooltipStyle);
-
         }
         if (skullOwner != null) {
             return new ItemBuilder(itemStack).skullOwner(skullOwner).build();
         }
-
         return itemStack;
     }
 
