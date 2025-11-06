@@ -273,6 +273,8 @@ public class AtherialLibItem {
             for (String line : lore) {
 
 
+                line = stringReplacer.replace(new String(line));
+                line  = line.replaceAll("<center>", "").replaceAll("</center>", "");;
                 List<String> toLoop = new ArrayList<>();
                 if (line.contains("\n")) {
                     toLoop.addAll(Arrays.asList(line.split("\n")));
