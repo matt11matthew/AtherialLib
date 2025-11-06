@@ -20,10 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import spigui.item.ItemBuilder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Matthew E on 12/23/2023 at 10:19 PM for the project AtherialLib
@@ -273,19 +270,30 @@ public class AtherialLibItem {
         if (lore != null && !lore.isEmpty()) {
             List<String> newLore = new ArrayList<>();
             List<Component> newLoreComp = new ArrayList<>();
-            for (String s : lore) {
+            for (String line : lore) {
 
-                s = s.replaceAll("<center>", "").replaceAll("</center>", "");
-                newLore.add(stringReplacer.replace(new String(s)));
 
-                Component component = new AtherialTranslationMessage(s).toComponent(stringReplacer);
-                if (component!=null) {
-
-                    component = component.decoration(TextDecoration.ITALIC, false);
-                    newLoreComp.add(component);
+                List<String> toLoop = new ArrayList<>();
+                if (line.contains("\n")) {
+                    toLoop.addAll(Arrays.asList(line.split("\n")));
                 } else {
-                    newLoreComp.add(Component.empty());
+                    toLoop.add(line);
+                }
 
+                for (String s : toLoop) {
+
+                    s = s.replaceAll("<center>", "").replaceAll("</center>", "");
+                    newLore.add(stringReplacer.replace(new String(s)));
+
+                    Component component = new AtherialTranslationMessage(s).toComponent(stringReplacer);
+                    if (component!=null) {
+
+                        component = component.decoration(TextDecoration.ITALIC, false);
+                        newLoreComp.add(component);
+                    } else {
+                        newLoreComp.add(Component.empty());
+
+                    }
                 }
             }
             if (!newLoreComp.isEmpty()) {
