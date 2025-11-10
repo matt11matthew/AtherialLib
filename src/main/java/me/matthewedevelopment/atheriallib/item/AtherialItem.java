@@ -1,6 +1,7 @@
 package me.matthewedevelopment.atheriallib.item;
 
-import me.matthewedevelopment.atheriallib.nms.NbtAPI;
+import com.google.gson.JsonSyntaxException;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.inventory.ItemStack;
 
 public class AtherialItem {
@@ -10,39 +11,71 @@ public class AtherialItem {
         this.itemStack = itemStack;
     }
 
-    public static me.matthewedevelopment.atheriallib.item.AtherialItem of(ItemStack itemStack) {
+    public static AtherialItem of(ItemStack itemStack) {
         return new AtherialItem(itemStack);
-    }
-
-    public <T> T getData(String key, Class<T> clazz) {
-        NbtAPI nbtAPI = AtherialItemAPI.getAtherialLib().getVersionProvider().getNbtAPI();
-        if (nbtAPI.hasTagKey(this.itemStack, key)) {
-            String tagString = nbtAPI.getTagString(this.itemStack, key);
-            return AtherialItemAPI.GSON.fromJson(tagString, clazz);
-        }
-        return null;
     }
 
     public ItemStack getItemStack() {
         return itemStack;
     }
 
-    public <T> me.matthewedevelopment.atheriallib.item.AtherialItem setData(String key, T t) {
-        NbtAPI nbtAPI = AtherialItemAPI.getAtherialLib().getVersionProvider().getNbtAPI();
-        this.itemStack = nbtAPI.setTagString(this.itemStack, key, AtherialItemAPI.GSON.toJson(t, t.getClass()));
+    /**
+     * Read JSON-serialized value from NBT and deserialize to clazz.
+     */
+    public <T> T getData(String key, Class<T> clazz) {
+        if (itemStack == null) return null;
+        NBTItem nbt = new NBTItem(itemStack);
+        if (!nbt.hasKey(key)) return null;
+
+        String json = nbt.getString(key);
+        if (json == null || json.isEmpty()) return null;
+
+        try {
+            return AtherialItemAPI.GSON.fromJson(json, clazz);
+        } catch (JsonSyntaxException ex) {
+            return null;
+        }
+    }
+
+    /**
+     * Serialize value as JSON and store under key in NBT.
+     * Returns this for chaining. Updates internal ItemStack reference.
+     */
+    public <T> AtherialItem setData(String key, T value) {
+        if (itemStack == null) return this;
+
+        // true = direct modification mode (avoid cloning surprises on some server jars)
+        NBTItem nbt = new NBTItem(itemStack, true);
+        String json = (value == null) ? null : AtherialItemAPI.GSON.toJson(value);
+
+        if (json == null) {
+            // remove key if you prefer cleanup; otherwise skip
+            if (nbt.hasKey(key)) nbt.removeKey(key);
+        } else {
+            nbt.setString(key, json);
+        }
+
+        // Persist mutated handle back to our field
+        this.itemStack = nbt.getItem();
         return this;
     }
 
+    /**
+     * Quick existence + parse check.
+     */
     public <T> boolean hasData(String key, Class<T> clazz) {
-        NbtAPI nbtAPI = AtherialItemAPI.getAtherialLib().getVersionProvider().getNbtAPI();
-        if (nbtAPI.hasTagKey(itemStack, key)) {
-            try {
-                getData(key, clazz);
-                return true;
-            } catch (Exception e) {
-                return false;
-            }
+        if (itemStack == null) return false;
+
+        NBTItem nbt = new NBTItem(itemStack);
+        if (!nbt.hasKey(key)) return false;
+
+        try {
+            String json = nbt.getString(key);
+            if (json == null || json.isEmpty()) return false;
+            AtherialItemAPI.GSON.fromJson(json, clazz); // validate
+            return true;
+        } catch (Exception e) {
+            return false;
         }
-        return false;
     }
 }
