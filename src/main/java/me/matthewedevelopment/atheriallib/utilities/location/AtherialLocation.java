@@ -188,6 +188,7 @@ public class AtherialLocation {
     }
     public static AtherialLocation fromString(String input) {
         if (input==null||input.equalsIgnoreCase("null")||input.isEmpty())return null;
+        input = input.replaceAll(" ", "").trim();
 
         String[] split = input.split(",");
         String world = null;
