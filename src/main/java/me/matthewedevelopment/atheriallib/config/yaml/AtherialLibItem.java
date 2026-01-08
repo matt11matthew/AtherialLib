@@ -38,6 +38,9 @@ public class AtherialLibItem {
     private String tooltipStyle;
 
     @Getter
+    @Setter private int maxStackSize = -1;
+
+    @Getter
     private String customModel;
     private IntSimpleList multiSlots = null;
 
@@ -170,6 +173,7 @@ public class AtherialLibItem {
         this.tooltipStyle = clone.tooltipStyle;
         this.snakeCase = clone.snakeCase;
         this.multiSlots = clone.multiSlots;
+        this.maxStackSize = clone.maxStackSize;
 
     }
 
@@ -341,6 +345,10 @@ public class AtherialLibItem {
         }
         if (skullOwner != null) {
             return new ItemBuilder(itemStack).skullOwner(skullOwner).build();
+        }
+        if (maxStackSize != -1) {
+            itemStack = me.matthewedevelopment.atheriallib.utilities.MaxStackSizeUtils.setMaxStackSize(itemStack, maxStackSize);
+
         }
         return itemStack;
     }

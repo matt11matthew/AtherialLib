@@ -80,6 +80,16 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
             }
         }
 
+     if (item.getMaxStackSize() != -1) {
+            if (item.isSnakeCase()) {
+
+                serializedData.put("max_stack_size", item.getMaxStackSize());  // Mandatory
+            } else {
+
+                serializedData.put("maxStackSize", item.getMaxStackSize());  // Mandatory
+            }
+        }
+
 
 
         if (item.getCustomModel() != null) {
@@ -204,6 +214,13 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
             modelId = map.containsKey("model_id") ? (int) map.get("model_id") : 0;
         }
 
+        int maxStackSize = map.containsKey("maxStackSize") ? (int) map.get("maxStackSize") : -1;
+        if (map.containsKey("max_stack_size")) {
+
+            snakeCase = true;
+            maxStackSize = map.containsKey("max_stack_size") ? (int) map.get("max_stack_size") : -1;
+        }
+
         String headDatabaseHead = map.containsKey("headDatabaseHead") ? (String) map.get("headDatabaseHead") : null;
         if (map.containsKey("head_database_head")) {
             headDatabaseHead = map.containsKey("head_database_head") ? (String) map.get("head_database_head") : null;
@@ -247,6 +264,9 @@ public class AtherialLibItemSerializable implements ConfigSerializable<AtherialL
         }
         if (modelId != 0) {
             atherialLibItem = atherialLibItem.setModelId(modelId);
+        }
+        if (maxStackSize != 0 || maxStackSize != -1) {
+            atherialLibItem = atherialLibItem.setMaxStackSize(maxStackSize);
         }
         if ((commands != null) && !commands.isEmpty()) {
             atherialLibItem = atherialLibItem.setCommands(commands);
