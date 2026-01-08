@@ -3,6 +3,8 @@ package me.matthewedevelopment.atheriallib.utilities;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.lang.reflect.Method;
+
 public class MaxStackSizeUtils {
 
     public static ItemStack setMaxStackSize(ItemStack itemStack, int maxStackSize) {
