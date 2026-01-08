@@ -6,10 +6,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class MaxStackSizeUtils {
 
     public static ItemStack setMaxStackSize(ItemStack itemStack, int maxStackSize) {
-        ItemMeta itemMeta = itemStack.getItemMeta();
+       try {
+           ItemMeta itemMeta = itemStack.getItemMeta();
 
-        itemMeta.setMaxStackSize(maxStackSize);
-        itemStack.setItemMeta(itemMeta);
-        return itemStack;
+           itemMeta.setMaxStackSize(maxStackSize);
+           itemStack.setItemMeta(itemMeta);
+           return itemStack;
+       } catch (Exception e) {
+           return itemStack;
+       }
     }
 }
