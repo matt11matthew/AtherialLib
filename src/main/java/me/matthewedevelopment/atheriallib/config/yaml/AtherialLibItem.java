@@ -40,6 +40,11 @@ public class AtherialLibItem {
     @Getter
     @Setter private int maxStackSize = -1;
 
+    public AtherialLibItem setMaxStackSize(int maxStackSize) {
+        this.maxStackSize = maxStackSize;
+        return this;
+    }
+
     @Getter
     private String customModel;
     private IntSimpleList multiSlots = null;
