@@ -349,10 +349,10 @@ public class AtherialLibItem {
             itemStack = CustomItemUtil.applyCustomItem(itemStack, null, tooltipStyle);
         }
         if (skullOwner != null) {
-            return new ItemBuilder(itemStack).skullOwner(skullOwner).build();
+            itemStack =  new ItemBuilder(itemStack).skullOwner(skullOwner).build();
         }
         if (maxStackSize != -1) {
-            itemStack = me.matthewedevelopment.atheriallib.utilities.MaxStackSizeUtils.setMaxStackSize(itemStack, maxStackSize);
+            return me.matthewedevelopment.atheriallib.utilities.MaxStackSizeUtils.setMaxStackSize(itemStack, maxStackSize);
 
         }
         return itemStack;
