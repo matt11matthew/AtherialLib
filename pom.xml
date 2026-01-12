@@ -6,7 +6,7 @@
 
     <groupId>me.matthewedevelopment</groupId>
     <artifactId>atheriallib</artifactId>
-    <version>1.1.53</version>
+    <version>1.1.54</version>
     <name>AtherialLib</name>
 
     <properties>

@@ -1,5 +1,7 @@
 package me.matthewedevelopment.atheriallib.utilities;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -7,7 +9,20 @@ import java.lang.reflect.Method;
 
 public class MaxStackSizeUtils {
 
+    @Getter
+    @Setter
+    private static MaxStackSizeProvider maxStackSizeProvider;
+
+
+    public static abstract class MaxStackSizeProvider {
+        public abstract ItemStack setMaxStackSize(ItemStack itemStack, int maxStackSize);
+
+    }
+
     public static ItemStack setMaxStackSize(ItemStack itemStack, int maxStackSize) {
+        if (maxStackSizeProvider != null) {
+            return maxStackSizeProvider.setMaxStackSize(itemStack, maxStackSize);
+        }
         try {
             ItemMeta meta = itemStack.getItemMeta();
             if (meta == null) return itemStack;
