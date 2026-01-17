@@ -115,7 +115,7 @@ public class ChatPromptHandler  implements Listener {
                 chatPrompt.getChat().onTimeout(Optional.of(event.getPlayer()));
                 return;
             }
-            if(lowerCase.equals("n")||lowerCase.equals("cancel")) {
+            if(lowerCase.equals("cancel")) {
                 this.listeningNewMap.remove(event.getPlayer().getUniqueId());
                 chatPrompt.getChat().onCancel(event.getPlayer());
                 return;
@@ -137,7 +137,7 @@ public class ChatPromptHandler  implements Listener {
                 chatPrompt.getChat().onTimeout(Optional.of(event.getPlayer()));
                 return;
             }
-            if(lowerCase.equals("n")||lowerCase.equals("cancel")) {
+            if(lowerCase.equals("cancel")) {
                 this.listeningMap.remove(event.getPlayer().getUniqueId());
                 chatPrompt.getChat().onCancel(event.getPlayer());
                 return;
