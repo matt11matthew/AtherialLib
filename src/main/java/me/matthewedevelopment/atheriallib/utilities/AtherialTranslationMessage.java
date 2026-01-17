@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import me.matthewedevelopment.atheriallib.io.StringReplacer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -43,6 +44,8 @@ public class AtherialTranslationMessage {
         return toComponent(stringReplacer, null);
     }
 
+
+
     public Component toComponent() {
         return toComponent(null, null);
     }
@@ -71,6 +74,31 @@ public class AtherialTranslationMessage {
         }
 
     }
+    private static final MiniMessage MM = MiniMessage.miniMessage();
 
 
+    public Component toComponentBasic(StringReplacer stringReplacer) {
+        if (content == null || content.isEmpty() || content.equalsIgnoreCase("none")) {
+            return null;
+        }
+
+        String replaced = content;
+        if (stringReplacer != null) {
+            replaced = stringReplacer.replace(content);
+        }
+
+        try {
+            if (replaced.contains("§")) {
+                // Don't parse § strings with MiniMessage — use legacy directly
+                return LegacyComponentSerializer.legacySection().deserialize(replaced);
+            }
+
+            // Uses your CenterTagResolver logic to apply <center> if present
+            return MM.deserialize(replaced);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return LegacyComponentSerializer.legacyAmpersand().deserialize(replaced); // Fallback
+        }
+
+    }
 }

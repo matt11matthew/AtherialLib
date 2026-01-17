@@ -261,7 +261,7 @@ public class AtherialLibItem {
             String dn = stringReplacer.replace(displayName)
                     .replaceAll(CENTER_TAG_REGEX, ""); // strip all <center> tags
 
-            Component comp = new AtherialTranslationMessage(dn).toComponent(stringReplacer);
+            Component comp = new AtherialTranslationMessage(dn).toComponentBasic(stringReplacer);
             if (comp != null) {
                 comp = comp.decoration(TextDecoration.ITALIC, false);
                 boolean ok = DisplayNameUtil.tryAdventureSetter(itemMeta, comp);
@@ -290,7 +290,7 @@ public class AtherialLibItem {
                     String sReplaced = stringReplacer.replace(s); // in case of nested tokens
 
                     // Build Adventure component per line if possible
-                    Component lineComp = new AtherialTranslationMessage(sReplaced).toComponent(stringReplacer);
+                    Component lineComp = new AtherialTranslationMessage(sReplaced).toComponentBasic(stringReplacer);
                     if (lineComp != null) {
                         lineComp = lineComp.decoration(TextDecoration.ITALIC, false);
                         adventureLore.add(lineComp);
