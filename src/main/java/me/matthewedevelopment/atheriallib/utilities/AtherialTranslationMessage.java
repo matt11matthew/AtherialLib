@@ -93,7 +93,10 @@ public class AtherialTranslationMessage {
                 return LegacyComponentSerializer.legacySection().deserialize(replaced);
             }
 
-            // Uses your CenterTagResolver logic to apply <center> if present
+            replaced = replaced.replaceAll("<newline>", "(New Line)");
+            replaced = replaced.replaceAll("</newline>", "");
+            replaced = replaced.replaceAll("</center>", "");
+            replaced = replaced.replaceAll("<center>", "(Centered)");
             return MM.deserialize(replaced);
         } catch (Exception e) {
             e.printStackTrace();
