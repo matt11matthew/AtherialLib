@@ -242,7 +242,7 @@ public class AtherialLibItem {
         return build;
     }
     public ItemStack build(StringReplacer stringReplacer) {
-        final String CENTER_TAG_REGEX = "(?i)</?center>"; // case-insensitive strip
+//        final String CENTER_TAG_REGEX = "(?i)</?center>"; // case-insensitive strip
 
         ItemStack itemStack;
         if (amount < 1) amount = 1;
@@ -258,8 +258,7 @@ public class AtherialLibItem {
 
         // ----- Display Name -----
         if (displayName != null) {
-            String dn = stringReplacer.replace(displayName)
-                    .replaceAll(CENTER_TAG_REGEX, ""); // strip all <center> tags
+            String dn = stringReplacer.replace(displayName); // strip all <center> tags
 
             Component comp = new AtherialTranslationMessage(dn).toComponentBasic(stringReplacer);
             if (comp != null) {
@@ -279,7 +278,6 @@ public class AtherialLibItem {
             for (String rawLine : lore) {
                 // replace variables first, then strip tags, then normalize newlines
                 String expanded = stringReplacer.replace(rawLine)
-                        .replaceAll(CENTER_TAG_REGEX, "")
                         .replace("\r\n", "\n")
                         .replace("\r", "\n");
 

@@ -93,10 +93,11 @@ public class AtherialTranslationMessage {
                 return LegacyComponentSerializer.legacySection().deserialize(replaced);
             }
 
-            replaced = replaced.replaceAll("<newline>", "(New Line)");
-            replaced = replaced.replaceAll("</newline>", "");
-            replaced = replaced.replaceAll("</center>", "");
-            replaced = replaced.replaceAll("<center>", "(Centered)");
+
+            replaced = replaced.replace("<newline>", "(New Line)");
+            replaced = replaced.replace("</newline>", "");
+            replaced = replaced.replace("</center>", "");
+            replaced = replaced.replace("<center>", "(Centered)");
             return MM.deserialize(replaced);
         } catch (Exception e) {
             e.printStackTrace();
