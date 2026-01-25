@@ -94,15 +94,24 @@ public class AtherialTranslationMessage {
             }
 
 
-            replaced = replaced.replace("<newline>", "(New Line)");
-            replaced = replaced.replace("</newline>", "");
+            replaced = replaced.replace("<newline>", NEWLINE_PLACEHOLDER);
             replaced = replaced.replace("</center>", "");
-            replaced = replaced.replace("<center>", "(Centered)");
+            replaced = replaced.replace("<center>", CENTER_PLACEHOLDER);
             return MM.deserialize(replaced);
         } catch (Exception e) {
             e.printStackTrace();
             return LegacyComponentSerializer.legacyAmpersand().deserialize(replaced); // Fallback
         }
 
+    }
+    private static  String NEWLINE_PLACEHOLDER = "(New Line)";
+    private static  String CENTER_PLACEHOLDER = "(Centered)";
+
+    public static void setNewlinePlaceholder(String newlinePlaceholder) {
+        NEWLINE_PLACEHOLDER = newlinePlaceholder;
+    }
+
+    public static void setCenterPlaceholder(String centerPlaceholder) {
+        CENTER_PLACEHOLDER = centerPlaceholder;
     }
 }
