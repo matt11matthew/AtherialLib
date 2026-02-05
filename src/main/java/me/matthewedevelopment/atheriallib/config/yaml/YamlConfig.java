@@ -1,5 +1,6 @@
 package me.matthewedevelopment.atheriallib.config.yaml;
 
+import lombok.extern.slf4j.Slf4j;
 import me.matthewedevelopment.atheriallib.config.Config;
 import me.matthewedevelopment.atheriallib.config.IgnoreValue;
 import me.matthewedevelopment.atheriallib.config.SerializedName;
@@ -13,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+@Slf4j
 public  class YamlConfig<A extends JavaPlugin> implements Config {
     private String path;
     private A plugin;
@@ -182,7 +184,13 @@ public  class YamlConfig<A extends JavaPlugin> implements Config {
                                     yamlConfiguration.set(key, field.get(this));
                                 } else {
                                     Object value = yamlConfiguration.get(key);
-                                    field.set(this, field.getType().cast(value));
+                                    try {
+                                        field.set(this, field.getType().cast(value));
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        log.error("Failed to load config key: " + key + " with value: " + value + " file: " + configFile.getName());
+                                        
+                                    }
                                 }
                             }
                         }
