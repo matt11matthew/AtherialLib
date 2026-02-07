@@ -80,7 +80,12 @@ public  class YamlConfig<A extends JavaPlugin> implements Config {
                                 // Serialize and set default if not set in config
                                 Object serialize = serializer.serialize(field.get(this));
                                 if (serialize != null) {
-                                    yamlConfiguration.set(key, serialize);
+                                 try {
+                                     yamlConfiguration.set(key, serialize);
+                                 } catch (Exception e) {
+                                     log.error("Failed to save config key: " + key + " with value: " + serialize + " file: " + configFile.getName());
+                                     e.printStackTrace();
+                                 }
                                 }
                             } else {
 
