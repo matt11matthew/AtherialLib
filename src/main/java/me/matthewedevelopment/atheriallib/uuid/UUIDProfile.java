@@ -3,7 +3,6 @@ package me.matthewedevelopment.atheriallib.uuid;
 import me.matthewedevelopment.atheriallib.database.registry.DataColumn;
 import me.matthewedevelopment.atheriallib.database.registry.DataColumnType;
 import me.matthewedevelopment.atheriallib.database.registry.DataObject;
-import org.bukkit.Bukkit;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -60,7 +59,7 @@ public class UUIDProfile  extends DataObject<UUIDProfile> {
     public void load() {
         UUIDProfileRegistry uuidProfileRegistry = UUIDProfileRegistry.get();
 
-        profile= uuidProfileRegistry.getPaperProfileProvider().handleLoading(uuid, username);
+        profile= uuidProfileRegistry.getProfileProvider().handleLoading(uuid, username);
 
 
     }

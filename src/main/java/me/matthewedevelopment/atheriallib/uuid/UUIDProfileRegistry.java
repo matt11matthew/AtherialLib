@@ -9,7 +9,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -17,20 +16,20 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class UUIDProfileRegistry  extends DataObjectRegistry<UUIDProfile> implements Listener {
    @Getter
-   private final PaperProfileProvider paperProfileProvider;
+   private final ProfileProvider profileProvider;
     private Map<String, UUID> nameMap = new ConcurrentHashMap<>();
     private Map<UUID, String> reverseNameMap =  new ConcurrentHashMap<>();
 
-    public UUIDProfileRegistry(PaperProfileProvider paperProfileProvider) {
+    public UUIDProfileRegistry(ProfileProvider profileProvider) {
         super(UUIDProfile.class);
-        this.paperProfileProvider = paperProfileProvider;
+        this.profileProvider = profileProvider;
         instance=this;
     }
 
     @Deprecated(since = "1.1.61")
     public UUIDProfileRegistry() {
         super(UUIDProfile.class);
-        paperProfileProvider = null;
+        profileProvider = null;
         instance = this;
     }
 
