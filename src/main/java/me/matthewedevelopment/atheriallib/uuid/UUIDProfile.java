@@ -18,6 +18,7 @@ public class UUIDProfile  extends DataObject<UUIDProfile> {
         super(uuid);
         this.username = username;
     }
+
     public UUIDProfile(UUID uuid) {
         super(uuid);
     }
@@ -36,15 +37,15 @@ public class UUIDProfile  extends DataObject<UUIDProfile> {
 
     @Override
     public List<DataColumn> getDefaultColumns() {
-        return Collections.singletonList(new DataColumn("username", DataColumnType.VARCHAR,username));
+        return Collections.singletonList(new DataColumn("username", DataColumnType.VARCHAR, username));
     }
 
     @Override
     public UUIDProfile loadResultFromSet(ResultSet resultSet) {
         try {
-            this.username=resultSet.getString("username");
+            this.username = resultSet.getString("username");
 
-           load();
+            load();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -59,10 +60,13 @@ public class UUIDProfile  extends DataObject<UUIDProfile> {
     public void load() {
         UUIDProfileRegistry uuidProfileRegistry = UUIDProfileRegistry.get();
 
-      uuidProfileRegistry.getProfileProvider().handleLoading(uuid, username,o -> {
-          profile=o;
+        ProfileProvider<?> profileProvider = uuidProfileRegistry.getProfileProvider();
 
-      });
+        if (profileProvider == null) return;
+        profileProvider.handleLoading(uuid, username, o -> {
+            profile = o;
+
+        });
 
 
     }
