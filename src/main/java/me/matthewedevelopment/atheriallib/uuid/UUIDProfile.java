@@ -59,7 +59,10 @@ public class UUIDProfile  extends DataObject<UUIDProfile> {
     public void load() {
         UUIDProfileRegistry uuidProfileRegistry = UUIDProfileRegistry.get();
 
-        profile= uuidProfileRegistry.getProfileProvider().handleLoading(uuid, username);
+      uuidProfileRegistry.getProfileProvider().handleLoading(uuid, username,o -> {
+          profile=o;
+
+      });
 
 
     }
