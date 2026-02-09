@@ -1,6 +1,9 @@
 package me.matthewedevelopment.atheriallib.uuid;
 
+import lombok.Getter;
+import me.matthewedevelopment.atheriallib.AtherialLib;
 import me.matthewedevelopment.atheriallib.database.registry.DataObjectRegistry;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,16 +13,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class UUIDProfileRegistry  extends DataObjectRegistry<UUIDProfile> implements Listener {
-    private Map<String, UUID> nameMap;
-    private Map<UUID, String> reverseNameMap;
+   @Getter
+   private final PaperProfileProvider paperProfileProvider;
+    private Map<String, UUID> nameMap = new ConcurrentHashMap<>();
+    private Map<UUID, String> reverseNameMap =  new ConcurrentHashMap<>();
 
+    public UUIDProfileRegistry(PaperProfileProvider paperProfileProvider) {
+        super(UUIDProfile.class);
+        this.paperProfileProvider = paperProfileProvider;
+        instance=this;
+    }
+
+    @Deprecated(since = "1.1.61")
     public UUIDProfileRegistry() {
         super(UUIDProfile.class);
-        nameMap = new HashMap<>();
-        reverseNameMap = new HashMap<>();
-        instance=this;
+        paperProfileProvider = null;
+        instance = this;
     }
 
     @Override
@@ -27,6 +39,7 @@ public class UUIDProfileRegistry  extends DataObjectRegistry<UUIDProfile> implem
         for (UUIDProfile uuidProfile : list) {
             nameMap.put(uuidProfile.getUsername().toLowerCase(), uuidProfile.getUuid());
             reverseNameMap.put( uuidProfile.getUuid(), uuidProfile.getUsername());
+            uuidProfile.load();
         }
         super.onLoadAll(list);
     }
@@ -61,6 +74,7 @@ public class UUIDProfileRegistry  extends DataObjectRegistry<UUIDProfile> implem
 
     public void insert(Player p){
         UUIDProfile uuidProfile = new UUIDProfile(p.getUniqueId(), p.getName());
+        uuidProfile.load();
         insertAsync(uuidProfile,() -> {
             nameMap.put(uuidProfile.getUsername().toLowerCase(),uuidProfile.getUuid());
             reverseNameMap.put(uuidProfile.getUuid(),uuidProfile.getUsername());
@@ -71,6 +85,7 @@ public class UUIDProfileRegistry  extends DataObjectRegistry<UUIDProfile> implem
     @Override
     public void onRegister() {
 
+        Bukkit.getPluginManager().registerEvents(this, AtherialLib.get());
 
     }
 }

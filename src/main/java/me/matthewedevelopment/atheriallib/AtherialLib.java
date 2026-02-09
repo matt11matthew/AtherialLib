@@ -49,7 +49,14 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
     protected DependencyManager dependencyManager;
 //    protected HandlerManager handlerManager;
 
+
+    @Deprecated
     public static AtherialLib getInstance() {
+        return instance;
+    }
+
+
+    public static AtherialLib get() {
         return instance;
     }
     public abstract void onStart();
