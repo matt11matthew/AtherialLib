@@ -137,9 +137,20 @@ public abstract class AtherialMenu<C extends YamlConfig> {
 
         try {
             updating = true;
+
+            // Cache the current open inventory to avoid multiple calls
+            Inventory openInventory = player.getOpenInventory() != null ?
+                player.getOpenInventory().getTopInventory() : null;
+
+            // Only update if the player still has this menu open
+            if (!isOnline() || openInventory == null || openInventory.getHolder() != menu) {
+                cancelAutoUpdate();
+                return;
+            }
+
             update();
 
-            // Only refresh if the inventory is still open
+            // Re-check after update to ensure inventory is still open
             if (isOnline() && player.getOpenInventory() != null &&
                 player.getOpenInventory().getTopInventory().getHolder() == menu) {
                 menu.refreshInventory(player);
@@ -191,8 +202,14 @@ public abstract class AtherialMenu<C extends YamlConfig> {
     }
 
     public void forceUpdate() {
-        setNeedsUpdate(true);
-        firstUpdate();
+        if (updating) {
+            needsUpdate = true;
+            return;
+        }
+
+        AtherialTasks.runSync(() -> {
+            performSafeUpdate();
+        });
     }
 
     public int getRows() {
@@ -266,27 +283,13 @@ public abstract class AtherialMenu<C extends YamlConfig> {
 
 
     public void open() {
-        AtherialTasks.runAsync(() -> {
-            while (ItemUtils.isEmpty(menu.getInventory())) {
-                if (!ItemUtils.isEmpty(menu.getInventory())) {
-                    AtherialTasks.runSync(() -> {
-                        // Prefer component title if provided and supported
-                        Component compTitle = getTitleComponent();
-                        if (compTitle != null && tryOpenWithComponentTitle(player, menu.getInventory(), compTitle)) {
-                            return;
-                        }
-                        player.openInventory(menu.getInventory());
-                    });
-                    return;
-                }
+        // Open inventory synchronously to prevent flashing
+        AtherialTasks.runSync(() -> {
+            Component compTitle = getTitleComponent();
+            if (compTitle != null && tryOpenWithComponentTitle(player, menu.getInventory(), compTitle)) {
+                return;
             }
-            AtherialTasks.runSync(() -> {
-                Component compTitle = getTitleComponent();
-                if (compTitle != null && tryOpenWithComponentTitle(player, menu.getInventory(), compTitle)) {
-                    return;
-                }
-                player.openInventory(menu.getInventory());
-            });
+            player.openInventory(menu.getInventory());
         });
     }
 
@@ -305,11 +308,21 @@ public abstract class AtherialMenu<C extends YamlConfig> {
     }
 
     public void firstUpdate() {
+        if (updating) {
+            return;
+        }
+
         updating = true;
-        update();
-        menu.refreshInventory(player);
-        updating = false;
-        needsUpdate  = false;
+        try {
+            update();
+            // Only refresh if player is online and menu exists
+            if (isOnline() && menu != null) {
+                menu.refreshInventory(player);
+            }
+        } finally {
+            updating = false;
+            needsUpdate = false;
+        }
     }
 
     private boolean needsUpdate;
