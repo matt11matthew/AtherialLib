@@ -8,6 +8,7 @@ import me.matthewedevelopment.atheriallib.item.ItemUtils;
 import me.matthewedevelopment.atheriallib.utilities.AtherialTasks;
 import me.matthewedevelopment.atheriallib.utilities.ChatUtils;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -88,9 +89,7 @@ public abstract class AtherialMenu<C extends YamlConfig> {
         // Convert ms to ticks (1 tick = 50ms)
         long intervalTicks = Math.max(1, intervalMs / 50);
 
-        // Schedule repeating task using AtherialLib's scheduler
-        AtherialLib.getInstance().getSchedulerAdapter().runRepeatingTask(player, intervalTicks, intervalTicks, () -> {
-            // Check if auto-update was cancelled
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(AtherialLib.get(), () -> {
             if (!autoUpdateActive) {
                 return;
             }
@@ -103,7 +102,7 @@ public abstract class AtherialMenu<C extends YamlConfig> {
 
             // Check if player still has this inventory open
             if (!(player.getOpenInventory().getTopInventory().getHolder() instanceof SGMenu) ||
-                player.getOpenInventory().getTopInventory().getHolder() != menu) {
+                    player.getOpenInventory().getTopInventory().getHolder() != menu) {
                 cancelAutoUpdate();
                 return;
             }
@@ -117,7 +116,8 @@ public abstract class AtherialMenu<C extends YamlConfig> {
             // Perform safe update
             performSafeUpdate();
             lastUpdateTime = currentTime;
-        });
+
+        }, intervalTicks, intervalTicks);
     }
 
     /**
