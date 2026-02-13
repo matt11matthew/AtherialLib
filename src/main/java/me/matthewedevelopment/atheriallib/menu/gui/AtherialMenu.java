@@ -88,40 +88,36 @@ public abstract class AtherialMenu<C extends YamlConfig> {
         // Convert ms to ticks (1 tick = 50ms)
         long intervalTicks = Math.max(1, intervalMs / 50);
 
-        // Schedule repeating task using FoliaLib
-        AtherialLib.getInstance().getFoliaLib().getScheduler()
-            .runAtEntityTimer(player, (task) -> {
-                // Check if auto-update was cancelled
-                if (!autoUpdateActive) {
-                    task.cancel();
-                    return;
-                }
+        // Schedule repeating task using AtherialLib's scheduler
+        AtherialLib.getInstance().getSchedulerAdapter().runRepeatingTask(player, intervalTicks, intervalTicks, () -> {
+            // Check if auto-update was cancelled
+            if (!autoUpdateActive) {
+                return;
+            }
 
-                // Only update if player is still online and menu is open
-                if (!isOnline() || menu == null) {
-                    cancelAutoUpdate();
-                    task.cancel();
-                    return;
-                }
+            // Only update if player is still online and menu is open
+            if (!isOnline() || menu == null) {
+                cancelAutoUpdate();
+                return;
+            }
 
-                // Check if player still has this inventory open
-                if (!(player.getOpenInventory().getTopInventory().getHolder() instanceof SGMenu) ||
-                    player.getOpenInventory().getTopInventory().getHolder() != menu) {
-                    cancelAutoUpdate();
-                    task.cancel();
-                    return;
-                }
+            // Check if player still has this inventory open
+            if (!(player.getOpenInventory().getTopInventory().getHolder() instanceof SGMenu) ||
+                player.getOpenInventory().getTopInventory().getHolder() != menu) {
+                cancelAutoUpdate();
+                return;
+            }
 
-                // Throttle updates - ensure minimum time has passed
-                long currentTime = System.currentTimeMillis();
-                if (currentTime - lastUpdateTime < intervalMs) {
-                    return;
-                }
+            // Throttle updates - ensure minimum time has passed
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastUpdateTime < intervalMs) {
+                return;
+            }
 
-                // Perform safe update
-                performSafeUpdate();
-                lastUpdateTime = currentTime;
-            }, intervalTicks, intervalTicks);
+            // Perform safe update
+            performSafeUpdate();
+            lastUpdateTime = currentTime;
+        });
     }
 
     /**
