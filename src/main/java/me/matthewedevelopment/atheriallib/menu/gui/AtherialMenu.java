@@ -27,6 +27,11 @@ public abstract class AtherialMenu<C extends YamlConfig> {
 
     private boolean slow =false;
 
+    // Auto-update interval fields
+    private long autoUpdateIntervalMs = -1; // -1 means disabled
+    private boolean autoUpdateActive = false;
+    private long lastUpdateTime = 0;
+
     public boolean isSlow() {
 
         return slow;
@@ -60,6 +65,95 @@ public abstract class AtherialMenu<C extends YamlConfig> {
         this.slow = slow;
     }
 
+    /**
+     * Sets the auto-update interval for this menu.
+     * The menu will automatically call update() and refresh at the specified interval.
+     * This is safer than calling forceUpdate() every tick as it prevents flashing and duplication.
+     *
+     * @param intervalMs The interval in milliseconds. Set to 0 or negative to disable auto-updates.
+     */
+    public void setAutoUpdateInterval(long intervalMs) {
+        // Cancel existing task if any
+        cancelAutoUpdate();
+
+        if (intervalMs <= 0) {
+            this.autoUpdateIntervalMs = -1;
+            return;
+        }
+
+        this.autoUpdateIntervalMs = intervalMs;
+        this.autoUpdateActive = true;
+        this.lastUpdateTime = System.currentTimeMillis();
+
+        // Convert ms to ticks (1 tick = 50ms)
+        long intervalTicks = Math.max(1, intervalMs / 50);
+
+        // Schedule repeating task using FoliaLib
+        AtherialLib.getInstance().getFoliaLib().getScheduler()
+            .runAtEntityTimer(player, (task) -> {
+                // Check if auto-update was cancelled
+                if (!autoUpdateActive) {
+                    task.cancel();
+                    return;
+                }
+
+                // Only update if player is still online and menu is open
+                if (!isOnline() || menu == null) {
+                    cancelAutoUpdate();
+                    task.cancel();
+                    return;
+                }
+
+                // Check if player still has this inventory open
+                if (!(player.getOpenInventory().getTopInventory().getHolder() instanceof SGMenu) ||
+                    player.getOpenInventory().getTopInventory().getHolder() != menu) {
+                    cancelAutoUpdate();
+                    task.cancel();
+                    return;
+                }
+
+                // Throttle updates - ensure minimum time has passed
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastUpdateTime < intervalMs) {
+                    return;
+                }
+
+                // Perform safe update
+                performSafeUpdate();
+                lastUpdateTime = currentTime;
+            }, intervalTicks, intervalTicks);
+    }
+
+    /**
+     * Cancels the auto-update task if it's running
+     */
+    private void cancelAutoUpdate() {
+        autoUpdateActive = false;
+    }
+
+    /**
+     * Performs a safe update that prevents flashing and duplication issues
+     */
+    private void performSafeUpdate() {
+        if (updating) {
+            return; // Already updating, skip to prevent overlap
+        }
+
+        try {
+            updating = true;
+            update();
+
+            // Only refresh if the inventory is still open
+            if (isOnline() && player.getOpenInventory() != null &&
+                player.getOpenInventory().getTopInventory().getHolder() == menu) {
+                menu.refreshInventory(player);
+            }
+        } finally {
+            updating = false;
+            needsUpdate = false;
+        }
+    }
+
     public abstract void update();
 
     public boolean isOnline(){
@@ -78,12 +172,15 @@ public abstract class AtherialMenu<C extends YamlConfig> {
         }
     }
     public void destroy(){
+        cancelAutoUpdate();
         AtherialLib.getInstance().getMenuRegistry().destroy(player);
     }
 
     public void create() {
         if (AtherialLib.getInstance().getMenuRegistry().getMenuMap().containsKey(player.getUniqueId())) {
-            AtherialLib.getInstance().getMenuRegistry().getMenuMap().get(player.getUniqueId()).onRealClose();
+            AtherialMenu existingMenu = AtherialLib.getInstance().getMenuRegistry().getMenuMap().get(player.getUniqueId());
+            existingMenu.cancelAutoUpdate();
+            existingMenu.onRealClose();
             AtherialLib.getInstance().getMenuRegistry().getMenuMap().remove(player.getUniqueId());
         }
         AtherialLib.getInstance().getMenuRegistry().getMenuMap().put(player.getUniqueId(), this);
@@ -140,7 +237,9 @@ public abstract class AtherialMenu<C extends YamlConfig> {
         menu.setButton(row * 9 + col, b);
     }
 
-    public  void onRealClose(){}
+    public  void onRealClose(){
+        cancelAutoUpdate();
+    }
 
     public SGMenu getMenu() {
         return menu;
