@@ -183,6 +183,8 @@ public class AtherialLocation {
     public static AtherialLocation fromPlayerLocation(Location location, boolean world) {
         return fromLocation(location,false, world);
     }
+
+
     public static AtherialLocation fromLocation(Location location, boolean block) {
         return fromLocation(location,block, true);
     }
@@ -226,5 +228,13 @@ public class AtherialLocation {
         this.world = null;
         this.yaw = yaw;
         this.pitch = pitch;
+    }
+
+    /**
+     * Creates a copy of this AtherialLocation with all values preserved
+     * @return a new AtherialLocation instance with the same values
+     */
+    public AtherialLocation copy() {
+        return new AtherialLocation(this.world, this.x, this.y, this.z, this.pitch, this.yaw);
     }
 }

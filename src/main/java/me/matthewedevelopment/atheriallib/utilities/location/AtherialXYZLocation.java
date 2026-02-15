@@ -120,6 +120,15 @@ public class AtherialXYZLocation {
         return this;
 
     }
+
+    /**
+     * Creates a copy of this AtherialXYZLocation with all values preserved
+     * @return a new AtherialXYZLocation instance with the same values
+     */
+    public AtherialXYZLocation copy() {
+        return new AtherialXYZLocation(this.world, this.x, this.y, this.z);
+    }
+
     public static AtherialXYZLocation fromLocation(Location location, boolean worldIncluded) {
         if (worldIncluded){
             return new AtherialXYZLocation(location.getWorld().getName(),location.getBlockX(),location.getBlockY(),location.getBlockZ());
