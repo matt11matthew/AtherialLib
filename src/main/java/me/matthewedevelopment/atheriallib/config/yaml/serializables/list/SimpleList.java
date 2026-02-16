@@ -11,6 +11,10 @@ public abstract class SimpleList<T, S extends SimpleList<T, S>> implements Itera
 
     private List<T> list;
 
+    public T getSingle() {
+        return list.get(0);
+    }
+
     public List<T> getList() {
         return list;
     }
