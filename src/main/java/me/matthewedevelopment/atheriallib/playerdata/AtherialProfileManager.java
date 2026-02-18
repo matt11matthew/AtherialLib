@@ -102,7 +102,18 @@ public class AtherialProfileManager  implements Listener {
             databaseTableManager=new MySQLDatabaseTableManager();
         }
         atherialLib.getLogger().info("Loading profiles...");
-        List<Class<? extends AtherialProfile>> profileClazzes = atherialLib.getProfileClazzes();
+        List<Class<? extends AtherialProfile>> profileClazzes = new ArrayList<>();
+
+
+        List<Class<? extends AtherialProfile>> profileClazzes1 = atherialLib.getProfileClazzes();
+        if (profileClazzes1!=null && !profileClazzes1.isEmpty()){
+            profileClazzes.addAll(profileClazzes1);
+        }
+        List<Class<? extends AtherialProfile>> profileClazzes2 = atherialLib.getProfileClasses();
+        if (profileClazzes2!=null && !profileClazzes2.isEmpty()){
+            profileClazzes.addAll(profileClazzes2);
+        }
+
         for (Class<? extends AtherialProfile> profileClazz : profileClazzes) {
             registerProfileClass((Class<? extends AtherialProfile<?>>) profileClazz);
             LOADED.add(profileClazz.getSimpleName());

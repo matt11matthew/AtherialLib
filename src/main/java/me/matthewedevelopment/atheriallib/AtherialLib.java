@@ -38,6 +38,7 @@ import spigui.SpiGUI;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -426,7 +427,13 @@ public abstract class AtherialLib extends JavaPlugin implements Listener {
         return commandConfig;
     }
 
-    public abstract List<Class<? extends AtherialProfile>> getProfileClazzes();
+    @Deprecated
+    public  List<Class<? extends AtherialProfile>> getProfileClazzes() {
+        return new ArrayList<>();
+    }
+    public  List<Class<? extends AtherialProfile>> getProfileClasses() {
+        return new ArrayList<>();
+    }
 
     public GameMapHandler getGameMapHandler() {
         return gameHandler;
