@@ -1,5 +1,6 @@
 package spigui.menu;
 
+import me.matthewedevelopment.atheriallib.DebugLog;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -207,6 +208,11 @@ public class SGMenuListener implements Listener {
 
         // Otherwise, get the button normally.
         SGButton button = clickedGui.getButton(clickedGui.getCurrentPage(), event.getSlot());
+        // #region agent log
+        boolean hasBtn = button != null;
+        boolean hasListener = hasBtn && button.getListener() != null;
+        DebugLog.log("H3", "SGMenuListener:onClick", "click processed", "{\"slot\":" + event.getSlot() + ",\"page\":" + clickedGui.getCurrentPage() + ",\"hasButton\":" + hasBtn + ",\"hasListener\":" + hasListener + ",\"resultBefore\":\"" + event.getResult() + "\",\"updating\":" + (clickedGui.getLink() != null && clickedGui.getLink().isUpdating()) + "}");
+        // #endregion
         if (button != null && button.getListener() != null) {
             button.getListener().onClick(event);
         }

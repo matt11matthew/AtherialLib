@@ -1,5 +1,6 @@
 package spigui.menu;
 
+import me.matthewedevelopment.atheriallib.DebugLog;
 import me.matthewedevelopment.atheriallib.menu.gui.AtherialMenu;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -24,6 +25,7 @@ import java.util.function.Consumer;
 public class SGMenu implements InventoryHolder {
 
     private AtherialMenu link;
+    public AtherialMenu getLink() { return link; }
     /** The plugin (owner of the SpiGUI instance) that created this inventory. */
     private final JavaPlugin owner;
     /** The SpiGUI instance that created this inventory. */
@@ -367,7 +369,6 @@ public class SGMenu implements InventoryHolder {
      * Re-applies Component title after size/title changes or content refresh.
      */
     public void refreshInventory(HumanEntity viewer) {
-        // If the open inventory isn't an SGMenu - or if it isn't this inventory, do nothing.
         if (!(viewer.getOpenInventory().getTopInventory().getHolder() instanceof SGMenu)
                 || viewer.getOpenInventory().getTopInventory().getHolder() != this) {
             return;
@@ -381,22 +382,31 @@ public class SGMenu implements InventoryHolder {
         final boolean titleDiffers = !Objects.equals(viewer.getOpenInventory().getTitle(), desiredName);
 
         if (sizeDiffers || titleDiffers) {
-            // Rebuild & open new inventory (prefer Component if available)
+            // #region agent log
+            DebugLog.log("H4", "SGMenu:refreshInventory", "REBUILD inventory (size/title changed)", "{\"sizeDiffers\":" + sizeDiffers + ",\"titleDiffers\":" + titleDiffers + "}");
+            // #endregion
             Inventory inv = buildInventoryInternal();
-            viewer.openInventory(inv); // fallback open
+            viewer.openInventory(inv);
             Component comp = computeTitleComponent();
             if (comp != null) {
+                // #region agent log
+                DebugLog.log("H3", "SGMenu:refreshInventory", "tryOpenWithComponentTitle on REBUILD path", "{}");
+                // #endregion
                 tryOpenWithComponentTitle(viewer, inv, comp);
             }
             return;
         }
 
-        // Otherwise, just refresh contents in-place
+        // #region agent log
+        DebugLog.log("H4", "SGMenu:refreshInventory", "in-place content refresh (getInventory creates new inv)", "{}");
+        // #endregion
         viewer.getOpenInventory().getTopInventory().setContents(getInventory().getContents());
 
-        // And still re-assert the Component title to be safe (if supported)
         Component comp = computeTitleComponent();
         if (comp != null) {
+            // #region agent log
+            DebugLog.log("H3", "SGMenu:refreshInventory", "tryOpenWithComponentTitle on EVERY in-place refresh", "{}");
+            // #endregion
             tryOpenWithComponentTitle(viewer, viewer.getOpenInventory().getTopInventory(), comp);
         }
     }

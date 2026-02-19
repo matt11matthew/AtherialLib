@@ -17,6 +17,7 @@ import spigui.buttons.SGButton;
 import spigui.buttons.SGButtonListener;
 import spigui.menu.SGMenu;
 
+import me.matthewedevelopment.atheriallib.DebugLog;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
@@ -89,8 +90,14 @@ public abstract class AtherialMenu<C extends YamlConfig> {
         // Convert ms to ticks (1 tick = 50ms)
         long intervalTicks = Math.max(1, intervalMs / 50);
 
+        // #region agent log
+        DebugLog.log("H2", "AtherialMenu:92", "scheduleSyncRepeatingTask called", "{\"intervalTicks\":" + intervalTicks + ",\"intervalMs\":" + intervalMs + ",\"menuClass\":\"" + getClass().getSimpleName() + "\"}");
+        // #endregion
         Bukkit.getScheduler().scheduleSyncRepeatingTask(AtherialLib.get(), () -> {
             if (!autoUpdateActive) {
+                // #region agent log
+                DebugLog.log("H2", "AtherialMenu:95", "auto-update skipped: not active (task still running)", "{\"menuClass\":\"" + getClass().getSimpleName() + "\"}");
+                // #endregion
                 return;
             }
 
@@ -110,9 +117,15 @@ public abstract class AtherialMenu<C extends YamlConfig> {
             // Throttle updates - ensure minimum time has passed
             long currentTime = System.currentTimeMillis();
             if (currentTime - lastUpdateTime < intervalMs) {
+                // #region agent log
+                DebugLog.log("H1", "AtherialMenu:112", "auto-update throttled", "{\"elapsed\":" + (currentTime - lastUpdateTime) + ",\"required\":" + intervalMs + "}");
+                // #endregion
                 return;
             }
 
+            // #region agent log
+            DebugLog.log("H1", "AtherialMenu:117", "auto-update firing performSafeUpdate", "{\"elapsed\":" + (currentTime - lastUpdateTime) + ",\"menuClass\":\"" + getClass().getSimpleName() + "\"}");
+            // #endregion
             // Perform safe update
             performSafeUpdate();
             lastUpdateTime = currentTime;
@@ -132,17 +145,21 @@ public abstract class AtherialMenu<C extends YamlConfig> {
      */
     private void performSafeUpdate() {
         if (updating) {
-            return; // Already updating, skip to prevent overlap
+            // #region agent log
+            DebugLog.log("H5", "AtherialMenu:performSafeUpdate", "SKIPPED - already updating", "{\"menuClass\":\"" + getClass().getSimpleName() + "\"}");
+            // #endregion
+            return;
         }
 
         try {
             updating = true;
+            // #region agent log
+            DebugLog.log("H1", "AtherialMenu:performSafeUpdate", "update START", "{\"needsUpdate\":" + needsUpdate + ",\"menuClass\":\"" + getClass().getSimpleName() + "\"}");
+            // #endregion
 
-            // Cache the current open inventory to avoid multiple calls
             Inventory openInventory = player.getOpenInventory() != null ?
                 player.getOpenInventory().getTopInventory() : null;
 
-            // Only update if the player still has this menu open
             if (!isOnline() || openInventory == null || openInventory.getHolder() != menu) {
                 cancelAutoUpdate();
                 return;
@@ -150,7 +167,6 @@ public abstract class AtherialMenu<C extends YamlConfig> {
 
             update();
 
-            // Re-check after update to ensure inventory is still open
             if (isOnline() && player.getOpenInventory() != null &&
                 player.getOpenInventory().getTopInventory().getHolder() == menu) {
                 menu.refreshInventory(player);
@@ -309,13 +325,18 @@ public abstract class AtherialMenu<C extends YamlConfig> {
 
     public void firstUpdate() {
         if (updating) {
+            // #region agent log
+            DebugLog.log("H5", "AtherialMenu:firstUpdate", "SKIPPED - already updating", "{\"menuClass\":\"" + getClass().getSimpleName() + "\"}");
+            // #endregion
             return;
         }
 
         updating = true;
+        // #region agent log
+        DebugLog.log("H1", "AtherialMenu:firstUpdate", "firstUpdate START (registry-driven)", "{\"needsUpdate\":" + needsUpdate + ",\"menuClass\":\"" + getClass().getSimpleName() + "\"}");
+        // #endregion
         try {
             update();
-            // Only refresh if player is online and menu exists
             if (isOnline() && menu != null) {
                 menu.refreshInventory(player);
             }

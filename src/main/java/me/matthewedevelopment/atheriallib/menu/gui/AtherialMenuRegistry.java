@@ -1,5 +1,6 @@
 package me.matthewedevelopment.atheriallib.menu.gui;
 
+import me.matthewedevelopment.atheriallib.DebugLog;
 import me.matthewedevelopment.atheriallib.SchedulerAdapter;
 import me.matthewedevelopment.atheriallib.menu.gui.events.AtherialMenuCloseEvent;
 import org.bukkit.Bukkit;
@@ -51,6 +52,9 @@ public class AtherialMenuRegistry {
                 if (atherialMenu.isSlow()){
 
                     if (slow) {
+                        // #region agent log
+                        DebugLog.log("H1", "Registry:updateGUI", "registry slow tick", "{\"needsUpdate\":" + atherialMenu.needsUpdate() + ",\"menuClass\":\"" + atherialMenu.getClass().getSimpleName() + "\"}");
+                        // #endregion
                         if (atherialMenu.needsUpdate()) {
                             atherialMenu.firstUpdate();
                         }
@@ -58,6 +62,9 @@ public class AtherialMenuRegistry {
                     }
                 } else {
                     if (!slow) {
+                        // #region agent log
+                        DebugLog.log("H1", "Registry:updateGUI", "registry fast tick", "{\"needsUpdate\":" + atherialMenu.needsUpdate() + ",\"menuClass\":\"" + atherialMenu.getClass().getSimpleName() + "\"}");
+                        // #endregion
                         if (atherialMenu.needsUpdate()) {
 
                             atherialMenu.firstUpdate();
